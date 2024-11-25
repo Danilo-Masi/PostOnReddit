@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 // Icons
 import { LogIn } from 'lucide-react';
+// Components
+import Logo from "../custom/Logo";
 
 export default function RegistrationForm() {
 
@@ -21,9 +23,9 @@ export default function RegistrationForm() {
     }
 
     return (
-        <Card className="w-[90%] md:w-1/2 flex flex-col gap-y-1">
+        <Card className="w-[90%] md:w-1/2 flex flex-col gap-y-1 bg-background shadow-md shadow-elevation3">
             <CardHeader className="w-full flex items-center justify-center">
-                <CardTitle className="text-3xl font-semibold text-primary">PostOnReddit</CardTitle>
+                <CardTitle><Logo /></CardTitle>
                 <CardDescription>Welcome to PostOnReddit</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-y-2">
@@ -59,7 +61,7 @@ export default function RegistrationForm() {
             <CardFooter className="flex flex-col gap-y-2">
                 <Button
                     type="button"
-                    className="w-full hover:ring-2 ring-primary border-0"
+                    className="w-full bg-buttonColor hover:bg-buttonHoverColor"
                     onClick={handleRegistration}>
                     <LogIn /> Register new account
                 </Button>

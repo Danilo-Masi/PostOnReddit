@@ -13,6 +13,7 @@ export default function HomePage() {
 
     const { selectedSection, isExitDialogOpen, isSupportDialogOpen, isCreditsDialogOpen } = useAppContext();
 
+    // Funzione per renderizzare il contenuto selezionato nella sidebar
     function renderContent() {
         switch (selectedSection) {
             case "scheduled-post":
@@ -22,7 +23,7 @@ export default function HomePage() {
             default:
                 return <Dashboard />
         }
-    }
+    };
 
     return (
         <Layout>

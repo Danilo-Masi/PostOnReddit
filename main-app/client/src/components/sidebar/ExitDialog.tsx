@@ -5,21 +5,23 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 
 export default function ExitDialog() {
 
-    const {isExitDialogOpen, setExitDialogOpen} = useAppContext();
+    const { isExitDialogOpen, setExitDialogOpen } = useAppContext();
 
     return (
         <AlertDialog open={isExitDialogOpen} onOpenChange={() => setExitDialogOpen(!isExitDialogOpen)}>
-            <AlertDialogContent>
+            <AlertDialogContent className="w-[90%] rounded-lg">
                 <AlertDialogHeader>
                     <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                    <AlertDialogDescription>
+                    <AlertDialogDescription >
                         This action cannot be undone. This will permanently delete your account
                         and remove your data from our servers.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction className="bg-buttonError hover:bg-buttonHoverError hover:border-0">Continue</AlertDialogAction>
+                    <AlertDialogAction className="bg-buttonError hover:bg-buttonHoverError hover:border-0">
+                        Logout
+                    </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

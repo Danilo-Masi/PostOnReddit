@@ -62,6 +62,15 @@ export default {
 				buttonSuccess: 'hsl(var(--button-success))',
 				buttonHoverSuccess: 'hsl(var(--button-hover-success))',
 				buttonHoverEmpty: 'hsl(var(--button-hover-empty))',
+				// Elevation
+				elevation: 'hsl(var(--elevation))',
+				elevation2: 'hsl(var(--elevation2))',
+				elevation3: 'hsl(var(--elevation3))',
+				// Sidebar
+				sidebar: {
+					background: 'hsl(var(--sidebar-background))',
+					border: 'hsl(var(--(sidebar-border))',
+				}
 			}
 		}
 	},

@@ -1,5 +1,5 @@
 {
-  "name": "server",
+  "name": "postonreddit-server",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "dev": "nodemon index.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Danilo Masi",
   "license": "ISC",
   "description": "",
   "dependencies": {

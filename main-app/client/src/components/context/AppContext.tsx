@@ -1,3 +1,4 @@
+// React
 import { useState, createContext, useContext } from "react"
 
 // Definisci il tipo per il contesto
@@ -17,9 +18,13 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 // Crea un provider per il contesto
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
+    // Stato che gestisce la tab aperta
     const [selectedSection, setSelectedSection] = useState<string>("dashboard");
+    // Stato che gestisce il modal per il logout
     const [isExitDialogOpen, setExitDialogOpen] = useState<boolean>(false);
+    // Stato che gestisce il modal per il supporto
     const [isSupportDialogOpen, setSupportDialogOpen] = useState<boolean>(false);
+    // Stato che gestisce il modal per i crediti
     const [isCreditsDialogOpen, setCreditsDialogOpen] = useState<boolean>(false);
 
     return (
@@ -30,7 +35,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     );
 };
 
-// Hook per usare facilmente il contesto
+// Hook per usare il contesto
 export const useAppContext = () => {
     const context = useContext(AppContext);
     if (!context) {

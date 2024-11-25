@@ -11,15 +11,15 @@ export default function SupportDialog() {
 
     return (
         <AlertDialog open={isSupportDialogOpen} onOpenChange={() => setSupportDialogOpen(!isSupportDialogOpen)}>
-            <AlertDialogContent>
+            <AlertDialogContent className="w-[90%] rounded-lg">
                 <AlertDialogHeader>
-                    <div className="flex justify-between items-center">
-                        <AlertDialogTitle>Do you have any feedback or problem?</AlertDialogTitle>
+                    <div className="flex justify-between items-start">
+                        <AlertDialogTitle className="text-balance">Do you have any feedback or problem?</AlertDialogTitle>
                         <AlertDialogCancel className="w-8 h-8 bg-white border shadow-none hover:border-border hover:bg-white">
                             <X />
                         </AlertDialogCancel>
                     </div>
-                    <AlertDialogDescription>
+                    <AlertDialogDescription className="text-balance">
                         For any issues, question or feedback, please contact us at
                         <span>
                             <a href="#" className="text-textColor hover:underline"> danilomasi999@gmail.com</a>

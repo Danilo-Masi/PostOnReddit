@@ -52,6 +52,13 @@
       --button-success: 142.1 76.2% 36.3%;
       --button-hover-success: 142.1 70.6% 45.3%;
       --button-hover-empty: 240 5.9% 90%;
+      /* Elevation */
+      --elevation: 240 4.8% 95.9%;
+      --elevation2: 240 5.9% 90%;
+      --elevation3: 240 4.9% 83.9%;
+      /* Sidebar */
+      --sidebar-background: 240 4.8% 95.9%;
+      --sidebar-border: 240 4.8% 95.9%;
     }
 
     .dark {

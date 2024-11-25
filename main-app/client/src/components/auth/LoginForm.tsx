@@ -9,7 +9,8 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 // Icons
 import { LogIn } from 'lucide-react';
-
+// Components
+import Logo from "../custom/Logo";
 
 export default function LoginForm() {
 
@@ -17,13 +18,13 @@ export default function LoginForm() {
     const [password, setPassword] = useState<string>("");
 
     const handleLogin = () => {
-        alert('Login utente');
+        alert(`Login user: ${email}`);
     }
 
     return (
-        <Card className="w-[90%] md:w-1/2 flex flex-col gap-y-1">
+        <Card className="w-[90%] md:w-1/2 flex flex-col gap-y-1 bg-background shadow-md shadow-elevation3">
             <CardHeader className="w-full flex items-center justify-center">
-                <CardTitle className="text-3xl font-semibold text-primary">PostOnReddit</CardTitle>
+                <CardTitle><Logo /></CardTitle>
                 <CardDescription>Welcome back to PostOnReddit</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-y-2">
@@ -33,6 +34,7 @@ export default function LoginForm() {
                     type="email"
                     placeholder="email"
                     required
+                    value={email}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} />
             </CardContent>
             <CardContent className="flex flex-col gap-y-2">
@@ -42,12 +44,13 @@ export default function LoginForm() {
                     type="password"
                     placeholder="·········"
                     required
+                    value={password}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} />
             </CardContent>
             <CardFooter className="flex flex-col gap-y-2">
                 <Button
                     type="submit"
-                    className="w-full hover:ring-2 ring-primary border-0"
+                    className="w-full bg-buttonColor hover:bg-buttonHoverColor"
                     onClick={handleLogin}>
                     <LogIn /> Login to your account
                 </Button>

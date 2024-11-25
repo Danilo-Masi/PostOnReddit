@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 
 export default function Post({ title, content, date }: { title: string, content: string, date: string }) {
     return (
-        <Card className="w-full md:w-[calc(33%-0.5rem)]">
+        <Card className="w-full md:w-[calc(33%-0.5rem)] bg-background border border-elevation2">
             <CardHeader>
                 <CardTitle className="text-xl font-bold text-textPrimary">
                     {title}

@@ -4,7 +4,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 
 const app = express();
-const host = process.env.host || 'http://localhost'
+const host = process.env.HOST || 'http://localhost'
 const PORT = process.env.PORT || 3000;
 
 // Middleware
