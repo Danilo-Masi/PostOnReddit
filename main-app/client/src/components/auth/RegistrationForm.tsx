@@ -1,7 +1,11 @@
 // React
 import { useState } from "react";
 // React-router
-import { Link } from "react-router-dom";
+import { Link, NavigateFunction, useNavigate } from "react-router-dom";
+// Context
+import { useAppContext } from "../context/AppContext"
+// Axios
+import axios from 'axios';
 // Shadcnui
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -12,14 +16,60 @@ import { LogIn } from 'lucide-react';
 // Components
 import Logo from "../custom/Logo";
 
+// Url del server di produzione
+const SERVER_URL = 'http://localhost:3000';
+
 export default function RegistrationForm() {
+
+    const navigate: NavigateFunction = useNavigate();
+
+    const { setCreditsDialogOpen } = useAppContext();
 
     const [name, setName] = useState<string>("");
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
 
-    const handleRegistration = () => {
-        alert(`Registration of ${name}'s account`);
+    const handleRegistration = async () => {
+        try {
+            const response = await axios.post(`${SERVER_URL}/registration`, {
+                name: name,
+                email: email,
+                password: password,
+            }, {
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (response.status === 400) {
+                handleError("Dati inseriti non validi");
+                return;
+            }
+
+            if (response.status === 200) {
+                handleSuccess(response.data.token);
+
+            }
+        } catch (error: any) {
+            handleError(error);
+        }
+    }
+
+    const handleSuccess = (token: string) => {
+        localStorage.setItem('authToken', token);
+        alert('Registrazione avvenuta con successo') // DA RIMPIAZZARE
+        setCreditsDialogOpen(true);
+        navigate('/home');
+    }
+
+    const handleError = (error: any) => {
+        alert('Dati inseriti non validi'); // DA RIMPIAZZARE
+        console.log('CLIENT: ', error.message);
+        //resetValues();
+    }
+
+    const resetValues = () => {
+        setName("");
+        setEmail("");
+        setPassword("");
     }
 
     return (
@@ -62,7 +112,7 @@ export default function RegistrationForm() {
                 <Button
                     type="button"
                     className="w-full bg-buttonColor hover:bg-buttonHoverColor"
-                    onClick={handleRegistration}>
+                    onClick={() => handleRegistration()}>
                     <LogIn /> Register new account
                 </Button>
                 <Link to="/login" className="text-foreground hover:text-primary">
