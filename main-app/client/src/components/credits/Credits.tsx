@@ -10,7 +10,7 @@ export default function Credits() {
     return (
         <div className="min-h-[40svh] flex flex-col md:flex-row gap-6 mt-3">
             <CreditsCard
-                title="Basic plan"
+                title="Basic pack"
                 description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
                 futurePrice="7.5"
                 price="5.00"
@@ -19,7 +19,7 @@ export default function Credits() {
                 onClick={handleBuyCredit}
             />
             <CreditsCard
-                title="Premium plan"
+                title="Premium pack"
                 description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
                 futurePrice="15.00"
                 price="10.00"

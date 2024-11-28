@@ -1,7 +1,9 @@
 // React
 import { useState } from "react";
 // React-router
-import { Link } from "react-router-dom";
+import { Link, NavigateFunction, useNavigate } from "react-router-dom";
+// Axios
+import axios from "axios";
 // Shadcnui
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -12,13 +14,57 @@ import { LogIn } from 'lucide-react';
 // Components
 import Logo from "../custom/Logo";
 
+// Url del server di produzione
+const SERVER_URL = 'http://localhost:3000';
+
 export default function LoginForm() {
 
+    const navigate: NavigateFunction = useNavigate();
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
 
-    const handleLogin = () => {
-        alert(`Login user: ${email}`);
+    const handleLogin = async () => {
+
+        // VALIDAZIONE DEI DATI
+
+        try {
+            const response = await axios.post(`${SERVER_URL}/login`, {
+                email: email,
+                password: password,
+            }, {
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (response.status === 400) {
+                alert('I dati inseriti non sono validi'); //DA MODIFICARE
+                return;
+            }
+
+            if (response.status === 401) {
+                alert('Errore durante la fase di login, riprova più tardi'); //DA MODIFICARE
+                return;
+            }
+
+            if (response.status === 200) {
+                handleSuccess(response.data.token);
+            }
+
+        } catch (error: any) {
+            console.error('CLIENT: Errore generico del server', error.message);
+            alert('Errore generico del server, riprova più tardi'); //DA MODIFICARE
+            handleReset();
+        }
+    }
+
+    const handleSuccess = (token: string) => {
+        localStorage.setItem('authToken', token);
+        alert('Accesso avvenuto con successo') // DA MODIFICARE
+        navigate('/home');
+    }
+
+    const handleReset = () => {
+        setEmail("");
+        setPassword("");
     }
 
     return (

@@ -30,6 +30,7 @@ export default function RegistrationForm() {
     const [password, setPassword] = useState<string>("");
 
     const handleRegistration = async () => {
+        //VALIDAZIONE DATI
         try {
             const response = await axios.post(`${SERVER_URL}/registration`, {
                 name: name,
@@ -63,7 +64,7 @@ export default function RegistrationForm() {
     const handleError = (error: any) => {
         alert('Dati inseriti non validi'); // DA RIMPIAZZARE
         console.log('CLIENT: ', error.message);
-        //resetValues();
+        resetValues();
     }
 
     const resetValues = () => {

@@ -1,3 +1,9 @@
+// React
+import { useEffect } from "react";
+// React-router
+import { NavigateFunction, useNavigate } from "react-router-dom";
+// Hooks
+import { checkToken } from "@/hooks/use-verify";
 // Context
 import { useAppContext } from "@/components/context/AppContext";
 // Components
@@ -9,9 +15,21 @@ import ExitDialog from "@/components/sidebar/ExitDialog";
 import SupportDialog from "@/components/sidebar/SupportDialog";
 import CreditsDialog from "@/components/sidebar/CreditsDialog";
 
+
 export default function HomePage() {
 
+    const navigate: NavigateFunction = useNavigate();
     const { selectedSection, isExitDialogOpen, isSupportDialogOpen, isCreditsDialogOpen } = useAppContext();
+
+    useEffect(() => {
+        const checkUser = async () => {
+            const isAuthenticated = await checkToken();
+            if (isAuthenticated === false) {
+                navigate('/login');
+            }
+        }
+        checkUser();
+    }, [navigate]);
 
     // Funzione per renderizzare il contenuto selezionato nella sidebar
     function renderContent() {

@@ -1,11 +1,41 @@
+// React-router
+import { NavigateFunction, useNavigate } from "react-router-dom";
 // Context
 import { useAppContext } from "../context/AppContext";
+// Axios
+import axios from 'axios';
 // Shadcnui
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
+
+// Url del server di produzione
+const SERVER_URL = 'http://localhost:3000';
 
 export default function ExitDialog() {
 
+    const navigate: NavigateFunction = useNavigate();
     const { isExitDialogOpen, setExitDialogOpen } = useAppContext();
+
+    const handleLogout = async () => {
+        try {
+            const response = await axios.post(`${SERVER_URL}/logout`, {
+                header: { 'Content-Type': 'application/json' }
+            });
+
+            if (response.status === 400) {
+                console.error('CLIENT: Errore di rete');
+                return;
+            }
+
+            if (response.status === 200) {
+                localStorage.removeItem('authToken');
+                navigate('/login');
+            }
+
+        } catch (error: any) {
+            console.error('CLIENT: Errore generico del server', error.message);
+            return;
+        }
+    }
 
     return (
         <AlertDialog open={isExitDialogOpen} onOpenChange={() => setExitDialogOpen(!isExitDialogOpen)}>
@@ -19,7 +49,9 @@ export default function ExitDialog() {
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction className="bg-buttonError hover:bg-buttonHoverError hover:border-0">
+                    <AlertDialogAction
+                        className="bg-buttonError hover:bg-buttonHoverError hover:border-0"
+                        onClick={() => handleLogout()}>
                         Logout
                     </AlertDialogAction>
                 </AlertDialogFooter>
