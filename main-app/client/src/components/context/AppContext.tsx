@@ -11,6 +11,8 @@ type AppContextType = {
     setSupportDialogOpen: (section: boolean) => void;
     isCreditsDialogOpen: boolean;
     setCreditsDialogOpen: (section: boolean) => void;
+    isCreditsUpdate: boolean;
+    setCreditsUpdate: (section: boolean) => void;
 }
 
 // Crea il contesto e fornisci un valore predefinito
@@ -26,10 +28,12 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [isSupportDialogOpen, setSupportDialogOpen] = useState<boolean>(false);
     // Stato che gestisce il modal per i crediti
     const [isCreditsDialogOpen, setCreditsDialogOpen] = useState<boolean>(false);
+    // Stato che gestisce l'aggiornamento dei crediti
+    const [isCreditsUpdate, setCreditsUpdate] = useState<boolean>(false);
 
     return (
         <AppContext.Provider
-            value={{ selectedSection, setSelectedSection, isExitDialogOpen, setExitDialogOpen, isSupportDialogOpen, setSupportDialogOpen, isCreditsDialogOpen, setCreditsDialogOpen }}>
+            value={{ selectedSection, setSelectedSection, isExitDialogOpen, setExitDialogOpen, isSupportDialogOpen, setSupportDialogOpen, isCreditsDialogOpen, setCreditsDialogOpen, isCreditsUpdate, setCreditsUpdate }}>
             {children}
         </AppContext.Provider>
     );

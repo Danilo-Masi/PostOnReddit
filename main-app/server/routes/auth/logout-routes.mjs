@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { logoutController } from '../controllers/logout-controller.mjs';
+import { logoutController } from '../../controllers/auth/logout-controller.mjs';
 
 const router = express.Router();
 

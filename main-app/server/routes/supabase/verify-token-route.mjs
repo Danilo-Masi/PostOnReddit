@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { verifyToken } from '../controllers/verify-token-controller.mjs';
+import { verifyToken } from '../../controllers/supabase/verify-token-controller.mjs';
 
 const router = express.Router();
 

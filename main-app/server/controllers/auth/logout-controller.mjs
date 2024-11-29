@@ -1,4 +1,4 @@
-import supabase from '../config/supabase.mjs';
+import supabase from '../../config/supabase.mjs';
 import dotenv from 'dotenv';
 
 dotenv.config();

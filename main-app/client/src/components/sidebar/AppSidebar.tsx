@@ -1,3 +1,5 @@
+// React
+import { useEffect, useState } from "react"
 // Shadcnui
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
@@ -9,6 +11,8 @@ import { Command, CalendarCheck2, Settings, ChevronUp, CircleHelp, LogOut, Shopp
 import { useAppContext } from "../context/AppContext"
 // Components
 import Logo from "../custom/Logo"
+// Hook
+import { checkData } from "@/hooks/use-retrieve-data"
 
 const links = [
     { title: "Dashboard", key: "dashboard", icon: Command },
@@ -18,7 +22,23 @@ const links = [
 
 export function AppSidebar() {
 
-    const { selectedSection, setSelectedSection, setExitDialogOpen, setSupportDialogOpen, setCreditsDialogOpen } = useAppContext();
+    const { selectedSection, setSelectedSection, setExitDialogOpen, setSupportDialogOpen, setCreditsDialogOpen, isCreditsUpdate } = useAppContext();
+    const [userEmail, setUserEmail] = useState<string>("");
+    const [creditsAvabile, setCreditsAvabile] = useState<null | any>(null);
+
+    useEffect(() => {
+        const fetchCredits = async () => {
+            const data = await checkData();
+            if (data === null) {
+                setUserEmail('user@email.com');
+                setCreditsAvabile('N/A');
+            } else {
+                setUserEmail(data.email);
+                setCreditsAvabile(data.credits);
+            }
+        }
+        fetchCredits();
+    }, [isCreditsUpdate]);
 
     return (
         <Sidebar className="bg-sidebar-background md:border-sidebar-background p-2">
@@ -52,7 +72,7 @@ export function AppSidebar() {
                 </SidebarGroup>
                 <SidebarGroupContent>
                     <div className="w-full p-2 flex flex-col gap-y-2">
-                        <p className="text-base text-center font-semibold text-textSecondary">Credits avabile: 0</p>
+                        <p className="text-base text-center font-semibold text-textSecondary">Credits avabile: {creditsAvabile}</p>
                         <Button
                             type="button"
                             className="w-full py-5 text-md font-bold text-textForeground bg-buttonColor hover:bg-buttonHoverColor"
@@ -69,12 +89,14 @@ export function AppSidebar() {
                     <SidebarMenuItem>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <SidebarMenuButton className="w-full flex items-center justify-start px-3 py-7 m-0 text-textSecondary bg-elevation2 hover:bg-elevation3">
+                                <SidebarMenuButton className="w-full flex items-center justify-start px-3 py-7 m-0 text-textSecondary text-sm font-semibold bg-elevation2 hover:bg-elevation3">
                                     <Avatar className="w-8 h-8 rounded-lg">
                                         <AvatarImage src="https://github.com/shadcn.png" />
                                         <AvatarFallback>CN</AvatarFallback>
                                     </Avatar>
-                                    <p className="w-2/3 overflow-hidden">danilomasi999@gmail.com</p>
+                                    <p className="w-2/3 overflow-hidden">
+                                        {userEmail}
+                                    </p>
                                     <ChevronUp className="ml-auto" />
                                 </SidebarMenuButton>
                             </DropdownMenuTrigger>
