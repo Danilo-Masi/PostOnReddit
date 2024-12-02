@@ -9,6 +9,8 @@ import verifiyRedditRoute from './routes/supabase/verify-reddit-route.mjs';
 // Reddit
 import redditRedirectRoute from './routes/reddit/reddit-redirect-route.mjs';
 import redditCallbackRoute from './routes/reddit/reddit-callback-route.mjs';
+import redditSubredditRoute from './routes/reddit/reddit-subreddit-route.mjs';
+import redditFlairRoute from './routes/reddit/reddit-flair-route.mjs';
 
 export const applyRoutes = (app) => {
     // Auth
@@ -22,4 +24,6 @@ export const applyRoutes = (app) => {
     // Reddit 
     app.use('/api', redditRedirectRoute);
     app.use('/api', redditCallbackRoute);
+    app.use('/api', redditSubredditRoute);
+    app.use('/api', redditFlairRoute);
 }

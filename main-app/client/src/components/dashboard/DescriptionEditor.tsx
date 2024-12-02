@@ -19,7 +19,7 @@ export default function DescriptionEditor({ descriptionValue, setDescriptionValu
                 onChange={(content: Content) => setDescriptionValue(content)}
                 className="w-full max-h-[30svh] overflow-scroll"
                 editorContentClassName="p-5"
-                output="html"
+                output="json"
                 placeholder="Type your description here..."
                 autofocus={false}
                 editable={true}
