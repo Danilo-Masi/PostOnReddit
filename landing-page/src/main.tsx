@@ -3,8 +3,11 @@ import { createRoot } from 'react-dom/client'
 // CSS
 import './index.css'
 // Components
+import { AppProvider } from './context/AppContext.tsx';
 import App from './App.tsx'
 
 createRoot(document.getElementById('root')!).render(
-  <App />
+  <AppProvider>
+    <App />
+  </AppProvider>
 );
