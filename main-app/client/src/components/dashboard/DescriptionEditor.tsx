@@ -12,7 +12,7 @@ type DescriptionEditorProps = {
 
 export default function DescriptionEditor({ descriptionValue, setDescriptionValue }: DescriptionEditorProps) {
     return (
-        <div className='flex flex-col gap-y-2'>
+        <div className='w-1/2 flex flex-col gap-y-2'>
             <Label>Description</Label>
             <MinimalTiptapEditor
                 value={descriptionValue}

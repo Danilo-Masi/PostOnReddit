@@ -1,40 +1,43 @@
 // React
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 // Shadcnui
 import { Separator } from '../ui/separator';
 // Icons
 import { ChevronDown, ChevronUp } from 'lucide-react';
 // Assets/Images
-import feature1 from '../../assets/images/feature1.webp';
-import feature2 from '../../assets/images/feature2.webp';
-import feature3 from '../../assets/images/feature3.webp';
+import feature1 from '../../assets/images/feature1.png';
+import feature2 from '../../assets/images/feature2.png';
+import feature3 from '../../assets/images/feature3.png';
+import FeaturesImages from './FeaturesImages';
 
 export default function FeaturesCarousel() {
 
     const [selectedSection, setSelectedSection] = useState("one");
     const [isOpen, setOpen] = useState(true);
+    const [imageText, setImageText] = useState("");
+    const [imagePath, setImagePath] = useState("");
+    const [imageStyle, setImageStyle] = useState("");
 
     const handleActiveSection = (section: string) => {
         setSelectedSection(section);
         setOpen(true);
     }
 
-    const getImagePath = () => {
-        switch (selectedSection) {
-            case "one":
-                return feature1;
-                break;
-            case "two":
-                return feature2;
-                break;
-            case "three":
-                return feature3;
-                break;
-            default:
-                return feature1;
-                break;
+    useEffect(() => {
+        if (selectedSection === "one") {
+            setImageText("Unleash your creativity and share your thoughts effortlessly ✍️");
+            setImagePath(feature1);
+            setImageStyle("md:w-3/4 -bottom-10 bg-zinc-50 p-3");
+        } else if (selectedSection === "two") {
+            setImageText("Pick the perfect moment to make the biggest impact 📈");
+            setImagePath(feature2);
+            setImageStyle("md:w-3/5 -bottom-10 bg-zinc-900 pb-10 p-3");
+        } else {
+            setImageText("🏁 Witness incredible results—get ready to be amazed! ");
+            setImagePath(feature3);
+            setImageStyle("md:w-3/4 -bottom-2 md:-bottom-8");
         }
-    }
+    }, [selectedSection]);
 
     return (
         <div className="w-full h-auto md:h-[60svh] flex flex-col md:flex-row rounded-xl bg-zinc-50 border border-zinc-300 shadow-md shadow-zinc-300">
@@ -108,8 +111,8 @@ export default function FeaturesCarousel() {
                 </div>
             </div>
             {/* IMMAGINI */}
-            <div className="w-full md:w-2/3 md:h-full flex flex-col items-center justify-center">
-                <img src={getImagePath()} className="w-full h-full object-cover rounded-b-xl md:rounded-r-xl md:border-r border-zinc-300" />
+            <div className="w-full md:w-2/3 h-auto md:h-full min-h-[60svh] md:min-h-0 flex flex-col items-center justify-start relative overflow-hidden bg-orange-500 rounded-b-xl md:rounded-r-xl md:rounded-l-none">
+                <FeaturesImages text={imageText} imagePath={imagePath} imageStyle={imageStyle} />
             </div>
         </div>
     );

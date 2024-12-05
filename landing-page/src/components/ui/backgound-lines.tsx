@@ -16,7 +16,7 @@ export const BackgroundLines = ({
     return (
         <div
             className={cn(
-                "h-[20rem] md:h-screen w-full bg-white dark:bg-black",
+                "h-[20rem] md:h-screen w-full bg-background dark:bg-black",
                 className
             )}
         >
@@ -120,7 +120,6 @@ const SVG = ({
                 />
             ))}
 
-            {/* duplicate for more paths */}
             {paths.map((path, idx) => (
                 <motion.path
                     d={path}
@@ -141,6 +140,28 @@ const SVG = ({
                     key={`path-second-${idx}`}
                 />
             ))}
+
+            {paths.map((path, idx) => (
+                <motion.path
+                    d={path}
+                    stroke={colors[idx]}
+                    strokeWidth="2.3"
+                    strokeLinecap="round"
+                    variants={pathVariants}
+                    initial="initial"
+                    animate="animate"
+                    transition={{
+                        duration: svgOptions?.duration || 10,
+                        ease: "linear",
+                        repeat: Infinity,
+                        repeatType: "loop",
+                        delay: Math.floor(Math.random() * 10),
+                        repeatDelay: Math.floor(Math.random() * 10 + 2),
+                    }}
+                    key={`path-second-${idx}`}
+                />
+            ))}
+
         </motion.svg>
     );
 };

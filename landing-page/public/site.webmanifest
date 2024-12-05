@@ -1,0 +1,33 @@
+{
+  "name": "PostOnReddit",
+  "short_name": "POR",
+  "description": "Join the waitlist and manage your Reddit posts effortlessly with PostOnReddit.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fd9952",
+  "theme_color": "#fafafa",
+  "icons": [
+    {
+      "src": "/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "scope": "/",
+  "orientation": "portrait",
+  "lang": "en",
+  "categories": [
+    "productivity",
+    "social",
+    "communication"
+  ],
+  "prefer_related_applications": false,
+  "dir": "ltr"
+}

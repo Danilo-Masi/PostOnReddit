@@ -1,11 +1,11 @@
 // Components
 import CustomHeader from "../custom/CustomHeader";
 import MainContainer from "../custom/MainContainer";
-import PriceCard from "./PriceCard";
+import PriceCard from "./PricesCard";
 // Context
 import { useAppContext } from "@/context/AppContext";
 
-export default function Prices() {
+export default function Prices({ id }: { id: string }) {
 
     const { setWaitlistOpen } = useAppContext();
 
@@ -14,7 +14,7 @@ export default function Prices() {
     }
 
     return (
-        <MainContainer yAlign="justify-start">
+        <MainContainer yAlign="justify-start" id={id}>
             <CustomHeader
                 badgeTitle="PRICES"
                 titleHeader="Pay-As-You-Go"
