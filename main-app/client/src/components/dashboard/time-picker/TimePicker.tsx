@@ -21,7 +21,7 @@ export function TimePicker({ date, setDate }: TimePickerDemoProps) {
     const periodRef = useRef<HTMLButtonElement>(null);
 
     return (
-        <div className="flex items-start gap-2">
+        <div className="w-full flex items-start gap-2">
             <div className="grid gap-2 text-center">
                 <Label htmlFor="hours" className="text-xs">
                     Hours

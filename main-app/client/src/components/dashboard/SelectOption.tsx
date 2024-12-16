@@ -48,7 +48,7 @@ export default function SelectOption({ communityValue, isDisabled, placeholder, 
             disabled={isDisabled}
             value={value}
             onValueChange={(val) => setValue(val)}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-full z-0">
                 <SelectValue placeholder={placeholder} />
             </SelectTrigger>
             <SelectContent>

@@ -12,12 +12,12 @@ type DescriptionEditorProps = {
 
 export default function DescriptionEditor({ descriptionValue, setDescriptionValue }: DescriptionEditorProps) {
     return (
-        <div className='w-1/2 flex flex-col gap-y-2'>
-            <Label>Description</Label>
+        <div className='w-full flex flex-col gap-y-3'>
+            <Label htmlFor="description-input">Post description</Label>
             <MinimalTiptapEditor
                 value={descriptionValue}
                 onChange={(content: Content) => setDescriptionValue(content)}
-                className="w-full max-h-[30svh] overflow-scroll"
+                className="w-full min-h-[64svh] overflow-scroll"
                 editorContentClassName="p-5"
                 output="json"
                 placeholder="Type your description here..."
@@ -25,5 +25,5 @@ export default function DescriptionEditor({ descriptionValue, setDescriptionValu
                 editable={true}
                 editorClassName="focus:outline-none" />
         </div>
-    )
+    );
 }

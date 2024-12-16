@@ -66,7 +66,7 @@ export default function SearchInput({ communityValue, setCommunityValue }: { com
                     variant="outline"
                     role="combobox"
                     aria-expanded={open}
-                    className="w-full md:w-[300px] justify-between bg-background border-elevation3">
+                    className="w-full justify-between bg-background border-elevation3">
                     {communityValue
                         ? <p className="text-textPrimary text-sm font-medium">{communityValue}</p>
                         : <p className="text-textSecondary text-sm font-medium">Select a community</p>}
@@ -74,7 +74,7 @@ export default function SearchInput({ communityValue, setCommunityValue }: { com
                 </Button>
             </PopoverTrigger>
             <PopoverContent>
-                <Command className="w-full md:w-[300px] mt-1 bg-white shadow-md shadow-elevation3 border border-elevation3 z-50">
+                <Command className="w-full mt-1 bg-white shadow-md shadow-elevation3 border border-elevation3 z-50">
                     {/* Input di ricerca */}
                     <CommandInput
                         placeholder="Search for communities..."

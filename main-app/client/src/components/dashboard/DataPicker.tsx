@@ -18,13 +18,13 @@ type DataPickerProps = {
 export default function DataPicker({ date, setDateValue }: DataPickerProps) {
 
     return (
-        <div className='flex flex-col gap-y-2'>
+        <div className='w-full flex flex-col gap-y-2'>
             <Label>Select the date</Label>
             <Popover>
                 <PopoverTrigger asChild>
                     <Button
                         variant={"outline"}
-                        className={cn("w-[280px] justify-start text-left font-normal", !date && "text-muted-foreground")}>
+                        className={cn("w-full justify-start text-left font-normal", !date && "text-muted-foreground")}>
                         <CalendarIcon className="mr-2 h-4 w-4" />
                         {date ? format(date, "PPP") : <span>Pick a date</span>}
                     </Button>
