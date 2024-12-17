@@ -5,9 +5,9 @@ import { Separator } from '../ui/separator';
 // Icons
 import { ChevronDown, ChevronUp } from 'lucide-react';
 // Assets/Images
-import feature1 from '../../assets/images/feature1.png';
-import feature2 from '../../assets/images/feature2.png';
-import feature3 from '../../assets/images/feature3.png';
+import feature1 from '../../assets/images/feature1.webp';
+import feature2 from '../../assets/images/feature2.webp';
+import feature3 from '../../assets/images/feature3.webp';
 import FeaturesImages from './FeaturesImages';
 
 export default function FeaturesCarousel() {

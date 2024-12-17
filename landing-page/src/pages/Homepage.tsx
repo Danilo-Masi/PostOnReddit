@@ -1,18 +1,18 @@
-// React
-import { useEffect } from "react";
+import { useEffect, Suspense, lazy } from "react";
 // Context
 import { useAppContext } from "@/context/AppContext";
-// Components
-import Navbar from "../components/navbar/Navbar";
-import Hero from "../components/hero/Hero";
-import Features from "../components/features/Features";
-import Prices from "../components/prices/Prices"
-import Faqs from "../components/faqs/Faqs";
-import Banner from "../components/banner/Banner";
-import Footer from "../components/footer/Footer";
-import AppContainer from "@/components/custom/AppContainer";
 // Confett-js
 import JSConfetti from "js-confetti";
+// Components
+import AppContainer from "@/components/custom/AppContainer";
+import Navbar from "../components/navbar/Navbar";
+import Hero from "../components/hero/Hero";
+// Components (caricamento dinamico)
+const Features = lazy(() => import("../components/features/Features"));
+const Prices = lazy(() => import("../components/prices/Prices"));
+const Faqs = lazy(() => import("../components/faqs/Faqs"));
+const Banner = lazy(() => import("../components/banner/Banner"));
+const Footer = lazy(() => import("../components/footer/Footer"));
 
 export default function Homepage() {
 
@@ -30,14 +30,16 @@ export default function Homepage() {
     }, [isConfettiActive]);
 
     return (
-        <AppContainer >
+        <AppContainer>
             <Navbar />
             <Hero id="Hero" />
-            <Features id="Features" />
-            <Prices id="Prices" />
-            <Faqs id="Faqs" />
-            <Banner />
-            <Footer />
+            <Suspense fallback={<div>Loading...</div>}>
+                <Features id="Features" />
+                <Prices id="Prices" />
+                <Faqs id="Faqs" />
+                <Banner />
+                <Footer />
+            </Suspense>
         </AppContainer>
     );
 }

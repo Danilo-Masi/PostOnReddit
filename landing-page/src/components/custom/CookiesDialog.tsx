@@ -22,7 +22,11 @@ export default function CookiesDialog() {
                 <AlertDialogHeader className="w-full flex flex-row items-center justify-between">
                     <AlertDialogTitle>Cookie Policy</AlertDialogTitle>
                     <AlertDialogCancel>
-                        <Button variant="outline" className="w-6 h-6 p-4 text-zinc-500 hover:text-orange-500 hover:bg-background hover:border-orange-500">
+                        <Button
+                            aria-label="close-button"
+                            name="close-button"
+                            variant="outline"
+                            className="w-6 h-6 p-4 text-zinc-500 hover:text-orange-500 hover:bg-background hover:border-orange-500">
                             <X />
                         </Button>
                     </AlertDialogCancel>

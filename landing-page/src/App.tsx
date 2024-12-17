@@ -1,3 +1,5 @@
+// React
+import { useEffect } from "react";
 // React-router
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 // Context
@@ -9,7 +11,6 @@ import Privacypage from "./pages/Privacypage";
 import Cookiepage from "./pages/Cookiepage";
 // Components
 import WailtistDialog from "./components/custom/WailtistDialog";
-import { useEffect } from "react";
 import CookiesDialog from "./components/custom/CookiesDialog";
 
 function App() {

@@ -1,7 +1,7 @@
 /// Components
 import AppContainer from "@/components/custom/AppContainer";
-import Footer from "@/components/footer/Footer";
 import Navbar from "@/components/navbar/Navbar";
+import Footer from "@/components/footer/Footer";
 
 export default function Privacypage() {
     return (

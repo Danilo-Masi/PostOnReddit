@@ -1,7 +1,7 @@
 {
-  "name": "PostOnReddit",
+  "name": "postonreddit",
   "short_name": "POR",
-  "description": "Join the waitlist and manage your Reddit posts effortlessly with PostOnReddit.",
+  "description": "Reach your audience at the perfect moment",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#fd9952",

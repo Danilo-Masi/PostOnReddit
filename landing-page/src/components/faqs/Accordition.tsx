@@ -3,7 +3,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, } from "@
 
 export default function Accordition() {
     return (
-        <Accordion type="single" collapsible className="w-full md:w-2/3 text-left">
+        <Accordion type="single" collapsible className="w-full md:w-2/3 lg:w-2/4 text-left">
             <AccordionItem value="item-1">
                 <AccordionTrigger className="text-md text-zinc-900">What’s postonreddit?</AccordionTrigger>
                 <AccordionContent className="text-sm text-zinc-500">

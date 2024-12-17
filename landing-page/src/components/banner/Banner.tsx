@@ -1,21 +1,22 @@
 // Components
 import MainContainer from "../custom/MainContainer";
 import WaitlistButton from "../custom/WaitlistButton";
+import { BackgroundBeamsWithCollision } from "../ui/background-beams-with-collision";
 
 export default function Banner() {
     return (
         <MainContainer>
-            <div className="w-full h-[80svh] flex flex-col items-center justify-center gap-y-12 rounded-xl bg-orange-500">
+            <BackgroundBeamsWithCollision>
                 <div className="flex flex-col gap-y-3">
-                    <h1 className="text-5xl md:text-6xl max-w-xl font-bold text-zinc-50">
-                        TAKE CONTROL of your Reddit strategy
+                    <h1 className="text-4xl md:text-6xl lg:text-7xl text-balance font-semibold text-zinc-50">
+                        <i className="font-bold">Take control</i> of your Reddit strategy
                     </h1>
-                    <h3 className="text-xl font-light text-balance max-w-xl text-zinc-200">
-                        Schedule posts effortlessly, reach more people, and grow your impact. Join today and be among the first to elevate your Reddit game.
+                    <h3 className="text-xl md:text-2xl lg:text-2xl text-balance font-light text-zinc-100">
+                        Schedule posts effortlessly, <i className="font-semibold text-zinc-50">reach more people</i>, and grow your impact. Join today and be among the first to elevate your<i className="font-semibold text-zinc-50"> Reddit game.</i>
                     </h3>
                 </div>
                 <WaitlistButton />
-            </div>
+            </BackgroundBeamsWithCollision>
         </MainContainer>
     );
 }
