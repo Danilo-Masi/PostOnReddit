@@ -1,6 +1,6 @@
 // Utils
 import { cn } from "@/lib/utils"
-import { format } from "date-fns"
+import { format, isBefore, startOfDay } from "date-fns"
 // Shadcnui
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
@@ -8,14 +8,15 @@ import { Calendar } from "@/components/ui/calendar"
 import { Label } from '../ui/label';
 // Icons
 import { Calendar as CalendarIcon } from "lucide-react"
-import { Dispatch, SetStateAction } from "react"
 
 type DataPickerProps = {
     date: Date;
-    setDateValue: Dispatch<SetStateAction<Date>>;
+    setDateValue: any
 }
 
 export default function DataPicker({ date, setDateValue }: DataPickerProps) {
+
+    const isDateDisabled = (date: Date) => isBefore(startOfDay(date), startOfDay(new Date()));
 
     return (
         <div className='w-full flex flex-col gap-y-2'>
@@ -34,7 +35,8 @@ export default function DataPicker({ date, setDateValue }: DataPickerProps) {
                         mode="single"
                         selected={date}
                         onSelect={(selectedDate: any) => setDateValue(selectedDate)}
-                        initialFocus />
+                        initialFocus
+                        disabled={isDateDisabled} />
                 </PopoverContent>
             </Popover>
         </div>

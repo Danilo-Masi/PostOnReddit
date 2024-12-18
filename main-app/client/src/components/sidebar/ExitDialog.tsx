@@ -41,22 +41,20 @@ export default function ExitDialog() {
         <AlertDialog open={isExitDialogOpen} onOpenChange={() => setExitDialogOpen(!isExitDialogOpen)}>
             <AlertDialogContent className="w-[90%] rounded-lg">
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                    <AlertDialogDescription >
-                        This action cannot be undone. This will permanently delete your account
-                        and remove your data from our servers.
+                    <AlertDialogTitle>Logout</AlertDialogTitle>
+                    <AlertDialogDescription>
+                        Are you sure you want to log out? You will need to login again to access your account.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogCancel className="hover:bg-gray-100">Cancel</AlertDialogCancel>
                     <AlertDialogAction
-                        className="bg-buttonError hover:bg-buttonHoverError hover:border-0"
+                        className="bg-red-500 text-white hover:bg-red-600"
                         onClick={() => handleLogout()}>
-                        Logout
+                        Confirm Logout
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
-
     );
 }

@@ -17,7 +17,7 @@ export default function DescriptionEditor({ descriptionValue, setDescriptionValu
             <MinimalTiptapEditor
                 value={descriptionValue}
                 onChange={(content: Content) => setDescriptionValue(content)}
-                className="w-full min-h-[64svh] overflow-scroll"
+                className="w-full max-w-full min-h-[64svh] break-all overflow-y-scroll"
                 editorContentClassName="p-5"
                 output="json"
                 placeholder="Type your description here..."

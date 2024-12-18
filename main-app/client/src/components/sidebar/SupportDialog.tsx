@@ -20,9 +20,9 @@ export default function SupportDialog() {
                         </AlertDialogCancel>
                     </div>
                     <AlertDialogDescription className="text-balance">
-                        For any issues, question or feedback, please contact us at
+                        For any issues, question or feedback, send an email at
                         <span>
-                            <a href="#" className="text-textColor hover:underline"> danilomasi999@gmail.com</a>
+                            <p className="text-textColor hover:underline"> danilomasi999@gmail.com</p>
                         </span>
                     </AlertDialogDescription>
                 </AlertDialogHeader>
