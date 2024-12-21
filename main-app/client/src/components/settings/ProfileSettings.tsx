@@ -9,7 +9,7 @@ import { checkRedditAuthorization } from "@/hooks/use-retrieve-data";
 // Shadncui
 import { Button } from "../ui/button";
 // Icons
-import { KeySquare, UserX } from "lucide-react";
+import { KeySquare } from "lucide-react";
 // Components
 import CardBase from '../custom/CardBase';
 
@@ -70,12 +70,15 @@ export default function ProfileSettings() {
             cardTitle='Profile settings'
             cardDescription='Configure your profile'
             mdWidth="md:w-[30%]">
+            <div className="w-full h-full min-h-[60svh] flex items-center justify-center rounded-xl mb-3 bg-zinc-200">
+                Cooming soon
+            </div>
             {isRedditAuthorized ? (
                 <Button
                     type="button"
-                    className="w-full"
+                    className="w-full bg-red-500 hover:bg-red-600"
                     onClick={() => handleRemovePermits()}>
-                    <UserX />
+                    <KeySquare />
                     Remove permission to Reddit
                 </Button>
             ) : (

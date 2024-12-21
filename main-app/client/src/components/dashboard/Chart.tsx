@@ -1,19 +1,41 @@
+// React
+import { useEffect, useState } from "react";
+// Axios
+import axios from "axios";
 // Reachart
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 // Shadcunui
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent, } from "@/components/ui/chart";
 
-// Chart data
-const chartData = [
-    { month: "January", desktop: 186 },
-    { month: "February", desktop: 305 },
-    { month: "March", desktop: 237 },
-    { month: "April", desktop: 73 },
-    { month: "May", desktop: 209 },
-    { month: "June", desktop: 214 },
-]
+// Url del server di produzione
+const SERVER_URL = 'http://localhost:3000';
 
-// Chart config
+interface ChartData {
+    day: string;
+    activeUsers: number;
+}
+
+// Funzione per ottenere i 7 giorni della settimana precedenti
+const getLast7Days = () => {
+    const days = [];
+    const today = new Date();
+    for (let i = 6; i >= 0; i--) {
+        const date = new Date(today);
+        date.setDate(today.getDate() - i);
+        const day = date.toLocaleString('en-us', { weekday: 'short' });
+        days.push(day);
+    }
+    return days;
+}
+
+// Funzione per generare dati casuali di default
+const chartDataDefault = getLast7Days().map(day => ({
+    day,
+    activeUsers: Math.floor(Math.random() * 300),
+}));
+
+
+// Configurazione del grafico
 const chartConfig = {
     desktop: {
         label: "User active",
@@ -21,9 +43,34 @@ const chartConfig = {
     },
 } satisfies ChartConfig
 
-export default function Chart() {
+export default function Chart({ subreddit }: { subreddit: string }) {
+
+    const [chartData, setChartData] = useState<ChartData[]>(chartDataDefault);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (!subreddit) return;
+
+            try {
+                const response = await axios.get(`${SERVER_URL}/api/reddit-stats?subreddit)=${subreddit}`);
+                if (response.status === 200) {
+                    setChartData(response.data);
+                } else {
+                    setChartData(chartDataDefault);
+                }
+            } catch (error: any) {
+                console.error("CLIENT: Errore nel caricamento dei dati del chart", error.message);
+                setChartData(chartDataDefault);
+            }
+        }
+        fetchData();
+    }, [subreddit]);
+
+
     return (
-        <ChartContainer config={chartConfig} className="w-full min-h-[200px]">
+        <ChartContainer
+            config={chartConfig}
+            className="w-full min-h-[200px]">
             <AreaChart
                 accessibilityLayer
                 data={chartData}
@@ -33,7 +80,7 @@ export default function Chart() {
                 }}>
                 <CartesianGrid vertical={false} />
                 <XAxis
-                    dataKey="month"
+                    dataKey="day"
                     tickLine={false}
                     axisLine={false}
                     tickMargin={8}
@@ -42,7 +89,7 @@ export default function Chart() {
                     cursor={false}
                     content={<ChartTooltipContent indicator="dot" hideLabel />} />
                 <Area
-                    dataKey="desktop"
+                    dataKey="activeUsers"
                     type="linear"
                     fill="var(--color-desktop)"
                     fillOpacity={0.4}

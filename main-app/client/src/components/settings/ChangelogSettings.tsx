@@ -18,19 +18,23 @@ export default function ChangelogSettings() {
                     day="18"
                     date="Dec. 2024"
                     title="Lorem ipsum"
-                    description="Lorem ipsum dolor sit amet, ipsum dolor sit amet" /><Changelog
+                    description="Lorem ipsum dolor sit amet, ipsum dolor sit amet" />
+                <Changelog
                     day="18"
                     date="Dec. 2024"
                     title="Lorem ipsum"
-                    description="Lorem ipsum dolor sit amet, ipsum dolor sit amet" /><Changelog
+                    description="Lorem ipsum dolor sit amet, ipsum dolor sit amet" />
+                <Changelog
                     day="18"
                     date="Dec. 2024"
                     title="Lorem ipsum"
-                    description="Lorem ipsum dolor sit amet, ipsum dolor sit amet" /><Changelog
+                    description="Lorem ipsum dolor sit amet, ipsum dolor sit amet" />
+                <Changelog
                     day="18"
                     date="Dec. 2024"
                     title="Lorem ipsum"
-                    description="Lorem ipsum dolor sit amet, ipsum dolor sit amet" /><Changelog
+                    description="Lorem ipsum dolor sit amet, ipsum dolor sit amet" />
+                <Changelog
                     day="18"
                     date="Dec. 2024"
                     title="Lorem ipsum"

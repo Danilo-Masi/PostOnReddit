@@ -1,10 +1,13 @@
 // React
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // Shadcnui
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 // Components
 import CardBase from "../custom/CardBase";
+import { useTheme } from "../theme/ThemeProvider";
+
+type Theme = "dark" | "light"
 
 interface ThemeToyProps {
     containerColor: string;
@@ -28,7 +31,21 @@ export const ThemeToy = ({ containerColor, itemColor }: ThemeToyProps) => {
 
 export default function ThemeSettings() {
 
-    const [selectedTheme, setSelectedTheme] = useState("dark");
+    const { setTheme } = useTheme();
+    const [selectedTheme, setSelectedTheme] = useState<Theme>("light");
+
+    useEffect(() => {
+        const storedTheme = localStorage.getItem("vite-ui-theme") as Theme | null;
+        if (storedTheme) {
+            setSelectedTheme(storedTheme);
+        }
+    }, [setTheme]);
+
+    const handleThemeChange = (value: Theme) => {
+        setSelectedTheme(value);
+        setTheme(value);
+        localStorage.setItem("vite-ui-theme", value);
+    }
 
     return (
         <CardBase
@@ -36,9 +53,9 @@ export default function ThemeSettings() {
             cardDescription="Customize your app theme"
             mdWidth="md:w-[30%]">
             <RadioGroup
-                defaultValue="dark"
+                defaultValue="light"
                 value={selectedTheme}
-                onValueChange={setSelectedTheme}
+                onValueChange={handleThemeChange}
                 className="w-full h-full flex flex-col gap-y-3 items-start justify-between">
                 <Label
                     htmlFor="dark"

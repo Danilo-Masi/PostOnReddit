@@ -102,7 +102,8 @@ export default function Dashboard() {
           date={combinedDateTime}
           setDate={handleTimeChange}
           minTime={isToday(combinedDateTime) ? today : undefined} />
-        <Chart />
+        <Chart
+          subreddit={communityValue} />
         {/* BOTTONE */}
         <Button
           className='w-full py-5 bg-buttonColor hover:bg-buttonHoverColor'

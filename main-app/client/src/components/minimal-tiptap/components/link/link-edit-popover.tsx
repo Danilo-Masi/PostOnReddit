@@ -46,22 +46,21 @@ const LinkEditPopover = ({ editor, size, variant }: LinkEditPopoverProps) => {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild disabled>
+      <PopoverTrigger asChild>
         <ToolbarButton
           isActive={editor.isActive('link')}
-          tooltip="Cooming soon"
+          tooltip="Link"
           aria-label="Insert link"
           disabled={editor.isActive('codeBlock')}
           size={size}
-          variant={variant}>
+          variant={variant}
+        >
           <Link2Icon className="size-5" />
         </ToolbarButton>
       </PopoverTrigger>
-      {/* 
       <PopoverContent className="w-full min-w-80" align="end" side="bottom">
-          <LinkEditBlock />
+        <LinkEditBlock onSave={onSetLink} defaultText={text} />
       </PopoverContent>
-      */}
     </Popover>
   )
 }
