@@ -33,7 +33,7 @@ export default function Footer() {
                 </ul>
             </FooterContainer>
             <FooterContainer>
-                <h3 className="text-lg font-semibold text-zinc-900">Other by me</h3>
+                <h3 className="text-lg font-semibold text-zinc-900">More</h3>
                 <ul className="font-light text-zinc-500 flex flex-col gap-y-1 cursor-pointer">
                     <li><a href="https://www.describify.it" target="_blank" className="hover:text-orange-500">Describify</a></li>
                 </ul>

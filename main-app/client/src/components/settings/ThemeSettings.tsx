@@ -51,7 +51,7 @@ export default function ThemeSettings() {
         <CardBase
             cardTitle="Interface theme"
             cardDescription="Customize your app theme"
-            mdWidth="md:w-[30%]">
+            mdWidth="md:w-1/3">
             <RadioGroup
                 defaultValue="light"
                 value={selectedTheme}

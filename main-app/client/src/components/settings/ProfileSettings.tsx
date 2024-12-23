@@ -69,7 +69,7 @@ export default function ProfileSettings() {
         <CardBase
             cardTitle='Profile settings'
             cardDescription='Configure your profile'
-            mdWidth="md:w-[30%]">
+            mdWidth="md:w-1/3">
             <div className="w-full h-full min-h-[60svh] flex items-center justify-center rounded-xl mb-3 bg-zinc-200">
                 Cooming soon
             </div>

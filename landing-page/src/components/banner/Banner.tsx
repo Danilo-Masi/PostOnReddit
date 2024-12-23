@@ -15,7 +15,10 @@ export default function Banner() {
                         Schedule posts effortlessly, <i className="font-semibold text-zinc-50">reach more people</i>, and grow your impact. Join today and be among the first to elevate your<i className="font-semibold text-zinc-50"> Reddit game.</i>
                     </h3>
                 </div>
-                <WaitlistButton />
+                <div className="w-full flex flex-col items-center justify-center gap-y-3 z-30">
+                    <p className="font-basic text-zinc-50">🎉  <b className="italic">+3 free</b> credits for early sign-ups!</p>
+                    <WaitlistButton />
+                </div>
             </BackgroundBeamsWithCollision>
         </MainContainer>
     );

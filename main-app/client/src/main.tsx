@@ -8,12 +8,14 @@ import { AppProvider } from "./components/context/AppContext";
 import { ThemeProvider } from "./components/theme/ThemeProvider";
 import { TooltipProvider } from "./components/ui/tooltip";
 import App from './App.tsx';
+import { Toaster } from 'sonner';
 
 createRoot(document.getElementById('root')!).render(
   <AppProvider>
     <TooltipProvider>
       <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
         <App />
+        <Toaster />
       </ThemeProvider>
     </TooltipProvider>
   </AppProvider>

@@ -35,7 +35,7 @@ export default function FeaturesCarousel() {
         } else {
             setImageText("🏁 Witness incredible results—get ready to be amazed! ");
             setImagePath(feature3);
-            setImageStyle("md:w-3/4 -bottom-2 md:-bottom-8");
+            setImageStyle("md:w-3/4 -bottom-2 md:-bottom-3 bg-zinc-900 pb-5 p-3");
         }
     }, [selectedSection]);
 

@@ -18,7 +18,10 @@ export default function Hero({ id }: { id: string }) {
                         Write once, schedule effortlessly, <br />and reach <span className="text-orange-500 font-bold">Reddit</span> at its best.
                     </h3>
                 </div>
-                <WaitlistButton buttonStyle="bg-orange-500 hover:bg-orange-600" />
+                <div className="w-full flex flex-col items-center justify-center gap-y-3 z-30">
+                    <p className="font-basic text-zinc-900">🎉 <b className="italic">+3 free</b> credits for early sign-ups!</p>
+                    <WaitlistButton buttonStyle="bg-orange-500 hover:bg-orange-600" />
+                </div>
             </BackgroundLines>
         </MainContainer>
     );

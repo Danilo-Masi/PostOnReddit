@@ -12,15 +12,21 @@ import { Button } from '../ui/button';
 import { Clock4 } from 'lucide-react';
 import SearchInput from './SearchInput';
 import Chart from './Chart';
+// Shadcnui
+import { toast } from 'sonner';
+import axios from 'axios';
+
+// Url del server di produzione
+const SERVER_URL = 'http://localhost:3000';
 
 export default function Dashboard() {
 
   const today = new Date();
 
-  const [communityValue, setCommunityValue] = useState<string>("");
-  const [flagValue, setFlagValue] = useState<string>("");
   const [titleValue, setTitleValue] = useState<string>("");
   const [descriptionValue, setDescriptionValue] = useState<Content>("");
+  const [communityValue, setCommunityValue] = useState<string>("");
+  const [flairValue, setFlairValue] = useState<string>("");
   const [combinedDateTime, setCombinedDateTime] = useState<Date>(new Date());
 
   // Funzione per aggiornare la data
@@ -60,8 +66,59 @@ export default function Dashboard() {
   }
 
   // Funzione per la gestione della creazione di un post
-  const handelPostCreation = () => {
-    alert(`Post programmato per: ${combinedDateTime.toLocaleDateString()} ${combinedDateTime.toLocaleTimeString()}`);
+  const handelPostCreation = async () => {
+    let errors = handleValidateForm();
+    if (errors?.length > 0 || errors !== "") {
+      toast.warning(errors);
+    } else {
+      alert(`Title: ${titleValue}\n Content: ${descriptionValue}\n Communuty: ${communityValue}\n Date: ${combinedDateTime}`);
+      try {
+        const authToken = localStorage.getItem('authToken');
+        const response = await axios.post(`${SERVER_URL}/create-post`, {
+          title: titleValue,
+          content: descriptionValue,
+          community: communityValue,
+          flair: flairValue,
+          date_time: combinedDateTime,
+        }, {
+          headers: { Authorization: `Bearer ${authToken}` },
+        });
+
+        if (response.status === 200) {
+          handleSuccess(response.data);
+        }
+      } catch (error: any) {
+        console.error("CLIENT: Errore durante il salvataggio del post su DB", error.message);
+        toast.warning("An error occour, please try again later!");
+      }
+    }
+  }
+
+  const handleValidateForm = () => {
+    let errors = "";
+    if (titleValue.length <= 0) {
+      errors = "The title is null";
+    }
+    if (descriptionValue?.length <= 0) {
+      errors = "The content is null";
+    }
+    if (communityValue.length <= 0) {
+      errors = "The community is not selected";
+    }
+    if (combinedDateTime.getDate() === null || undefined) {
+      errors = "The date is not valid";
+    }
+    return errors;
+  }
+
+  const handleSuccess = (data: any) => {
+    toast("Post scheduled correctly!");
+    setTitleValue("");
+    setDescriptionValue("");
+    setCommunityValue("");
+    setFlairValue("");
+    setCombinedDateTime(today);
+    console.log(data);
   }
 
   return (
@@ -90,8 +147,8 @@ export default function Dashboard() {
             isDisabled={communityValue === "" ? true : false}
             placeholder='Select a flair'
             selectLabel='Flair'
-            value={flagValue}
-            setValue={setFlagValue} />
+            value={flairValue}
+            setValue={setFlairValue} />
         </div>
         {/* DATA PICKER */}
         <DataPicker
