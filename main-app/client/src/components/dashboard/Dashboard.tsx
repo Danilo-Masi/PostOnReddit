@@ -71,7 +71,6 @@ export default function Dashboard() {
     if (errors?.length > 0 || errors !== "") {
       toast.warning(errors);
     } else {
-      alert(`Title: ${titleValue}\n Content: ${descriptionValue}\n Communuty: ${communityValue}\n Date: ${combinedDateTime}`);
       try {
         const authToken = localStorage.getItem('authToken');
         const response = await axios.post(`${SERVER_URL}/create-post`, {

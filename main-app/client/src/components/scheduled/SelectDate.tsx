@@ -9,11 +9,10 @@ export default function SelectDate() {
           <SelectValue placeholder="Select period" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">All</SelectItem>
           <SelectItem value="today">Today</SelectItem>
           <SelectItem value="week">Next 7 days</SelectItem>
           <SelectItem value="month">Next 30 days</SelectItem>
-          <SelectItem value="year">Year</SelectItem>
+          <SelectItem value="year">Next 365 days</SelectItem>
         </SelectContent>
       </Select>
     </div>

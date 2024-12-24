@@ -7,6 +7,7 @@ import verifyTokenRoutes from './routes/supabase/verify-token-route.mjs';
 import retrieveDataRoute from './routes/supabase/retrieve-data-route.mjs';
 import verifiyRedditRoute from './routes/supabase/verify-reddit-route.mjs';
 import createPostRoute from './routes/supabase/create-post-route.mjs';
+import retrievePostsRoute from './routes/supabase/retrieve-posts-route.mjs';
 // Reddit
 import redditRedirectRoute from './routes/reddit/reddit-redirect-route.mjs';
 import redditCallbackRoute from './routes/reddit/reddit-callback-route.mjs';
@@ -24,6 +25,7 @@ export const applyRoutes = (app) => {
     app.use('/', retrieveDataRoute);
     app.use('/', verifiyRedditRoute);
     app.use('/', createPostRoute);
+    app.use('/', retrievePostsRoute);
     // Reddit 
     app.use('/api', redditRedirectRoute);
     app.use('/api', redditCallbackRoute);
