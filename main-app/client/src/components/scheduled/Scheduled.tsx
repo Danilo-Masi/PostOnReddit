@@ -16,6 +16,8 @@ type PostType = {
   title: string;
   content: string;
   date: string;
+  community: string;
+  status: string;
 }
 
 const formatDate = (isoString: any) => {
@@ -48,6 +50,8 @@ export default function Scheduled() {
           title: post.title,
           content: JSON.stringify(post.content),
           date: formatDate(post.date_time),
+          community: post.community,
+          status: post.status,
         }));
         setPostList(formattedPosts);
       }
@@ -77,7 +81,13 @@ export default function Scheduled() {
         </div>
       ) : (
         postList.map((post, index) => (
-          <Post key={index} title={post.title} content={post.content} date={post.date} />
+          <Post
+            key={index}
+            title={post.title}
+            content={post.content}
+            date={post.date}
+            community={post.community}
+            status={post.status} />
         ))
       )}
     </div>
