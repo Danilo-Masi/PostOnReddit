@@ -35,6 +35,7 @@ export default function Scheduled() {
 
   const { setSelectedSection } = useAppContext();
   const [postList, setPostList] = useState<PostType[]>([]);
+  const [selectedDate, setSelectedDate] = useState<string>("today");
 
   const fetchPosts = async () => {
     try {
@@ -61,14 +62,48 @@ export default function Scheduled() {
     }
   }
 
+  // Filtratre i post in base alla data selezionata
+  const filterPosts = (posts: PostType[], filter: string) => {
+    alert(posts);
+    const now = new Date();
+    return posts.filter((post) => {
+      const postDate = new Date(post.date);
+      if (filter === "today") {
+        return (
+          postDate.toDateString() === now.toDateString()
+        );
+      } else if (filter === "week") {
+        return (
+          postDate >= now &&
+          postDate <= new Date(now.setDate(now.getDate() + 7))
+        );
+      } else if (filter === "month") {
+        return (
+          postDate >= now &&
+          postDate <= new Date(now.setMonth(now.getMonth() + 1))
+        );
+      } else if (filter === "year") {
+        return (
+          postDate >= now &&
+          postDate <= new Date(now.setFullYear(now.getFullYear() + 1))
+        );
+      }
+      return true;
+    });
+  }
+
   useEffect(() => {
     fetchPosts();
   }, [setSelectedSection]);
 
+  const filteredPosts = filterPosts(postList, selectedDate);
+
   return (
     <div className="w-full flex flex-col md:flex-row md:flex-wrap gap-4 p-3 overflow-scroll">
-      <SelectDate />
-      {postList.length <= 0 ? (
+      <SelectDate
+        selectedDate={selectedDate}
+        setSelectedDate={setSelectedDate} />
+      {filteredPosts.length <= 0 ? (
         <div className="w-full h-[70svh] flex flex-col gap-y-3 items-center justify-center text-center">
           <h1>You have no posts scheduled for the selected date</h1>
           <Button
@@ -80,7 +115,7 @@ export default function Scheduled() {
           </Button>
         </div>
       ) : (
-        postList.map((post, index) => (
+        filteredPosts.map((post, index) => (
           <Post
             key={index}
             title={post.title}

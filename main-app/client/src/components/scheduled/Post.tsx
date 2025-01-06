@@ -2,7 +2,6 @@ import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import { Badge } from "@/components/ui/badge"
-import { useEffect, useState } from "react";
 
 interface PostProps {
     title: string;
@@ -14,39 +13,26 @@ interface PostProps {
 
 export default function Post({ title, content, date, community, status }: PostProps) {
 
-    const [badgeColor, setBadgeColor] = useState<string>("");
-
-    const retriveBadgeColor = () => {
-        if (status === "scheduled") {
-            setBadgeColor("orange-500");
-        } else if (status === "posted") {
-            setBadgeColor("green-500");
-        } else {
-            setBadgeColor("red-500");
-        }
+    const statusColor = () => {
+        if(status === "scheduled") return "border-orange-500 text-orange-500";
+        if(status === "posted") return "border-green-500 text-green-500";
+        return "border-red-500 text-red-500";
     }
 
     const renderContent = (content: any) => {
-        console.log(content);
         if (!content || typeof content !== "object") return null;
-
         return content.content.map((node: any, index: number) => {
             if (node.type === "paragraph") {
                 return (
-                    <p key={index} className="text-zinc-900 font-bold">
-                        {node.content?.map((child: any, childIndex: number) => {
-                            <p key={childIndex}>child.text </p>
-                        })}
+                    <p key={index} className="text-zinc-500">
+                        {node.content?.map((child: any, childIndex: number) =>
+                            <span key={childIndex}>{child.text}</span>
+                        )}
                     </p>
                 );
             }
-            return null;
         });
     }
-
-    useEffect(() => {
-        retriveBadgeColor();
-    }, [status]);
 
     return (
         <Card className="w-full md:w-[calc(50%-0.5rem)] bg-background border border-elevation2">
@@ -67,8 +53,7 @@ export default function Post({ title, content, date, community, status }: PostPr
                     </Badge>
                     <Badge
                         variant="outline"
-                        className={`w-fit border-${badgeColor} text-${badgeColor}`}>
-                        <div className={`w-2 h-2 rounded-full mr-2 bg-${badgeColor}`} />
+                        className={`w-fit ${statusColor()}`}>
                         {status}
                     </Badge>
                 </div>

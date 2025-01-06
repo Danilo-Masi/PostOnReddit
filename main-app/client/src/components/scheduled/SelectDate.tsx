@@ -1,10 +1,19 @@
 // Shadcui
+import { Dispatch, SetStateAction } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
-export default function SelectDate() {
+interface SelectDateProps {
+  selectedDate: string;
+  setSelectedDate: Dispatch<SetStateAction<string>>;
+}
+
+export default function SelectDate({ selectedDate, setSelectedDate }: SelectDateProps) {
+
   return (
     <div className="w-full">
-      <Select>
+      <Select
+        value={selectedDate}
+        onValueChange={(value) => setSelectedDate(value)}>
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Select period" />
         </SelectTrigger>
@@ -16,5 +25,5 @@ export default function SelectDate() {
         </SelectContent>
       </Select>
     </div>
-  )
+  );
 }
