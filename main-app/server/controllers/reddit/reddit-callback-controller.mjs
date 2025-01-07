@@ -8,6 +8,7 @@ const CLIENT_ID = process.env.REDDIT_CLIENT_ID;
 const CLIENT_SECRET = process.env.REDDIT_CLIENT_SECRET;
 const REDIRECT_URI = process.env.REDDIT_REDIRECT_URI;
 
+// Messaggi di errore o di successo
 const MESSAGE = {
     REDDIT_ERROR: 'L\'utente ha rifiutato il consenso o si è verificato un errore',
     SUCCESS_MESSAGE: 'Autenticazione completata con successo',
@@ -44,10 +45,12 @@ export const redditCallback = async (req, res) => {
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
             }
         );
+
         // Dati restituiti dall'API di Reddit
         const { access_token, refresh_token, expires_in, scope } = response.data;
         const token_expiry = new Date(Date.now() + expires_in * 1000);
         const userId = state.split(':')[1];
+
         // Salvataggio dei dati nella tabella 'reddit_tokens' del DB
         const { data, error: dbError } = await supabase
             .from('reddit_tokens')
@@ -57,6 +60,7 @@ export const redditCallback = async (req, res) => {
                 refresh_token: refresh_token,
                 token_expiry: token_expiry,
             });
+
         // Gestisce eventuali errori derivati dall'inserimento dei dati nel DB
         if (dbError) {
             console.error('BACKEND: Errore durante il salvataggio dei dati nel DB', dbError.message);
@@ -65,9 +69,10 @@ export const redditCallback = async (req, res) => {
                 error: dbError.stack,
             })
         }
+
         // Redirect alla pagina principale della piattaforma
         return res.redirect("http://localhost:5173/home"); //DA MODIFICARE
-
+        
     } catch (error) {
         console.error('BACKEND: Errore durante lo scambio del token', error.message);
         return res.status(500).json({

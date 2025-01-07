@@ -1,6 +1,7 @@
 import axios from "axios";
 import NodeCache from 'node-cache';
 
+// Messaggi di errore o di successo
 const MESSAGE = {
     INVALID_QUERY: "La query della richiesta non è valida",
     SERVER_ERROR: "Errore generico del server",

@@ -20,6 +20,7 @@ type PostType = {
   status: string;
 }
 
+// Funzione per formattare la data visualizzata
 const formatDate = (isoString: any) => {
   const date = new Date(isoString);
   return new Intl.DateTimeFormat('en-US', {
@@ -37,6 +38,7 @@ export default function Scheduled() {
   const [postList, setPostList] = useState<PostType[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>("today");
 
+  // Funzione per caricare i post contentuti nel DB
   const fetchPosts = async () => {
     try {
       const authToken = localStorage.getItem('authToken');
@@ -50,7 +52,7 @@ export default function Scheduled() {
         const formattedPosts = listaPost.map((post: any) => ({
           title: post.title,
           content: JSON.stringify(post.content),
-          date: formatDate(post.date_time),
+          date: post.date_time,
           community: post.community,
           status: post.status,
         }));
@@ -62,31 +64,19 @@ export default function Scheduled() {
     }
   }
 
-  // Filtratre i post in base alla data selezionata
+  // Funzione per filtratre i post in base alla data selezionata
   const filterPosts = (posts: PostType[], filter: string) => {
-    alert(posts);
     const now = new Date();
     return posts.filter((post) => {
       const postDate = new Date(post.date);
       if (filter === "today") {
-        return (
-          postDate.toDateString() === now.toDateString()
-        );
+        return postDate.toDateString() === now.toDateString();
       } else if (filter === "week") {
-        return (
-          postDate >= now &&
-          postDate <= new Date(now.setDate(now.getDate() + 7))
-        );
+        return postDate >= now && postDate <= new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
       } else if (filter === "month") {
-        return (
-          postDate >= now &&
-          postDate <= new Date(now.setMonth(now.getMonth() + 1))
-        );
+        return postDate >= now && postDate <= new Date(now.setMonth(now.getMonth() + 1));
       } else if (filter === "year") {
-        return (
-          postDate >= now &&
-          postDate <= new Date(now.setFullYear(now.getFullYear() + 1))
-        );
+        return postDate >= now && postDate <= new Date(now.setFullYear(now.getFullYear() + 1));
       }
       return true;
     });
@@ -120,7 +110,7 @@ export default function Scheduled() {
             key={index}
             title={post.title}
             content={post.content}
-            date={post.date}
+            date={formatDate(post.date)}
             community={post.community}
             status={post.status} />
         ))

@@ -4,6 +4,15 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+// Messaggi di errori e di successo
+const MESSAGE = {
+    NO_TOKEN: 'Token mancante',
+    TOKEN_INVALID: 'Token non valido',
+    DB_ERROR: 'Errore nel caricamento dei dati sul DB',
+    SUCCESS_MESSAGE: 'Post programmato correttamente',
+    SERVER_ERROR: 'Errore generico del server',
+}
+
 // Funzione per decodificare il token
 const decodeToken = (token) => {
     try {
@@ -14,14 +23,7 @@ const decodeToken = (token) => {
     }
 }
 
-const MESSAGE = {
-    NO_TOKEN: 'Token mancante',
-    TOKEN_INVALID: 'Token non valido',
-    DB_ERROR: 'Errore nel caricamento dei dati sul DB',
-    SUCCESS_MESSAGE: 'Post programmato correttamente',
-    SERVER_ERROR: 'Errore generico del server',
-}
-
+// Funzione principale
 export const retrievePosts = async (req, res) => {
 
     const authHeader = req.headers['authorization'];
@@ -44,7 +46,6 @@ export const retrievePosts = async (req, res) => {
     const user_id = decoded.id;
 
     try {
-
         let { data, error: dbError } = await supabase
             .from('posts')
             .select('*')

@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+// Messaggi di errori e di successo
 const MESSAGE = {
     TOKEN_INVALID: 'Token mancante o non valido',
     DB_ERROR: 'Errore nel recupero dei dati dal DB',
@@ -11,6 +12,17 @@ const MESSAGE = {
     SERVER_ERROR: 'Errore generico del server',
 }
 
+// Funzione per decodificare il token
+const decodeToken = (token) => {
+    try {
+        return jwt.verify(token, process.env.JWT_SECRET);
+    } catch (error) {
+        console.error('BACKEND: Token non valido', error.message);
+        return;
+    }
+}
+
+// Funzione principale
 export const checkRedditAuthorization = async (req, res) => {
 
     const authHeader = req.headers['authorization'];
@@ -23,16 +35,22 @@ export const checkRedditAuthorization = async (req, res) => {
         });
     }
 
+    const decoded = decodeToken(token);
+    if (!decoded) {
+        return res.status(401).json({
+            message: MESSAGE.TOKEN_INVALID,
+        });
+    }
+
+    const user_id = decoded.id;
+
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const userId = decoded.id;
 
         let { data, error: dbError } = await supabase
             .from('reddit_tokens')
             .select('access_token')
-            .eq('user_id', userId);
+            .eq('user_id', user_id);
 
-        // Gestisce gli errori derivanti dalla chiamata al DB
         if (dbError) {
             console.error('BACKEND: Errore durante la verifica del token di reddit nel DB', dbError.message);
             return res.status(500).json({

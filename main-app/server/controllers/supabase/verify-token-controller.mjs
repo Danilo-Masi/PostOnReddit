@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+// Messaggi di errore e di successo
 const MESSAGES = {
     TOKEN_ERROR_MESSAGE: 'Non è stato fornito nessun token',
     DECODE_TOKEN_ERROR_MESSAGE: 'Errore nella decodifica del token',
@@ -10,6 +11,7 @@ const MESSAGES = {
     SERVER_ERROR_MESSAGE: 'Errore generico del server',
 };
 
+// Funzione principale
 export const verifyToken = (req, res, next) => {
 
     const authHeader = req.headers['authorization'];

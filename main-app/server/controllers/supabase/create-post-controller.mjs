@@ -5,6 +5,7 @@ import Joi from 'joi';
 
 dotenv.config();
 
+// Messaggi di errore e successo
 const MESSAGE = {
     NO_TOKEN: 'Token mancante',
     TOKEN_INVALID: 'Token non valido',
@@ -17,7 +18,7 @@ const MESSAGE = {
 const validatePostData = (data) => {
     const schema = Joi.object({
         title: Joi.string().min(1).max(300).required(),
-        content: Joi.json().required(),
+        content: Joi.object().required(),
         community: Joi.string().min(1).required(),
         flair: Joi.string().allow(null, ''),
         date_time: Joi.date().required(),
@@ -37,7 +38,7 @@ const decodeToken = (token) => {
 
 // Funzione principale
 export const createPost = async (req, res) => {
-
+    
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 

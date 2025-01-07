@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+// Messaggi di errore e successo
 const MESSAGE = {
     TOKEN_INVALID: 'Token mancante o non valido',
     DB_ERROR: 'Errore nel recupero dei dati dal DB',
@@ -12,6 +13,17 @@ const MESSAGE = {
     SERVER_ERROR: 'Errore generico del server',
 }
 
+// Funzione per decodificare il token
+const decodeToken = (token) => {
+    try {
+        return jwt.verify(token, process.env.JWT_SECRET);
+    } catch (error) {
+        console.error('BACKEND: Token non valido', error.message);
+        return;
+    }
+}
+
+// Funzione principale
 export const retrieveData = async (req, res) => {
 
     const authHeader = req.headers['authorization'];
@@ -24,13 +36,20 @@ export const retrieveData = async (req, res) => {
         });
     }
 
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = decodeToken(token);
+    if (!decoded) {
+        return res.status(401).json({
+            message: MESSAGE.TOKEN_INVALID,
+        });
+    }
 
+    const user_id = decoded.id;
+
+    try {
         let { data, error: dbError } = await supabase
             .from('profiles')
             .select('credits, email')
-            .eq('id', decoded.id);
+            .eq('id', user_id);
 
         if (dbError) {
             console.error('BACKEND: Errore nel recupero dei dati dal DB', dbError.message);

@@ -8,6 +8,7 @@ const REDIRECT_URI = process.env.REDDIT_REDIRECT_URI;
 const SCOPES = 'identity submit';
 const JWT_SECRET = process.env.JWT_SECRET;
 
+// Messaggi di errore o di successo
 const MESSAGE = {
   TOKEN_INVALID: 'Token mancante o non valido',
   DB_ERROR: 'Errore durante la verifica del token di Reddit nel DB',
