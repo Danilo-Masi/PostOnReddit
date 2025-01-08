@@ -8,6 +8,7 @@ import { Button } from "../ui/button";
 import { useAppContext } from "../context/AppContext"
 import { Pencil } from "lucide-react";
 import axios from "axios";
+import { toast } from "sonner";
 
 // Url del server di produzione
 const SERVER_URL = 'http://localhost:3000';
@@ -18,6 +19,7 @@ type PostType = {
   date: string;
   community: string;
   status: string;
+  id: string;
 }
 
 // Funzione per formattare la data visualizzata
@@ -38,6 +40,27 @@ export default function Scheduled() {
   const [postList, setPostList] = useState<PostType[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>("today");
 
+  // Funzione per eliminare un determinato un post dal DB
+  const handleDelete = async (postId: string) => {
+    try {
+      const authToken = localStorage.getItem('authToken');
+      const response = await axios.post(`${SERVER_URL}/delete-post`, {
+        post_id: postId
+      }, {
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
+
+      if (response.status === 200) {
+        toast.info("Post succesfully deleted!");
+        setPostList((prevList) => prevList.filter((post) => post.id !== postId));
+      }
+    } catch (error: any) {
+      console.log("CLIENT: Errore durante l'eliminazione del post", error.message);
+      toast.warning("Error during the deleting process. Try later!");
+    }
+  }
+
+
   // Funzione per caricare i post contentuti nel DB
   const fetchPosts = async () => {
     try {
@@ -55,6 +78,7 @@ export default function Scheduled() {
           date: post.date_time,
           community: post.community,
           status: post.status,
+          id: post.id,
         }));
         setPostList(formattedPosts);
       }
@@ -112,7 +136,8 @@ export default function Scheduled() {
             content={post.content}
             date={formatDate(post.date)}
             community={post.community}
-            status={post.status} />
+            status={post.status}
+            onDelete={() => handleDelete(post.id)} />
         ))
       )}
     </div>

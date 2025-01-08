@@ -9,13 +9,14 @@ interface PostProps {
     date: string;
     community: string;
     status: string;
+    onDelete: () => void;
 }
 
-export default function Post({ title, content, date, community, status }: PostProps) {
+export default function Post({ title, content, date, community, status, onDelete }: PostProps) {
 
     const statusColor = () => {
-        if(status === "scheduled") return "border-orange-500 text-orange-500";
-        if(status === "posted") return "border-green-500 text-green-500";
+        if (status === "scheduled") return "border-orange-500 text-orange-500";
+        if (status === "posted") return "border-green-500 text-green-500";
         return "border-red-500 text-red-500";
     }
 
@@ -67,6 +68,7 @@ export default function Post({ title, content, date, community, status }: PostPr
                     Edit
                 </Button>
                 <Button
+                    onClick={onDelete}
                     variant="outline"
                     className="bg-card border-border shadow-none hover:bg-buttonError hover:text-textForeground">
                     <Trash2 />
