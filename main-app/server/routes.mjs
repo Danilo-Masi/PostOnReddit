@@ -19,7 +19,7 @@ import redditStats from './routes/reddit/reddit-stats-route.mjs';
 export const applyRoutes = (app) => {
     // Auth
     app.use('/', registrationRoutes);
-    app.use('/', logoutRoutes);
+    app.use('/auth', logoutRoutes);
     app.use('/', loginRoutes);
     // Supabase
     app.use('/', verifyTokenRoutes);

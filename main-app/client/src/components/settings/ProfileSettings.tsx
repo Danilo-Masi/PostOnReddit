@@ -8,6 +8,7 @@ import axios from "axios";
 import { checkRedditAuthorization } from "@/hooks/use-retrieve-data";
 // Shadncui
 import { Button } from "../ui/button";
+import { toast } from "sonner";
 // Icons
 import { KeySquare } from "lucide-react";
 // Components
@@ -32,37 +33,34 @@ export default function ProfileSettings() {
     // Funzione per richiedre i permessi di Reddit
     const handleRequestPermits = async () => {
         try {
-            // Preleva il token dal localStorage
             const token = localStorage.getItem('authToken');
-            // Verifica che il token sia esistente e valido
             if (!token) {
-                alert('Utente senza permessi') //DA MODIFICARE
+                toast.error("User without permissions");
                 navigate('/login');
             }
-            // Chiamata all'endpoint
             const response = await axios.get(`${SERVER_URL}/api/reddit-redirect`, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
             });
-            // Url di redirect
-            const { redirectUrl } = response.data;
-            window.location.href = redirectUrl;
+            if (response.status === 200) {
+                const { redirectUrl } = response.data;
+                window.location.href = redirectUrl;
+            }
         } catch (error: any) {
-            // Gestisce l'errore in cui l'utente abbia già dato i permessi
             if (error.response && error.response.status === 400) {
-                alert('L\'utente ha già autorizzato i permessi'); //DA MODIFICARE
+                toast.warning("The user has already granted permissions");
             } else {
-                console.error('CLIENT: Errore durante la richiesta di login Reddit:', error.message);
-                alert('Si è verificato un errore, per favore riprova più tardi'); //DA MODIFICARE
+                console.error('CLIENT: Errore durante la richiesta di login Reddit:', error.stack);
+                toast.warning("An error occurred, please try again later");
             }
         }
     };
 
     // Funzione per rimuovere i permessi di Reddit
     const handleRemovePermits = async () => {
-        alert('Rimuovi i permssi di Reddit');
+        toast.error("Remove Reddit permissions, YOU IDIOT");
     }
 
     return (
@@ -70,13 +68,13 @@ export default function ProfileSettings() {
             cardTitle='Profile settings'
             cardDescription='Configure your profile'
             mdWidth="md:w-1/3">
-            <div className="w-full h-full min-h-[60svh] flex items-center justify-center rounded-xl mb-3 bg-zinc-200">
+            <div className="flex justify-center items-center bg-zinc-200 mb-3 rounded-xl w-full h-full min-h-[60svh]">
                 Cooming soon
             </div>
             {isRedditAuthorized ? (
                 <Button
                     type="button"
-                    className="w-full bg-red-500 hover:bg-red-600"
+                    className="bg-red-500 hover:bg-red-600 w-full"
                     onClick={() => handleRemovePermits()}>
                     <KeySquare />
                     Remove permission to Reddit
@@ -84,7 +82,7 @@ export default function ProfileSettings() {
             ) : (
                 <Button
                     type="button"
-                    className="w-full bg-buttonColor hover:bg-buttonHoverColor"
+                    className="bg-buttonColor hover:bg-buttonHoverColor w-full"
                     onClick={() => handleRequestPermits()}>
                     <KeySquare />
                     Permissions Reddit

@@ -1,20 +1,23 @@
 // React
 import { useState } from 'react';
+// Axios
+import axios from 'axios';
 // minimal-tiptap
-import { Content } from '@tiptap/react'
+import { Content } from '@tiptap/react';
+// time-picker
+import { TimePicker } from './time-picker/TimePicker';
 // Components
 import DataPicker from './DataPicker';
 import DescriptionEditor from './DescriptionEditor';
 import SelectOption from './SelectOption';
 import TitleEditor from './TitleEditor';
-import { TimePicker } from './time-picker/TimePicker';
-import { Button } from '../ui/button';
-import { Clock4 } from 'lucide-react';
 import SearchInput from './SearchInput';
 import Chart from './Chart';
 // Shadcnui
 import { toast } from 'sonner';
-import axios from 'axios';
+import { Button } from '../ui/button';
+// Icons
+import { Clock4 } from 'lucide-react';
 
 // Url del server di produzione
 const SERVER_URL = 'http://localhost:3000';
@@ -22,7 +25,6 @@ const SERVER_URL = 'http://localhost:3000';
 export default function Dashboard() {
 
   const today = new Date();
-
   const [titleValue, setTitleValue] = useState<string>("");
   const [descriptionValue, setDescriptionValue] = useState<Content>("");
   const [communityValue, setCommunityValue] = useState<string>("");
@@ -55,7 +57,7 @@ export default function Dashboard() {
     setCombinedDateTime(updateDateTime);
   }
 
-  // Controlla se una data è oggi
+  // Controlla se la data selezionata è uguale alla data di oggi
   const isToday = (date: Date) => {
     const now = new Date();
     return (
@@ -65,12 +67,10 @@ export default function Dashboard() {
     );
   }
 
-  // Funzione per la gestione della creazione di un post
+  // Funzione per la creazione e caricamento del post nel DB
   const handelPostCreation = async () => {
-    let errors = handleValidateForm();
-    if (errors?.length > 0 || errors !== "") {
-      toast.warning(errors);
-    } else {
+    let errors = handleValidateForm(titleValue, descriptionValue, communityValue, flairValue, combinedDateTime);
+    if (errors.length === 0) {
       try {
         const authToken = localStorage.getItem('authToken');
         const response = await axios.post(`${SERVER_URL}/create-post`, {
@@ -84,46 +84,56 @@ export default function Dashboard() {
         });
 
         if (response.status === 200) {
-          handleSuccess(response.data);
+          handleSuccess();
         }
       } catch (error: any) {
         console.error("CLIENT: Errore durante il salvataggio del post su DB", error.message);
         toast.warning("An error occour, please try again later!");
       }
+    } else {
+      errors.map(error => {
+        toast.warning(error);
+      });
     }
   }
 
-  const handleValidateForm = () => {
-    let errors = "";
-    if (titleValue.length <= 0) {
-      errors = "The title is null";
+  // Funzione per validare i dati inseriti nel form per la creazione del post
+  const handleValidateForm = (title: string, content: Content, community: string, flair: string, data: Date) => {
+    let errors: string[] = [];
+    if (title.length === 0) {
+      errors.push("The title can't be empty");
     }
-    if (descriptionValue?.length <= 0) {
-      errors = "The content is null";
+    if (content === null) {
+      errors.push("The content is not valid");
+    } else if (content.length <= 0) {
+      errors.push("The content can't be empty");
     }
-    if (communityValue.length <= 0) {
-      errors = "The community is not selected";
+    if (community.length <= 0) {
+      errors.push("The community is not selected");
+    }
+    if (flair.length === 0) {
+      errors.push("The flair is not selected");
     }
     if (combinedDateTime.getDate() === null || undefined) {
-      errors = "The date is not valid";
+      errors.push("The date selected is not valid");
     }
     return errors;
   }
 
-  const handleSuccess = (data: any) => {
+  // Funzione per gestire il successo
+  const handleSuccess = () => {
     toast("Post scheduled correctly!");
     setTitleValue("");
     setDescriptionValue("");
     setCommunityValue("");
     setFlairValue("");
     setCombinedDateTime(today);
-    console.log(data);
   }
 
   return (
-    <div className="w-full h-full flex flex-col md:flex-row gap-10 mt-3 px-3 overflow-scroll">
+    <div className="flex md:flex-row flex-col gap-10 mt-3 px-3 w-full h-full overflow-scroll">
       {/*** BLOCCO SINISTRA ***/}
-      <div className='w-full md:w-1/2 md:max-w-1/2 flex flex-col items-start justify-start gap-y-6 overflow-scroll'>
+      <div className='flex flex-col justify-start items-start gap-y-6 w-full md:w-1/2 md:max-w-1/2 overflow-scroll'>
         {/* TITLE EDITOR */}
         <TitleEditor
           titleValue={titleValue}
@@ -134,8 +144,8 @@ export default function Dashboard() {
           setDescriptionValue={setDescriptionValue} />
       </div>
       {/*** BLOCCO DESTRA ***/}
-      <div className='w-full md:w-1/2 flex flex-col items-start justify-start gap-6 p-5 rounded-xl bg-elevation border border-border overflow-scroll'>
-        <div className='w-full flex flex-col md:flex-row gap-3'>
+      <div className='flex flex-col justify-start items-start gap-6 bg-elevation p-5 border border-border rounded-xl w-full md:w-1/2 overflow-scroll'>
+        <div className='flex md:flex-row flex-col gap-3 w-full'>
           {/* SELECT COMMUNITY */}
           <SearchInput
             communityValue={communityValue}
@@ -162,7 +172,7 @@ export default function Dashboard() {
           subreddit={communityValue} />
         {/* BOTTONE */}
         <Button
-          className='w-full py-5 bg-buttonColor hover:bg-buttonHoverColor'
+          className='bg-buttonColor hover:bg-buttonHoverColor py-5 w-full'
           onClick={() => handelPostCreation()}>
           <Clock4 />
           Schedule your post

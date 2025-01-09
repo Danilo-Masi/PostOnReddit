@@ -1,14 +1,16 @@
+// Shadcnui
+import { toast } from "sonner";
 // Components
 import CreditsCard from "./CreditsCard";
 
 export default function Credits() {
 
     const handleBuyCredit = () => {
-        alert('Compro credioto');
+        toast.error("Buy more credit, IDIOT!!");
     }
 
     return (
-        <div className="min-h-[40svh] flex flex-col md:flex-row gap-6 mt-3">
+        <div className="flex md:flex-row flex-col gap-6 mt-3 min-h-[40svh]">
             <CreditsCard
                 title="Basic pack"
                 description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."

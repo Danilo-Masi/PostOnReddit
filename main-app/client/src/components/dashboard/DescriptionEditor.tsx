@@ -1,9 +1,10 @@
+// React
+import { Dispatch, SetStateAction } from 'react';
 // minimal-tiptap
-import { MinimalTiptapEditor } from '../minimal-tiptap';
+import { MinimalTiptapEditor } from '../dashboard/minimal-tiptap';
 import { Content } from '@tiptap/react'
 // Shadcui
 import { Label } from '../ui/label';
-import { Dispatch, SetStateAction } from 'react';
 
 type DescriptionEditorProps = {
     descriptionValue: Content;
@@ -12,7 +13,7 @@ type DescriptionEditorProps = {
 
 export default function DescriptionEditor({ descriptionValue, setDescriptionValue }: DescriptionEditorProps) {
     return (
-        <div className='w-full flex flex-col gap-y-3'>
+        <div className='flex flex-col gap-y-3 w-full'>
             <Label htmlFor="description-input">Post description</Label>
             <MinimalTiptapEditor
                 value={descriptionValue}

@@ -41,6 +41,7 @@ export default function ThemeSettings() {
         }
     }, [setTheme]);
 
+    // Funzione per modificare il tema della piattaforma
     const handleThemeChange = (value: Theme) => {
         setSelectedTheme(value);
         setTheme(value);
@@ -56,7 +57,7 @@ export default function ThemeSettings() {
                 defaultValue="light"
                 value={selectedTheme}
                 onValueChange={handleThemeChange}
-                className="w-full h-full flex flex-col gap-y-3 items-start justify-between">
+                className="flex flex-col justify-between items-start gap-y-3 w-full h-full">
                 <Label
                     htmlFor="dark"
                     className={`w-full min-h-[33svh] flex items-center justify-center border rounded-xl cursor-pointer relative overflow-hidden bg-zinc-600 ${selectedTheme === "dark" && 'border-2 border-orange-500'}`}>

@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import axios from "axios";
 // Shadcui
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select";
+import { toast } from "sonner";
 
 // Url del server di produzione
 const SERVER_URL = 'http://localhost:3000';
@@ -21,26 +22,28 @@ export default function SelectOption({ communityValue, isDisabled, placeholder, 
 
     const [options, setOptions] = useState<string[]>([]);
 
-    const handleLoadFlags = async () => {
-        // Verifica che prima sia stata selezionata una community
+    // Funzione per selezionare una flair
+    const handleLoadFlair = async () => {
         if (!communityValue) {
             setOptions([]);
             return;
         }
         try {
-            // Effettua la chiamata al backend
             const response = await axios.get(`${SERVER_URL}/api/search-flair?q=${communityValue}`);
-            // Accede ai dati della risposta
-            const flags = response.data.flags || [];
-            // Imposta le opzioni della select
-            setOptions(flags);
+
+            if (response.status === 200) {
+                const flair = response.data.flair || [];
+                setOptions(flair);
+            }
+
         } catch (error: any) {
             console.error('CLIENT: Errore generico nella chiamata al server', error.stack);
+            toast.warning("An error occured. Please try again later");
         }
     }
 
     useEffect(() => {
-        handleLoadFlags();
+        handleLoadFlair();
     }, [communityValue]);
 
     return (
@@ -48,7 +51,7 @@ export default function SelectOption({ communityValue, isDisabled, placeholder, 
             disabled={isDisabled}
             value={value}
             onValueChange={(val) => setValue(val)}>
-            <SelectTrigger className="w-full z-0">
+            <SelectTrigger className="z-0 w-full">
                 <SelectValue placeholder={placeholder} />
             </SelectTrigger>
             <SelectContent>

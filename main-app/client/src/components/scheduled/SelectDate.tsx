@@ -1,5 +1,6 @@
-// Shadcui
+// React
 import { Dispatch, SetStateAction } from "react";
+// Shadcnui
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 interface SelectDateProps {

@@ -1,14 +1,17 @@
 // Components
 import { useEffect, useState } from "react";
+// Context
+import { useAppContext } from "../context/AppContext";
+// Axios
+import axios from "axios";
+// Components
 import Post from "./Post";
 import SelectDate from "./SelectDate";
 // Shadcnui
 import { Button } from "../ui/button";
-// Context
-import { useAppContext } from "../context/AppContext"
-import { Pencil } from "lucide-react";
-import axios from "axios";
 import { toast } from "sonner";
+// Icons
+import { Pencil } from "lucide-react";
 
 // Url del server di produzione
 const SERVER_URL = 'http://localhost:3000';
@@ -59,7 +62,6 @@ export default function Scheduled() {
       toast.warning("Error during the deleting process. Try later!");
     }
   }
-
 
   // Funzione per caricare i post contentuti nel DB
   const fetchPosts = async () => {
@@ -113,12 +115,12 @@ export default function Scheduled() {
   const filteredPosts = filterPosts(postList, selectedDate);
 
   return (
-    <div className="w-full flex flex-col md:flex-row md:flex-wrap gap-4 p-3 overflow-scroll">
+    <div className="flex md:flex-row flex-col md:flex-wrap gap-4 p-3 w-full overflow-scroll">
       <SelectDate
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate} />
       {filteredPosts.length <= 0 ? (
-        <div className="w-full h-[70svh] flex flex-col gap-y-3 items-center justify-center text-center">
+        <div className="flex flex-col justify-center items-center gap-y-3 w-full h-[70svh] text-center">
           <h1>You have no posts scheduled for the selected date</h1>
           <Button
             type="button"

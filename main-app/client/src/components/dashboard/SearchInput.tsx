@@ -7,8 +7,8 @@ import debounce from 'debounce';
 // Shadncui
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverTrigger } from "../ui/popover";
-import { Button } from "../ui/button";
 import { PopoverContent } from "@radix-ui/react-popover";
+import { Button } from "../ui/button";
 // Icons
 import { ChevronsUpDown } from "lucide-react";
 
@@ -66,15 +66,15 @@ export default function SearchInput({ communityValue, setCommunityValue }: { com
                     variant="outline"
                     role="combobox"
                     aria-expanded={open}
-                    className="w-full justify-between bg-background border-elevation3">
+                    className="justify-between border-elevation3 bg-background w-full">
                     {communityValue
-                        ? <p className="text-textPrimary text-sm font-medium">{communityValue}</p>
-                        : <p className="text-textSecondary text-sm font-medium">Select a community</p>}
-                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        ? <p className="font-medium text-sm text-textPrimary">{communityValue}</p>
+                        : <p className="font-medium text-sm text-textSecondary">Select a community</p>}
+                    <ChevronsUpDown className="opacity-50 ml-2 w-4 h-4 shrink-0" />
                 </Button>
             </PopoverTrigger>
             <PopoverContent>
-                <Command className="w-full mt-1 bg-white shadow-md shadow-elevation3 border border-elevation3 z-50">
+                <Command className="z-50 border-elevation3 bg-white shadow-elevation3 shadow-md mt-1 border w-full">
                     {/* Input di ricerca */}
                     <CommandInput
                         placeholder="Search for communities..."

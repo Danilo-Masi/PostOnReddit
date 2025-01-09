@@ -1,7 +1,9 @@
-import { Pencil, Trash2 } from "lucide-react";
+// Shadcnui
 import { Button } from "../ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
-import { Badge } from "@/components/ui/badge"
+import { Badge } from "@/components/ui/badge";
+// Icons
+import { Pencil, Trash2 } from "lucide-react";
 
 interface PostProps {
     title: string;
@@ -14,12 +16,14 @@ interface PostProps {
 
 export default function Post({ title, content, date, community, status, onDelete }: PostProps) {
 
+    // Funzione per modificare lo stile dinamicamente in base allo stato del post
     const statusColor = () => {
         if (status === "scheduled") return "border-orange-500 text-orange-500";
         if (status === "posted") return "border-green-500 text-green-500";
         return "border-red-500 text-red-500";
     }
 
+    // Funzione per renderizzare il contenuto del post in formato JSON
     const renderContent = (content: any) => {
         if (!content || typeof content !== "object") return null;
         return content.content.map((node: any, index: number) => {
@@ -36,16 +40,16 @@ export default function Post({ title, content, date, community, status, onDelete
     }
 
     return (
-        <Card className="w-full md:w-[calc(50%-0.5rem)] bg-background border border-elevation2">
+        <Card className="border-elevation2 bg-background border w-full md:w-[calc(50%-0.5rem)]">
             <CardHeader>
-                <CardTitle className="text-xl font-bold text-textPrimary">
+                <CardTitle className="font-bold text-textPrimary text-xl">
                     {title}
                 </CardTitle>
-                <CardDescription className="text-sm font-light text-textSecondary">
+                <CardDescription className="font-light text-sm text-textSecondary">
                     Scheduled for <i className="font-semibold">{date}</i>
                 </CardDescription>
             </CardHeader>
-            <CardContent className="flex flex-col gap-y-2 min-h-[10svh] text-m text-clip font-light text-textSecondary">
+            <CardContent className="flex flex-col gap-y-2 min-h-[10svh] font-light text-clip text-m text-textSecondary">
                 <div className="flex gap-3">
                     <Badge
                         variant="outline"
@@ -63,14 +67,14 @@ export default function Post({ title, content, date, community, status, onDelete
             <CardFooter className="flex justify-end gap-3">
                 <Button
                     variant="outline"
-                    className="bg-card border-border shadow-none hover:bg-buttonHoverEmpty">
+                    className="bg-card hover:bg-buttonHoverEmpty shadow-none border-border">
                     <Pencil />
                     Edit
                 </Button>
                 <Button
                     onClick={onDelete}
                     variant="outline"
-                    className="bg-card border-border shadow-none hover:bg-buttonError hover:text-textForeground">
+                    className="bg-card hover:bg-buttonError shadow-none border-border hover:text-textForeground">
                     <Trash2 />
                     Delete
                 </Button>

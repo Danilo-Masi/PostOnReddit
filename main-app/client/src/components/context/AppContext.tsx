@@ -20,7 +20,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 // Crea un provider per il contesto
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
-    // Stato che gestisce la tab aperta
+    // Stato che gestisce la tab aperta nella sidebar
     const [selectedSection, setSelectedSection] = useState<string>("dashboard");
     // Stato che gestisce il modal per il logout
     const [isExitDialogOpen, setExitDialogOpen] = useState<boolean>(false);

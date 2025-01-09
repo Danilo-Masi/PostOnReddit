@@ -2,9 +2,9 @@
 import { useEffect, useState } from "react";
 // Axios
 import axios from "axios";
-// Reachart
+// Re-chart
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
-// Shadcunui
+// Shadcnui
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent, } from "@/components/ui/chart";
 
 // Url del server di produzione
@@ -28,12 +28,12 @@ const getLast7Days = () => {
     return days;
 }
 
-// Funzione per generare dati casuali di default
+// Funzione per generare dati casuali di default 
+// DA TOGLIERE UNA VOLTA CHE CI SARANNO I DATI REALI //
 const chartDataDefault = getLast7Days().map(day => ({
     day,
     activeUsers: Math.floor(Math.random() * 300),
 }));
-
 
 // Configurazione del grafico
 const chartConfig = {
@@ -50,9 +50,8 @@ export default function Chart({ subreddit }: { subreddit: string }) {
     useEffect(() => {
         const fetchData = async () => {
             if (!subreddit) return;
-
             try {
-                const response = await axios.get(`${SERVER_URL}/api/reddit-stats?subreddit)=${subreddit}`);
+                const response = await axios.get(`${SERVER_URL}/api/reddit-stats?subreddit=${subreddit}`);
                 if (response.status === 200) {
                     setChartData(response.data);
                 } else {

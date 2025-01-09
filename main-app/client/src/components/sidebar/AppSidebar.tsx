@@ -41,7 +41,7 @@ export function AppSidebar() {
     }, [isCreditsUpdate]);
 
     return (
-        <Sidebar className="bg-sidebar-background md:border-sidebar-background p-2">
+        <Sidebar className="md:border-sidebar-background bg-sidebar-background p-2">
             {/* HEADER */}
             <SidebarHeader>
                 <Logo />
@@ -71,11 +71,11 @@ export function AppSidebar() {
                     </SidebarGroupContent>
                 </SidebarGroup>
                 <SidebarGroupContent>
-                    <div className="w-full p-2 flex flex-col gap-y-2">
-                        <p className="text-base text-center font-semibold text-textSecondary">Credits avabile: {creditsAvabile}</p>
+                    <div className="flex flex-col gap-y-2 p-2 w-full">
+                        <p className="font-semibold text-base text-center text-textSecondary">Credits avabile: {creditsAvabile}</p>
                         <Button
                             type="button"
-                            className="w-full py-5 text-md font-bold text-textForeground bg-buttonColor hover:bg-buttonHoverColor"
+                            className="bg-buttonColor hover:bg-buttonHoverColor py-5 w-full font-bold text-md text-textForeground"
                             onClick={() => setCreditsDialogOpen(true)}>
                             <ShoppingCart />
                             Buy credits
@@ -89,8 +89,8 @@ export function AppSidebar() {
                     <SidebarMenuItem>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <SidebarMenuButton className="w-full flex items-center justify-start px-3 py-7 m-0 text-textSecondary text-sm font-semibold bg-elevation2 hover:bg-elevation3">
-                                    <Avatar className="w-8 h-8 rounded-lg">
+                                <SidebarMenuButton className="flex justify-start items-center bg-elevation2 hover:bg-elevation3 m-0 px-3 py-7 w-full font-semibold text-sm text-textSecondary">
+                                    <Avatar className="rounded-lg w-8 h-8">
                                         <AvatarImage src="https://github.com/shadcn.png" />
                                         <AvatarFallback>CN</AvatarFallback>
                                     </Avatar>
@@ -102,7 +102,7 @@ export function AppSidebar() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent
                                 side="top"
-                                className="w-[--radix-popper-anchor-width] flex flex-col gap-y-3" >
+                                className="flex flex-col gap-y-3 w-[--radix-popper-anchor-width]" >
                                 <DropdownMenuItem onClick={() => setSelectedSection(links[0].key)}>
                                     <Command />
                                     <span>Dashboard</span>
