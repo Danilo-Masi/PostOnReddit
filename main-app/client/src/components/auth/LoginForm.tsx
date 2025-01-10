@@ -29,7 +29,7 @@ export default function LoginForm() {
         const errors = handleValidateCredentials(email, password);
         if (errors.length <= 0) {
             try {
-                const response = await axios.post(`${SERVER_URL}/login`, {
+                const response = await axios.post(`${SERVER_URL}/auth/login`, {
                     email: email,
                     password: password,
                 }, {

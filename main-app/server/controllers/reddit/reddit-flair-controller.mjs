@@ -1,11 +1,10 @@
 import axios from "axios";
 import NodeCache from 'node-cache';
 
-// Messaggi di errore o di successo
 const MESSAGE = {
     INVALID_QUERY: "La query della richiesta non è valida",
-    API_ERROR: 'Errore durante la chiamata all\'API',
-    ARRAY_ERROR: 'La struttura della risposta ottenuta non è valida',
+    REDDIT_ERROR: 'Errore durante la chiamata all\'API',
+    RESPONSE_ERROR: 'La struttura della risposta ottenuta non è valida',
     SERVER_ERROR: "Errore generico del server",
 }
 
@@ -14,10 +13,8 @@ const cache = new NodeCache({ stdTTL: 300 });
 
 export const searchFlair = async (req, res) => {
 
-    // Preleva la query di ricerca inserita dall'utente
     const { q } = req.query;
 
-    // Verifica che la query sia valida
     if (!q) {
         console.error('BACKEND: La query della richiesta del flair non è valida');
         return res.status(400).json({
@@ -52,7 +49,7 @@ export const searchFlair = async (req, res) => {
             if (!Array.isArray(flairChoices)) {
                 console.error("BACKEND: Nessun array trovato nella risposta dell'API.");
                 return res.status(500).json({
-                    message: MESSAGE.ARRAY_ERROR,
+                    message: MESSAGE.RESPONSE_ERROR,
                 });
             }
             // Estrai le flair dalla risposta
@@ -64,13 +61,14 @@ export const searchFlair = async (req, res) => {
                 flair,
             });
         } else {
+            console.error("BACKEND: Errore generico di reddit", response.status);
             return res.status(response.status).json({
-                message: MESSAGE.API_ERROR,
+                message: MESSAGE.REDDIT_ERROR,
             });
         }
-        
+
     } catch (error) {
-        console.error('BACKEND: Errore generico del server', error.message);
+        console.error('BACKEND: Errore generico del server', error.stack);
         return res.status(500).json({
             message: MESSAGE.SERVER_ERROR,
         });

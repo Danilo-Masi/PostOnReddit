@@ -9,6 +9,7 @@ import verifiyRedditRoute from './routes/supabase/verify-reddit-route.mjs';
 import createPostRoute from './routes/supabase/create-post-route.mjs';
 import retrievePostsRoute from './routes/supabase/retrieve-posts-route.mjs';
 import deletePostRoute from './routes/supabase/delete-post-route.mjs';
+import deletePermissionsRoute from './routes/supabase/delete-permissions-route.mjs';
 // Reddit
 import redditRedirectRoute from './routes/reddit/reddit-redirect-route.mjs';
 import redditCallbackRoute from './routes/reddit/reddit-callback-route.mjs';
@@ -18,20 +19,21 @@ import redditStats from './routes/reddit/reddit-stats-route.mjs';
 
 export const applyRoutes = (app) => {
     // Auth
-    app.use('/', registrationRoutes);
+    app.use('/auth', registrationRoutes);
     app.use('/auth', logoutRoutes);
-    app.use('/', loginRoutes);
+    app.use('/auth', loginRoutes);
     // Supabase
-    app.use('/', verifyTokenRoutes);
-    app.use('/', retrieveDataRoute);
-    app.use('/', verifiyRedditRoute);
-    app.use('/', createPostRoute);
-    app.use('/', retrievePostsRoute);
-    app.use('/', deletePostRoute);
+    app.use('/supabase', verifyTokenRoutes);
+    app.use('/supabase', retrieveDataRoute);
+    app.use('/supabase', verifiyRedditRoute);
+    app.use('/supabase', createPostRoute);
+    app.use('/supabase', retrievePostsRoute);
+    app.use('/supabase', deletePostRoute);
+    app.use('/supabase', deletePermissionsRoute);
     // Reddit 
     app.use('/api', redditRedirectRoute);
     app.use('/api', redditCallbackRoute);
     app.use('/api', redditSubredditRoute);
     app.use('/api', redditFlairRoute);
-    app.use('/api/', redditStats);
+    app.use('/api', redditStats);
 }

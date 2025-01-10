@@ -16,28 +16,37 @@ export default function ExitDialog() {
     const navigate: NavigateFunction = useNavigate();
     const { isExitDialogOpen, setExitDialogOpen } = useAppContext();
 
+    // Funzione per effettuare il logout
     const handleLogout = async () => {
+        const authToken = localStorage.getItem('authToken');
+        if (!authToken) {
+            toast.info("You're alredy logged out");
+            navigate('/login');
+            return;
+        }
         try {
-            const response = await axios.post(
-                `${SERVER_URL}/auth/logout`,
-                {},
-                { headers: { 'Content-Type': 'application/json' } }
-            );
-
-            if (response.status === 400) {
-                console.error('CLIENT: Errore di rete');
-                toast.warning("Internet problem, try later");
-                return;
-            }
-
+            const response = await axios.post(`${SERVER_URL}/auth/logout`, {}, {
+                headers: {
+                    Authorization: `Bearer ${authToken}`,
+                }
+            });
             if (response.status === 200) {
                 localStorage.removeItem('authToken');
                 navigate('/login');
+            } else {
+                toast.error("Logout failed. Please try again");
             }
-
         } catch (error: any) {
-            console.error('CLIENT: Errore generico del server', error.stack);
-            return;
+            if (error.response) {
+                console.error("CLIENT: Server error:", error.stack);
+                toast.error("Server error. Please try again later");
+            } else if (error.request) {
+                console.error("CLIENT: Network error: ", error.message);
+                toast.error("Network error. Check your connection");
+            } else {
+                console.error("CLIENT: Generic error: ", error.message);
+                toast.error("An unexpected error occurred. Please try again later");
+            }
         }
     }
 
@@ -47,7 +56,7 @@ export default function ExitDialog() {
                 <AlertDialogHeader>
                     <AlertDialogTitle>Logout</AlertDialogTitle>
                     <AlertDialogDescription>
-                        Are you sure you want to log out? You will need to login again to access your account.
+                        Are you sure you want to log out? You will need to login again to access your account
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

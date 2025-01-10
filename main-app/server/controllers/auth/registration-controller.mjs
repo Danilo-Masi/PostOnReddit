@@ -5,29 +5,25 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const MESSAGES = {
-    VALIDATION_ERROR_MESSAGE: "Valori della richiesta non validi",
-    AUTH_ERROR_MESSAGE: "Errore di Supabase durante la fase di registrazione",
-    DB_ERROR_MESSAGE: "Errore durante l\'inserimento dei dati nel DB di Supabase",
+    CREDENTIAL_ERROR: "Credenziali non valide",
+    SUPABASE_ERROR: "Errore di Supabase durante la fase di registrazione",
     SUCCESS_MESSAGE: "Registrazione avvenuta con successo",
-    SERVER_ERROR_MESSAGE: "Errore generico del server",
+    SERVER_ERROR: "Errore generico del server",
 };
 
 export const registrationController = async (req, res) => {
 
     const { name, email, password } = req.body;
 
-    // Verifica dei dati passati nella richiesta
     if (!name || !email || !password) {
-        console.error('BACKEND: Valori della richiesta non validi');
+        console.error('BACKEND: Credenziali non valide');
         return res.status(400).json({
-            error: MESSAGES.VALIDATION_ERROR_MESSAGE,
+            error: MESSAGES.CREDENTIAL_ERROR,
         });
     }
 
     try {
-
-        // Registra l'utente con l'autenticazione di Supabase
-        let { data, error: authError } = await supabase.auth.signUp({
+        let { data, error } = await supabase.auth.signUp({
             email: email,
             password: password,
             options: {
@@ -35,15 +31,13 @@ export const registrationController = async (req, res) => {
             }
         });
 
-        if (authError) {
-            console.error('BACKEND: Errore di Supabase durante la fase di registrazione', authError.message);
+        if (error) {
+            console.error('BACKEND: Errore di Supabase durante la fase di registrazione', error.stack);
             return res.status(401).json({
-                error: MESSAGES.AUTH_ERROR_MESSAGE,
-                details: authError.message,
+                message: MESSAGES.SUPABASE_ERROR,
             });
         }
 
-        // Genera il token JWT
         const token = jwt.sign(
             { id: data.user.id, email: data.user.email },
             process.env.JWT_SECRET,
@@ -56,10 +50,9 @@ export const registrationController = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('BACKEND: Errore generico del server', error.message);
+        console.error('BACKEND: Errore generico del server', error.stack);
         return res.status(500).json({
-            message: MESSAGES.SERVER_ERROR_MESSAGE,
-            details: error.message,
+            message: MESSAGES.SERVER_ERROR,
         });
     }
 };

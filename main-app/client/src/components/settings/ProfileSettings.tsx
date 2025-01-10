@@ -28,7 +28,7 @@ export default function ProfileSettings() {
             setRedditAuthorized(isAuthorized);
         }
         fetchAuthorizationStatus();
-    }, []);
+    }, [isRedditAuthorized]);
 
     // Funzione per richiedre i permessi di Reddit
     const handleRequestPermits = async () => {
@@ -37,6 +37,7 @@ export default function ProfileSettings() {
             if (!token) {
                 toast.error("User without permissions");
                 navigate('/login');
+                return;
             }
             const response = await axios.get(`${SERVER_URL}/api/reddit-redirect`, {
                 headers: {
@@ -60,7 +61,28 @@ export default function ProfileSettings() {
 
     // Funzione per rimuovere i permessi di Reddit
     const handleRemovePermits = async () => {
-        toast.error("Remove Reddit permissions, YOU IDIOT");
+        try {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                toast.error("User without permissions");
+                navigate('/login');
+                return;
+            }
+            const response = await axios.delete(`${SERVER_URL}/supabase/delete-permissions`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            if (response.status === 200) {
+                toast.success("Permissions removed successfully!");
+                setRedditAuthorized(false);
+            } else {
+                toast.warning("Failed to remove permissions");
+            }
+        } catch (error: any) {
+            console.error('CLIENT: Errore durante la richiesta eliminazione dei permessi', error.stack);
+            toast.warning("An error occurred, please try again later");
+        }
     }
 
     return (

@@ -8,11 +8,9 @@ const CLIENT_ID = process.env.REDDIT_CLIENT_ID;
 const CLIENT_SECRET = process.env.REDDIT_CLIENT_SECRET;
 const REDIRECT_URI = process.env.REDDIT_REDIRECT_URI;
 
-// Messaggi di errore o di successo
 const MESSAGE = {
-    REDDIT_ERROR: 'L\'utente ha rifiutato il consenso o si è verificato un errore',
-    SUCCESS_MESSAGE: 'Autenticazione completata con successo',
-    DB_ERROR: 'Errore durante il salvataggio dei dati nel DB',
+    REDDIT_ERROR: 'L\'utente ha rifiutato il consenso o si è verificato un errore con Reddit',
+    SUPABASE_ERROR: "Errore di Supabase durante la fase di salvataggio dei dati nel DB",
     SERVER_ERROR: 'Errore generico del server',
 }
 
@@ -20,18 +18,15 @@ export const redditCallback = async (req, res) => {
 
     const { code, state, error } = req.query;
 
-    // Gestisce eventuali errori derivanenti dall'API di Reddit (come il rifiuto dei permessi)
     if (error) {
+        console.error("BACKEND: Errore generico di Reddit", error.stack);
         return res.status(400).json({
             message: MESSAGE.REDDIT_ERROR,
-            error: error.message,
         });
     }
 
     try {
-        // Chiamata all'API di Reddit per chiedere i permessi all'utente
-        const response = await axios.post(
-            'https://www.reddit.com/api/v1/access_token',
+        const response = await axios.post('https://www.reddit.com/api/v1/access_token',
             new URLSearchParams({
                 grant_type: 'authorization_code',
                 code: code,
@@ -52,7 +47,7 @@ export const redditCallback = async (req, res) => {
         const userId = state.split(':')[1];
 
         // Salvataggio dei dati nella tabella 'reddit_tokens' del DB
-        const { data, error: dbError } = await supabase
+        const { data, error } = await supabase
             .from('reddit_tokens')
             .upsert({
                 user_id: userId,
@@ -62,22 +57,20 @@ export const redditCallback = async (req, res) => {
             });
 
         // Gestisce eventuali errori derivati dall'inserimento dei dati nel DB
-        if (dbError) {
-            console.error('BACKEND: Errore durante il salvataggio dei dati nel DB', dbError.message);
-            return res.status(403).json({
-                message: MESSAGE.DB_ERROR,
-                error: dbError.stack,
-            })
+        if (error) {
+            console.error('BACKEND: Errore di Supabase durante la fase di salvataggio dei dati nel DB', error.stack);
+            return res.status(401).json({
+                message: MESSAGE.SUPABASE_ERROR,
+            });
         }
 
         // Redirect alla pagina principale della piattaforma
         return res.redirect("http://localhost:5173/home"); //DA MODIFICARE
-        
+
     } catch (error) {
-        console.error('BACKEND: Errore durante lo scambio del token', error.message);
+        console.error('BACKEND: Errore generico del server', error.stack);
         return res.status(500).json({
             message: MESSAGE.SERVER_ERROR,
-            error: error.message,
         });
     }
 }

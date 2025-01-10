@@ -5,14 +5,14 @@ import { applyRoutes } from './routes.mjs';
 
 dotenv.config();
 
-const host = process.env.HOST || 'http://localhost'
+const HOST = process.env.HOST || 'http://localhost'
 const PORT = process.env.PORT || 3000;
 
 const app = express();
 
 app.use(cors({
     origin: 'http://localhost:5173',
-    methods: ['GET', 'POST'],
+    methods: ['GET', 'POST', 'DELETE', 'PUT'],
     credentials: true,
 }));
 
@@ -27,5 +27,5 @@ app.get('/', (req, res) => {
 
 // Avvia il server
 app.listen(PORT, () => {
-    console.log(`Server running on ${host}:${PORT}`)
+    console.log(`Server running on ${HOST}:${PORT}`)
 })

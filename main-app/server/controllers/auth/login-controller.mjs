@@ -5,35 +5,33 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const MESSAGES = {
-    VALIDATION_ERROR_MESSAGE: "Valori della richiesta non validi",
-    AUTH_ERROR_MESSAGE: "Errore di Supabase durante la fase di accesso",
+    CREDENTIAL_ERROR: "Credenziali non valide",
+    SUPABASE_ERROR: "Errore di Supabase durante la fase di accesso",
     SUCCESS_MESSAGE: "Accesso avvenuto con successo",
-    SERVER_ERROR_MESSAGE: "Errore generico del server",
+    SERVER_ERROR: "Errore generico del server",
 };
 
 export const loginController = async (req, res) => {
 
     const { email, password } = req.body;
 
-    // Verifica dei dati passati nella richiesta
     if (!email || !password) {
-        console.error('BACKEND: Valori della richiesta non validi');
+        console.error('BACKEND: Credenziali non valide');
         return res.status(400).json({
-            error: MESSAGES.VALIDATION_ERROR_MESSAGE,
+            message: MESSAGES.CREDENTIAL_ERROR,
         });
     }
 
     try {
-        let { data, error: authError } = await supabase.auth.signInWithPassword({
+        let { data, error } = await supabase.auth.signInWithPassword({
             email: email,
             password: password,
         });
 
-        if (authError) {
-            console.error('BACKEND: Errore di Supabase durante la fase di accesso', authError.message);
+        if (error) {
+            console.error('BACKEND: Errore di Supabase durante la fase di accesso', error.stack);
             return res.status(401).json({
-                error: MESSAGES.AUTH_ERROR_MESSAGE,
-                details: authError.message,
+                message: MESSAGES.AUTH_ERROR_MESSAGE,
             });
         }
 
@@ -49,11 +47,9 @@ export const loginController = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('BACKEND: Errore generico del server', error.message);
+        console.error('BACKEND: Errore generico del server', error.stack);
         return res.status(500).json({
-            message: MESSAGES.SERVER_ERROR_MESSAGE,
-            error: error.message,
+            message: MESSAGES.SERVER_ERROR,
         });
     }
-
 }

@@ -4,16 +4,14 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// Messaggi di errori e di successo
-const MESSAGE = {
-    NO_TOKEN: 'Token mancante',
-    TOKEN_INVALID: 'Token non valido',
-    DB_ERROR: 'Errore nel caricamento dei dati sul DB',
+const MESSAGES = {
+    MISSING_TOKEN: 'Token mancante',
+    INVALID_TOKEN: 'Token non valido',
+    SUPABASE_ERROR: 'Errore nel recupero dei post dal DB',
     SUCCESS_MESSAGE: 'Post programmato correttamente',
     SERVER_ERROR: 'Errore generico del server',
 }
 
-// Funzione per decodificare il token
 const decodeToken = (token) => {
     try {
         return jwt.verify(token, process.env.JWT_SECRET);
@@ -23,7 +21,6 @@ const decodeToken = (token) => {
     }
 }
 
-// Funzione principale
 export const retrievePosts = async (req, res) => {
 
     const authHeader = req.headers['authorization'];
@@ -31,54 +28,42 @@ export const retrievePosts = async (req, res) => {
 
     if (!token) {
         console.error('BACKEND: Token mancante');
-        return res.status(401).json({
-            message: MESSAGE.NO_TOKEN,
+        return res.status(400).json({
+            message: MESSAGE.MISSING_TOKEN,
         });
     }
 
     const decoded = decodeToken(token);
     if (!decoded) {
-        return res.status(401).json({
-            message: MESSAGE.TOKEN_INVALID,
+        return res.status(400).json({
+            message: MESSAGE.INVALID_TOKEN,
         });
     }
 
     const user_id = decoded.id;
 
     try {
-        let { data, error: dbError } = await supabase
+        let { data, error } = await supabase
             .from('posts')
             .select('*')
             .eq('user_id', user_id);
 
-        if (dbError) {
-            console.error('BACKEND: Errore nel recupero dei dati dal DB', dbError.message);
-            return res.status(500).json({
-                message: MESSAGE.DB_ERROR,
-                error: dbError.message,
+        if (error) {
+            console.error('BACKEND: Errore nel recupero dei post dal DB', error.stack);
+            return res.status(401).json({
+                message: MESSAGES.SUPABASE_ERROR,
             });
         }
 
-        if (!data || data.length === 0) {
-            console.error('BACKEND: Nessun utente trovato con questo ID');
-            return res.status(404).json({
-                message: MESSAGE.NO_ID_ERROR
-            });
-        }
-
-        if (data && data.length > 0) {
-            return res.status(200).json({
-                message: MESSAGE.SUCCESS_MESSAGE,
-                posts: data,
-            });
-        }
+        return res.status(200).json({
+            message: MESSAGES.SUCCESS_MESSAGE,
+            posts: data,
+        });
 
     } catch (error) {
-        console.error('BACKEND: Errore generico del server', error.message);
+        console.error('BACKEND: Errore generico del server', error.stack);
         return res.status(500).json({
-            message: MESSAGE.SERVER_ERROR,
-            error: error.message,
+            message: MESSAGES.SERVER_ERROR,
         });
     }
-
 }

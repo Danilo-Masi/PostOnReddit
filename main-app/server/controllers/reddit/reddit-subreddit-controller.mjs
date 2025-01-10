@@ -11,10 +11,9 @@ const MESSAGE = {
 const cache = new NodeCache({ stdTTL: 300 });
 
 export const searchSubreddits = async (req, res) => {
-    // Preleva la query di ricerca inserita dall'utente
+
     const { q } = req.query;
 
-    // Verifica che la query sia valida
     if (!q || q.length < 2) {
         return res.status(401).json({
             message: MESSAGE.INVALID_QUERY,
@@ -49,7 +48,7 @@ export const searchSubreddits = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('BACKEND: Errore generico del server', error.message);
+        console.error('BACKEND: Errore generico del server', error.stack);
         return res.status(500).json({
             message: MESSAGE.SERVER_ERROR,
         });

@@ -5,11 +5,11 @@ import Joi from 'joi';
 
 dotenv.config();
 
-// Messaggi di errore e successo
-const MESSAGE = {
-    NO_TOKEN: 'Token mancante',
-    TOKEN_INVALID: 'Token non valido',
-    DB_ERROR: 'Errore nel caricamento dei dati sul DB',
+const MESSAGES = {
+    MISSING_TOKEN: 'Token mancante',
+    INVALID_TOKEN: 'Token non valido',
+    INVALID_DATA: 'I dati per la creazione del post non sono validi',
+    SUPABASE_ERROR: 'Errore generico di Supabase durante il caricamento dei dati sul DB',
     SUCCESS_MESSAGE: 'Post programmato correttamente',
     SERVER_ERROR: 'Errore generico del server',
 }
@@ -26,50 +26,49 @@ const validatePostData = (data) => {
     return schema.validate(data);
 }
 
-// Funzione per decodificare il token
 const decodeToken = (token) => {
     try {
         return jwt.verify(token, process.env.JWT_SECRET);
     } catch (error) {
-        console.error('BACKEND: Token non valido', error.message);
+        console.error('BACKEND: Token non valido', error.stack);
         return;
     }
 }
 
-// Funzione principale
 export const createPost = async (req, res) => {
-    
+
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
         console.error('BACKEND: Token mancante');
         return res.status(401).json({
-            message: MESSAGE.NO_TOKEN,
+            message: MESSAGES.MISSING_TOKEN,
         });
     }
 
     const decoded = decodeToken(token);
     if (!decoded) {
         return res.status(401).json({
-            message: MESSAGE.TOKEN_INVALID,
+            message: MESSAGES.TOKEN_INVALID,
         });
     }
 
     const user_id = decoded.id;
-
     const { title, content, community, flair, date_time } = req.body;
 
     const { error } = validatePostData({ title, content, community, flair, date_time });
+
     if (error) {
-        console.error('BACKEND: Dati non validi', error.message);
+        console.error('BACKEND: I dati per la creazione del post non sono validi: ', error.stack);
         return res.status(400).json({
-            message: error.details[0].message
+            message: MESSAGES.INVALID_DATA,
+            details: error.details[0].message,
         });
     }
 
     try {
-        let { data, error: dbError } = await supabase
+        let { data, error } = await supabase
             .from('posts')
             .insert([
                 {
@@ -84,21 +83,21 @@ export const createPost = async (req, res) => {
             ])
             .select();
 
-        if (dbError) {
-            console.error("BACKEND: Errore nel caricamento dei dati su DB", dbError.message);
+        if (error) {
+            console.error("BACKEND: Errore generico di Supabase durante il caricamento dei dati sul DB", error.stack);
             return res.status(500).json({
-                message: MESSAGE.DB_ERROR,
+                message: MESSAGES.SUPABASE_ERROR,
             });
         }
 
         return res.status(200).json({
-            message: MESSAGE.SUCCESS_MESSAGE,
+            message: MESSAGES.SUCCESS_MESSAGE,
         });
 
     } catch (error) {
-        console.error("BACKEDN: Errore generico del server", error.message);
+        console.error("BACKEDN: Errore generico del server", error.stack);
         return res.status(500).json({
-            message: MESSAGE.SERVER_ERROR,
+            message: MESSAGES.SERVER_ERROR,
         });
     }
 }

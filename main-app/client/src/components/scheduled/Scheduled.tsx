@@ -47,7 +47,7 @@ export default function Scheduled() {
   const handleDelete = async (postId: string) => {
     try {
       const authToken = localStorage.getItem('authToken');
-      const response = await axios.post(`${SERVER_URL}/delete-post`, {
+      const response = await axios.post(`${SERVER_URL}/supabase/delete-post`, {
         post_id: postId
       }, {
         headers: { Authorization: `Bearer ${authToken}` },
@@ -67,13 +67,12 @@ export default function Scheduled() {
   const fetchPosts = async () => {
     try {
       const authToken = localStorage.getItem('authToken');
-      const response = await axios.get(`${SERVER_URL}/retrieve-posts`, {
+      const response = await axios.get(`${SERVER_URL}/supabase/retrieve-posts`, {
         headers: { Authorization: `Bearer ${authToken}` },
       });
 
       if (response.status === 200) {
         const listaPost = response.data.posts;
-
         const formattedPosts = listaPost.map((post: any) => ({
           title: post.title,
           content: JSON.stringify(post.content),
@@ -84,8 +83,9 @@ export default function Scheduled() {
         }));
         setPostList(formattedPosts);
       }
-    } catch (error) {
-      console.error("CLIENT: Errore durante il caricamento dei dati da DB");
+    } catch (error: any) {
+      console.error("CLIENT: Errore durante il caricamento dei dati da DB", error.stack);
+      toast.warning("An error occured during the posts loading");
       return;
     }
   }

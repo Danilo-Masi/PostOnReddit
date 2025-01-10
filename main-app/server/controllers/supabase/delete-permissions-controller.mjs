@@ -4,11 +4,11 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const MESSAGES = {
+const MESSAGE = {
     MISSING_TOKEN: 'Token mancante',
     INVALID_TOKEN: 'Token non valido',
-    SUPABASE_ERROR: 'Errore generico di Supabase',
-    SUCCESS_MESSAGE: 'Logout avvenuto con successo',
+    SUPABASE_ERROR: 'Errore generico di Supabase durante il cancellamento dei permessi',
+    SUCCESS_MESSAGE: 'Permessi annullati correttamente',
     SERVER_ERROR: 'Errore generico del server',
 }
 
@@ -21,7 +21,7 @@ const decodeToken = (token) => {
     }
 }
 
-export const logoutController = async (req, res) => {
+export const deletePermissions = async (req, res) => {
 
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -29,35 +29,40 @@ export const logoutController = async (req, res) => {
     if (!token) {
         console.error('BACKEND: Token mancante');
         return res.status(400).json({
-            message: MESSAGES.MISSING_TOKEN,
+            message: MESSAGE.MISSING_TOKEN,
         });
     }
 
     const decoded = decodeToken(token);
     if (!decoded) {
         return res.status(400).json({
-            message: MESSAGES.INVALID_TOKEN,
+            message: MESSAGE.INVALID_TOKEN,
         });
     }
 
+    const user_id = decoded.id;
+
     try {
-        let { error } = await supabase.auth.signOut(token);
+        let { error } = await supabase
+            .from('reddit_tokens')
+            .delete()
+            .eq('user_id', user_id);
 
         if (error) {
-            console.error('BACKEND: Errore generico di Supabase', error.stack);
+            console.log("BACKEND: Errore generico di Supabase durante il cancellamento dei permessi: ", error.stack);
             return res.status(401).json({
-                message: MESSAGES.SUPABASE_ERROR,
+                message: MESSAGE.SUPABASE_ERROR,
             });
         }
 
         return res.status(200).json({
-            message: MESSAGES.SUCCESS_MESSAGE,
+            message: MESSAGE.SUCCESS_MESSAGE,
         });
 
     } catch (error) {
-        console.error('BACKEND: Errore generico del server', error.stack);
+        console.error("BACKEND: Errore generico del server: ", error.stack);
         return res.status(500).json({
-            message: MESSAGES.SERVER_ERROR,
+            message: MESSAGE.SERVER_ERROR,
         });
     }
 }

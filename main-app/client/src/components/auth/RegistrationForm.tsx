@@ -33,7 +33,7 @@ export default function RegistrationForm() {
         const errors = handleValidateCredentials(name, email, password);
         if (errors.length <= 0) {
             try {
-                const response = await axios.post(`${SERVER_URL}/registration`, {
+                const response = await axios.post(`${SERVER_URL}/auth/registration`, {
                     name: name,
                     email: email,
                     password: password,

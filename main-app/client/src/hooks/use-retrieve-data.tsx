@@ -14,7 +14,7 @@ export const checkData = async () => {
             return null;
         }
 
-        const response = await axios.get(`${SERVER_URL}/retrieve-data`, {
+        const response = await axios.get(`${SERVER_URL}/supabase/retrieve-data`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -33,6 +33,7 @@ export const checkData = async () => {
     }
 }
 
+// Funzione per verificare se sono presenti il token di permesso per Reddit
 export const checkRedditAuthorization = async () => {
     try {
         const token = localStorage.getItem('authToken');
@@ -43,7 +44,7 @@ export const checkRedditAuthorization = async () => {
             return null;
         }
 
-        const response = await axios.get(`${SERVER_URL}/check-reddit-authorization`, {
+        const response = await axios.get(`${SERVER_URL}/supabase/check-reddit-authorization`, {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
@@ -57,7 +58,7 @@ export const checkRedditAuthorization = async () => {
             return false;
         }
     } catch (error: any) {
-        console.error('CLIENT: Errore generico del server', error.message);
+        console.error('CLIENT: Errore generico del server', error.stack);
         return false;
     }
 }

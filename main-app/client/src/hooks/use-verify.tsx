@@ -12,7 +12,7 @@ export const checkToken = async () => {
     }
 
     try {
-        const response = await axios.get(`${SERVER_URL}/verify-token`, {
+        const response = await axios.get(`${SERVER_URL}/supabase/verify-token`, {
             headers: { Authorization: `Barer ${token}` }
         });
 
