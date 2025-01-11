@@ -68,7 +68,7 @@ export const redditRedirect = async (req, res) => {
     }
 
     // Costruisci il parametro `state` includendo l'user_id
-    const state = `user_id:${userId}`;
+    const state = `user_id:${user_id}`;
 
     // Crea l'URL di reindirizzamento per Reddit
     const redditAuthUrl = `https://www.reddit.com/api/v1/authorize?client_id=${CLIENT_ID}&response_type=code&state=${state}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&duration=permanent&scope=${SCOPES}`;

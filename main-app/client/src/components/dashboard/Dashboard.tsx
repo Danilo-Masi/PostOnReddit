@@ -114,7 +114,7 @@ export default function Dashboard() {
     if (flair.length === 0) {
       errors.push("The flair is not selected");
     }
-    if (combinedDateTime.getDate() === null || undefined) {
+    if (data.getDate() === null || undefined) {
       errors.push("The date selected is not valid");
     }
     return errors;

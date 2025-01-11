@@ -1,7 +1,7 @@
 // React
-import { Dispatch, SetStateAction, useCallback, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useRef, useState } from "react";
 // Axios
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 // Debounce (per ritardare la richiesta)
 import debounce from 'debounce';
 // Shadncui
@@ -9,6 +9,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverTrigger } from "../ui/popover";
 import { PopoverContent } from "@radix-ui/react-popover";
 import { Button } from "../ui/button";
+import { toast } from "sonner";
 // Icons
 import { ChevronsUpDown } from "lucide-react";
 
@@ -17,40 +18,69 @@ const SERVER_URL = 'http://localhost:3000';
 
 export default function SearchInput({ communityValue, setCommunityValue }: { communityValue: string, setCommunityValue: Dispatch<SetStateAction<string>> }) {
 
-    // Stato per la query dell'utente
     const [query, setQuery] = useState("");
-    // Stato per i risultati
     const [results, setResults] = useState<string[]>([]);
-    // Stato di caricamento
     const [loading, setLoading] = useState(false);
-    // Stato per gestire il popup aperto
     const [open, setOpen] = useState(false);
 
+    // AbortController per annullare richieste obsolete
+    const abortControllerRef = useRef<AbortController | null>(null);
+
+    // Funzione di ricerca
     const handleSearch = async (searchTerm: string) => {
-        // Aggiorna la query
         setQuery(searchTerm);
-        // Mostra risultati solo se la query ha almeno 2 caratteri
-        if (searchTerm.length < 2) {
+
+        if (searchTerm.trim().length < 2 || searchTerm.length > 100) {
             setResults([]);
             return;
         }
+
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+        }
+
+        abortControllerRef.current = new AbortController();
+
         setLoading(true);
+
         try {
-            // Chiamata al backend per cercare subreddit
-            const response = await axios.get(`${SERVER_URL}/api/search-subreddits?q=${searchTerm}`);
-            // Aggiorna i risulatiti con i nomi dei subreddit
+            const response = await axios.get(`${SERVER_URL}/api/search-subreddits`, {
+                params: { q: searchTerm },
+                signal: abortControllerRef.current.signal,
+                timeout: 5000,
+                headers: { 'Content-Type': 'application/json' }
+            });
+
             const subredditNames = response.data.subreddits || [];
-            // Aggiorna i risultati
             setResults(subredditNames);
+
+            if (subredditNames.length === 0) {
+                toast.info("No subreddit found");
+            }
+
         } catch (error: any) {
-            console.error("Errore durante la ricerca:", error.message);
+            if (axios.isCancel(error)) {
+                console.warn("CLIENT: Richiesta annullata");
+            } else if (error instanceof AxiosError) {
+                if (error.response?.status === 400) {
+                    toast.error("The query isn't valid");
+                } else if (error.response?.status === 502) {
+                    toast.error("Error to get subreddit. Please try again later");
+                } else {
+                    toast.error("An error occurred. Please try again later");
+                }
+                console.error("CLIENT: Errore di Axios: ", error.stack);
+            } else {
+                console.error("CLIENT: Errore sconosciuto: ", error.stack);
+                toast.error("An unexpected error occured. Please try again later");
+            }
         } finally {
             setLoading(false);
         }
     };
 
-    // Funzione che utilizza debounde per ritardare la chiamata
-    const debounceSearch = useCallback(debounce(handleSearch, 200), []);
+    // Funzione che utilizza debounde per ritardare la chiamata di 300ms
+    const debounceSearch = useCallback(debounce(handleSearch, 300), []);
 
     const handleSelectCommunity = (community: string) => {
         setCommunityValue(community);
@@ -74,17 +104,15 @@ export default function SearchInput({ communityValue, setCommunityValue }: { com
                 </Button>
             </PopoverTrigger>
             <PopoverContent>
-                <Command className="z-50 border-elevation3 bg-white shadow-elevation3 shadow-md mt-1 border w-full">
+                <Command className="w-[250px] z-50 border-elevation3 bg-white shadow-elevation3 shadow-md mt-1 border">
                     {/* Input di ricerca */}
                     <CommandInput
                         placeholder="Search for communities..."
                         value={query}
-                        onValueChange={(value) => debounceSearch(value)}
-                    />
+                        onValueChange={(value) => debounceSearch(value)} />
                     <CommandList>
                         {/* Mostra un indicatore di caricamento */}
                         {loading && <CommandEmpty>Loading...</CommandEmpty>}
-
                         {/* Mostra i risultati della ricerca */}
                         {results.length > 0 && (
                             <CommandGroup heading="Suggestions">
@@ -96,6 +124,10 @@ export default function SearchInput({ communityValue, setCommunityValue }: { com
                                     </CommandItem>
                                 ))}
                             </CommandGroup>
+                        )}
+                        {/* Mostra un indicatore quando non ci sono risulatati */}
+                        {!loading && results.length === 0 && query.length >= 2 && (
+                            <CommandEmpty>No results found.</CommandEmpty>
                         )}
                     </CommandList>
                 </Command>
