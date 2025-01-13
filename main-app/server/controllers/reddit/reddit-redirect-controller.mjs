@@ -6,7 +6,7 @@ dotenv.config();
 
 const CLIENT_ID = process.env.REDDIT_CLIENT_ID;
 const REDIRECT_URI = process.env.REDDIT_REDIRECT_URI;
-const SCOPES = 'identity submit';
+const SCOPES = 'identity flair modflair read submit';
 
 const MESSAGE = {
   NO_TOKEN: 'Token mancante',

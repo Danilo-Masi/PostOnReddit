@@ -152,10 +152,9 @@ export default function Dashboard() {
             setCommunityValue={setCommunityValue} />
           {/* SELECT FLAG */}
           <SelectOption
-            communityValue={communityValue}
+            subreddit={communityValue}
             isDisabled={communityValue === "" ? true : false}
             placeholder='Select a flair'
-            selectLabel='Flair'
             value={flairValue}
             setValue={setFlairValue} />
         </div>

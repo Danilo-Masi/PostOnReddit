@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 // Axios
 import axios from "axios";
 // Shadcui
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { toast } from "sonner";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 
@@ -11,38 +11,36 @@ import { NavigateFunction, useNavigate } from "react-router-dom";
 const SERVER_URL = 'http://localhost:3000';
 
 type SelectOptionProps = {
-    communityValue: string;
+    subreddit: string;
     isDisabled: boolean;
     placeholder: string;
-    selectLabel: string;
     value: string;
     setValue: Dispatch<SetStateAction<string>>;
 }
 
-export default function SelectOption({ communityValue, isDisabled, placeholder, selectLabel, value, setValue }: SelectOptionProps) {
+export default function SelectOption({ subreddit, isDisabled, placeholder, value, setValue }: SelectOptionProps) {
 
     const navigate: NavigateFunction = useNavigate();
     const [options, setOptions] = useState<string[]>([]);
 
     // Funzione per selezionare una flair
-    const handleLoadFlair = async () => {
-
+    const fetchFlairs = async () => {
         const token = localStorage.getItem('authToken');
+
         if (!token) {
             toast.error("User without permissions");
             navigate('/login');
             return;
         }
 
-        if (communityValue.trim().length < 2) {
+        if (subreddit.trim().length < 2) {
             setOptions([]);
             return;
         }
 
         try {
             const response = await axios.get(`${SERVER_URL}/api/search-flair`, {
-                params: { q: communityValue },
-                timeout: 5000,
+                params: { q: subreddit },
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`
@@ -52,10 +50,6 @@ export default function SelectOption({ communityValue, isDisabled, placeholder, 
             const flair = response.data.flair || [];
             setOptions(flair);
 
-            if (flair.length === 0) {
-                toast.info("No flair found");
-            }
-
         } catch (error: any) {
             console.error('CLIENT: Errore generico nella chiamata al server', error.stack);
             toast.warning("An error occured. Please try again later");
@@ -63,8 +57,9 @@ export default function SelectOption({ communityValue, isDisabled, placeholder, 
     }
 
     useEffect(() => {
-        handleLoadFlair();
-    }, [communityValue]);
+        setOptions([]);
+        fetchFlairs();
+    }, [subreddit]);
 
     return (
         <Select
@@ -76,7 +71,11 @@ export default function SelectOption({ communityValue, isDisabled, placeholder, 
             </SelectTrigger>
             <SelectContent>
                 <SelectGroup>
-                    <SelectLabel>{selectLabel}</SelectLabel>
+                    {options.length === 0 && subreddit.trim().length >= 2 && (
+                        <SelectItem disabled value="No flair found">
+                            No flair found
+                        </SelectItem>
+                    )}
                     {options.map((option, index) => (
                         <SelectItem
                             key={index}

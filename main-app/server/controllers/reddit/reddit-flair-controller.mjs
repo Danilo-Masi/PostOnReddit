@@ -6,9 +6,13 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const MESSAGES = {
+    REFRESH_ERROR: 'Errore durante il refresh del token',
+    MISSING_TOKEN: 'Token mancante',
+    INVALID_TOKEN: 'Token non valido',
     INVALID_QUERY: "La query della richiesta non è valida",
     SUPABASE_ERROR: "Errore di Supabase durante il carimaneto del reddit_token",
     REDDIT_ERROR: 'Errore durante la chiamata all\'API',
+    EMPTY_FLAIR: "Non c'è nessuna flair per questa subreddit",
     RESPONSE_ERROR: 'La struttura della risposta ottenuta non è valida',
     SERVER_ERROR: "Errore generico del server",
 }
@@ -34,7 +38,7 @@ const refreshAccessToken = async (refresh_token, user_id) => {
                 password: process.env.REDDIT_CLIENT_SECRET,
             },
             headers: {
-                'User-Agent': 'por',
+                'User-Agent': 'POR/1.0.0',
             }
         });
 
@@ -47,12 +51,12 @@ const refreshAccessToken = async (refresh_token, user_id) => {
             .update({ access_token: newAccessToken, token_expiry: newExpiry })
             .eq('user_id', user_id);
 
-        console.log("BACKEND: Access token aggiornato.");
+        console.log("BACKEND: Access token aggiornato");
         return newAccessToken;
 
     } catch (error) {
         console.error("BACKEND: Errore durante il refresh del token", error.stack);
-        throw new Error(MESSAGES.REDDIT_ERROR);
+        throw new Error(MESSAGES.REFRESH_ERROR);
     }
 };
 
@@ -71,11 +75,12 @@ export const searchFlair = async (req, res) => {
     const decoded = decodeToken(token);
     if (!decoded) {
         return res.status(401).json({
-            message: MESSAGES.TOKEN_INVALID,
+            message: MESSAGES.INVALID_TOKEN,
         });
     }
 
     const user_id = decoded.id;
+    
     const { q } = req.query;
 
     if (q.trim().length < 2 || q.length > 100) {
@@ -103,35 +108,42 @@ export const searchFlair = async (req, res) => {
         let { access_token, refresh_token, token_expiry } = data;
 
         if (new Date(token_expiry) <= new Date()) {
-            console.log("BACKEND: Access token scaduto procedo con il refresh");
+            console.log("BACKEND: Access token scaduto, procedo con il refresh");
             access_token = await refreshAccessToken(refresh_token, user_id);
         }
 
         // Invia la richiesta all'API di Reddit
-        const response = await axios.get(`https://oauth.reddit.com/r/${subreddit}/api/link_flair_v2`, {
+        const response = await axios.get(`https://oauth.reddit.com/r/${subreddit}/api/link_flair`, {
             headers: {
                 Authorization: `Bearer ${access_token}`,
-                'User-Agent': 'POR By',
-            }
+                'User-Agent': 'web:postonreddit:v1.0.0 (by /u/WerewolfCapital4616)',
+                'Content-Type': 'application/json',
+            },
         });
 
-        if (response.status !== 200 || !response.data.data) {
+        if (response.status !== 200) {
             return res.status(502).json({
                 message: MESSAGES.REDDIT_ERROR,
             });
         }
 
-        const flairChoices = response.data.choices;
-        const flair = flairChoices.map(choise => choise.falir_text);
+        const flairs = response.data;
+        const flair = flairs.map((flair) => flair.text);
 
         return res.status(200).json({
-            flair
-        });
+            flair,
+        })
 
     } catch (error) {
-        console.error('BACKEND: Errore generico del server', error.stack);
-        return res.status(500).json({
-            message: MESSAGES.SERVER_ERROR,
-        });
+        if (error.status === 403) {
+            return res.status(200).json({
+                flair: [],
+            });
+        } else {
+            console.error('BACKEND: Errore generico del server', error.stack);
+            return res.status(500).json({
+                message: MESSAGES.SERVER_ERROR,
+            });
+        }
     }
 }
