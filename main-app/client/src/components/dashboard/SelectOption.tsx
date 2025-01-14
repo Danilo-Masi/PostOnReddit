@@ -6,6 +6,7 @@ import axios from "axios";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { toast } from "sonner";
 import { NavigateFunction, useNavigate } from "react-router-dom";
+import { Label } from "../ui/label";
 
 // Url del server di produzione
 const SERVER_URL = 'http://localhost:3000';
@@ -62,29 +63,34 @@ export default function SelectOption({ subreddit, isDisabled, placeholder, value
     }, [subreddit]);
 
     return (
-        <Select
-            disabled={isDisabled}
-            value={value}
-            onValueChange={(val) => setValue(val)}>
-            <SelectTrigger className="z-0 w-full">
-                <SelectValue placeholder={placeholder} />
-            </SelectTrigger>
-            <SelectContent>
-                <SelectGroup>
-                    {options.length === 0 && subreddit.trim().length >= 2 && (
-                        <SelectItem disabled value="No flair found">
-                            No flair found
-                        </SelectItem>
-                    )}
-                    {options.map((option, index) => (
-                        <SelectItem
-                            key={index}
-                            value={option}>
-                            {option}
-                        </SelectItem>
-                    ))}
-                </SelectGroup>
-            </SelectContent>
-        </Select>
+        <div className="w-full md:w-[calc(50%-0.5rem)] flex flex-col gap-y-3">
+            <Label>
+                Select a flair
+            </Label>
+            <Select
+                disabled={isDisabled}
+                value={value}
+                onValueChange={(val) => setValue(val)}>
+                <SelectTrigger className="w-full z-0">
+                    <SelectValue placeholder={placeholder} />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectGroup>
+                        {options.length === 0 && subreddit.trim().length >= 2 && (
+                            <SelectItem disabled value="No flair found">
+                                No flair found
+                            </SelectItem>
+                        )}
+                        {options.map((option, index) => (
+                            <SelectItem
+                                key={index}
+                                value={option}>
+                                {option}
+                            </SelectItem>
+                        ))}
+                    </SelectGroup>
+                </SelectContent>
+            </Select>
+        </div>
     );
 }

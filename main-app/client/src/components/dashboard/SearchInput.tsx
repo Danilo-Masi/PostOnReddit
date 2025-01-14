@@ -12,6 +12,8 @@ import { Button } from "../ui/button";
 import { toast } from "sonner";
 // Icons
 import { ChevronsUpDown } from "lucide-react";
+import { Label } from "../ui/label";
+import { SelectLabel } from "../ui/select";
 
 // Url del server di produzione
 const SERVER_URL = 'http://localhost:3000';
@@ -90,48 +92,53 @@ export default function SearchInput({ communityValue, setCommunityValue }: { com
     }
 
     return (
-        <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-                <Button
-                    variant="outline"
-                    role="combobox"
-                    aria-expanded={open}
-                    className="justify-between border-elevation3 bg-background w-full">
-                    {communityValue
-                        ? <p className="font-medium text-sm text-textPrimary">{communityValue}</p>
-                        : <p className="font-medium text-sm text-textSecondary">Select a community</p>}
-                    <ChevronsUpDown className="opacity-50 ml-2 w-4 h-4 shrink-0" />
-                </Button>
-            </PopoverTrigger>
-            <PopoverContent>
-                <Command className="w-[250px] z-50 border-elevation3 bg-white shadow-elevation3 shadow-md mt-1 border">
-                    {/* Input di ricerca */}
-                    <CommandInput
-                        placeholder="Search for communities..."
-                        value={query}
-                        onValueChange={(value) => debounceSearch(value)} />
-                    <CommandList>
-                        {/* Mostra un indicatore di caricamento */}
-                        {loading && <CommandEmpty>Loading...</CommandEmpty>}
-                        {/* Mostra i risultati della ricerca */}
-                        {results.length > 0 && (
-                            <CommandGroup heading="Suggestions">
-                                {results.map((subreddit, index) => (
-                                    <CommandItem
-                                        key={index}
-                                        onSelect={() => handleSelectCommunity(subreddit)}>
-                                        {subreddit}
-                                    </CommandItem>
-                                ))}
-                            </CommandGroup>
-                        )}
-                        {/* Mostra un indicatore quando non ci sono risulatati */}
-                        {!loading && results.length === 0 && query.length >= 2 && (
-                            <CommandEmpty>No results found.</CommandEmpty>
-                        )}
-                    </CommandList>
-                </Command>
-            </PopoverContent>
-        </Popover >
+        <div className="w-full md:w-[calc(50%-0.5rem)] flex flex-col gap-y-3">
+            <Label>
+                Select a subreddit
+            </Label>
+            <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                    <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={open}
+                        className="w-full justify-between border-elevation3 bg-background">
+                        {communityValue
+                            ? <p className="font-medium text-sm text-textPrimary">{communityValue}</p>
+                            : <p className="font-medium text-sm text-textSecondary">Select a community</p>}
+                        <ChevronsUpDown className="opacity-50 ml-2 w-4 h-4 shrink-0" />
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent >
+                    <Command className="w-[250px] z-50 border-elevation3 bg-white shadow-elevation3 shadow-md mt-1 border">
+                        {/* Input di ricerca */}
+                        <CommandInput
+                            placeholder="Search for communities..."
+                            value={query}
+                            onValueChange={(value) => debounceSearch(value)} />
+                        <CommandList>
+                            {/* Mostra un indicatore di caricamento */}
+                            {loading && <CommandEmpty>Loading...</CommandEmpty>}
+                            {/* Mostra i risultati della ricerca */}
+                            {results.length > 0 && (
+                                <CommandGroup heading="Suggestions">
+                                    {results.map((subreddit, index) => (
+                                        <CommandItem
+                                            key={index}
+                                            onSelect={() => handleSelectCommunity(subreddit)}>
+                                            {subreddit}
+                                        </CommandItem>
+                                    ))}
+                                </CommandGroup>
+                            )}
+                            {/* Mostra un indicatore quando non ci sono risulatati */}
+                            {!loading && results.length === 0 && query.length >= 2 && (
+                                <CommandEmpty>No results found.</CommandEmpty>
+                            )}
+                        </CommandList>
+                    </Command>
+                </PopoverContent>
+            </Popover >
+        </div>
     );
 }

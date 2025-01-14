@@ -19,7 +19,7 @@ export default function DataPicker({ date, setDateValue }: DataPickerProps) {
     const isDateDisabled = (date: Date) => isBefore(startOfDay(date), startOfDay(new Date()));
 
     return (
-        <div className='w-full flex flex-col gap-y-2'>
+        <div className='w-full md:w-[calc(50%-0.5rem)] flex flex-col gap-y-2'>
             <Label>Select the date</Label>
             <Popover>
                 <PopoverTrigger asChild>

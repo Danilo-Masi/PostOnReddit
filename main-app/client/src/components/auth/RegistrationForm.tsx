@@ -75,10 +75,10 @@ export default function RegistrationForm() {
         if (password.length < 6) {
             errors.push("Password must be at least 6 characters\n");
         }
-        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/;
+        /*const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/;
         if (!passwordRegex.test(password)) {
             errors.push("Password must contain at least one letter, one number, and one special character\n");
-        }
+        }*/
         return errors;
     }
 

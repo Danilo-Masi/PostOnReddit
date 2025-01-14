@@ -69,7 +69,7 @@ export default function Dashboard() {
 
   // Funzione per la creazione e caricamento del post nel DB
   const handelPostCreation = async () => {
-    let errors = handleValidateForm(titleValue, descriptionValue, communityValue, flairValue, combinedDateTime);
+    let errors = handleValidateForm(titleValue, descriptionValue, communityValue, combinedDateTime);
     if (errors.length === 0) {
       try {
         const authToken = localStorage.getItem('authToken');
@@ -98,7 +98,7 @@ export default function Dashboard() {
   }
 
   // Funzione per validare i dati inseriti nel form per la creazione del post
-  const handleValidateForm = (title: string, content: Content, community: string, flair: string, data: Date) => {
+  const handleValidateForm = (title: string, content: Content, community: string, data: Date) => {
     let errors: string[] = [];
     if (title.length === 0) {
       errors.push("The title can't be empty");
@@ -110,9 +110,6 @@ export default function Dashboard() {
     }
     if (community.length <= 0) {
       errors.push("The community is not selected");
-    }
-    if (flair.length === 0) {
-      errors.push("The flair is not selected");
     }
     if (data.getDate() === null || undefined) {
       errors.push("The date selected is not valid");
@@ -144,8 +141,8 @@ export default function Dashboard() {
           setDescriptionValue={setDescriptionValue} />
       </div>
       {/*** BLOCCO DESTRA ***/}
-      <div className='flex flex-col justify-start items-start gap-6 bg-elevation p-5 border border-border rounded-xl w-full md:w-1/2 overflow-scroll'>
-        <div className='flex md:flex-row flex-col gap-3 w-full'>
+      <div className='w-full md:w-1/2 flex flex-col justify-start items-start gap-6 bg-elevation p-5 border border-border rounded-xl overflow-scroll'>
+        <div className='w-full h-auto flex flex-col md:flex-row md:flex-wrap gap-4'>
           {/* SELECT COMMUNITY */}
           <SearchInput
             communityValue={communityValue}
@@ -157,16 +154,16 @@ export default function Dashboard() {
             placeholder='Select a flair'
             value={flairValue}
             setValue={setFlairValue} />
+          {/* DATA PICKER */}
+          <DataPicker
+            date={combinedDateTime}
+            setDateValue={handleDateChange} />
+          {/* TIME PICKER */}
+          <TimePicker
+            date={combinedDateTime}
+            setDate={handleTimeChange}
+            minTime={isToday(combinedDateTime) ? today : undefined} />
         </div>
-        {/* DATA PICKER */}
-        <DataPicker
-          date={combinedDateTime}
-          setDateValue={handleDateChange} />
-        {/* TIME PICKER */}
-        <TimePicker
-          date={combinedDateTime}
-          setDate={handleTimeChange}
-          minTime={isToday(combinedDateTime) ? today : undefined} />
         <Chart
           subreddit={communityValue} />
         {/* BOTTONE */}
