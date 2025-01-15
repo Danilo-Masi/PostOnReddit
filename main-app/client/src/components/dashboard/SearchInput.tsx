@@ -10,15 +10,19 @@ import { Popover, PopoverTrigger } from "../ui/popover";
 import { PopoverContent } from "@radix-ui/react-popover";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
+import { Label } from "../ui/label";
 // Icons
 import { ChevronsUpDown } from "lucide-react";
-import { Label } from "../ui/label";
-import { SelectLabel } from "../ui/select";
 
 // Url del server di produzione
 const SERVER_URL = 'http://localhost:3000';
 
-export default function SearchInput({ communityValue, setCommunityValue }: { communityValue: string, setCommunityValue: Dispatch<SetStateAction<string>> }) {
+interface SearchInputProps {
+    communityValue: string;
+    setCommunityValue: Dispatch<SetStateAction<string>>;
+}
+
+export default function SearchInput({ communityValue, setCommunityValue }: SearchInputProps) {
 
     const [query, setQuery] = useState("");
     const [results, setResults] = useState<string[]>([]);
@@ -109,8 +113,8 @@ export default function SearchInput({ communityValue, setCommunityValue }: { com
                         <ChevronsUpDown className="opacity-50 ml-2 w-4 h-4 shrink-0" />
                     </Button>
                 </PopoverTrigger>
-                <PopoverContent >
-                    <Command className="w-[250px] z-50 border-elevation3 bg-white shadow-elevation3 shadow-md mt-1 border">
+                <PopoverContent className="z-50">
+                    <Command className="w-[250px] border-elevation3 bg-white shadow-elevation3 shadow-md mt-1 border">
                         {/* Input di ricerca */}
                         <CommandInput
                             placeholder="Search for communities..."

@@ -23,6 +23,75 @@ const decodeToken = (token) => {
     }
 }
 
+// Funzione per effettuare la chiamata all'API di Reddit
+const getRedditPosts = async (subreddit, access_token) => {
+    let posts = [];
+    let after = null;  // Usato per la paginazione
+    const limit = 100; // Numero massimo di post per richiesta
+    let reachedEnd = false;
+
+    while (!reachedEnd) {
+        try {
+            // Chiamata all'API di Reddit con paginazione
+            const response = await axios.get(`https://oauth.reddit.com/r/${subreddit}/search`, {
+                params: {
+                    q: '*',               // Cerca tutti i post
+                    sort: 'hot',          // Ordina dal più recente
+                    t: 'week',            // Filtra per l'ultima settimana
+                    limit: limit,         // Numero massimo di post per richiesta
+                    restrict_sr: true,    // Solo nella subreddit specificata
+                    after: after          // Pagina successiva
+                },
+                headers: {
+                    Authorization: `Bearer ${access_token}`,
+                    'User-Agent': 'web:postonreddit:v1.0.0 (by /u/WerewolfCapital4616)',
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            const { data } = response.data;
+
+            // Aggiungi i post alla lista
+            posts = [...posts, ...data.children];
+
+            // Controlla se ci sono altri post da caricare
+            after = data.after;
+            if (!after || posts.length >= 700) {
+                // Fermati dopo aver caricato un numero sufficiente di post (ad esempio 700)
+                reachedEnd = true;
+            }
+        } catch (error) {
+            console.error("Errore nella chiamata all'API Reddit: ", error);
+            reachedEnd = true; // Fermati se c'è un errore
+        }
+    }
+
+    return posts;
+};
+
+// Funzione per aggregare i dati
+const aggregatePostsByDayAndHour = (posts) => {
+    const dailyPeakActivity = {};
+
+    posts.forEach(post => {
+        const timestamp = post.data.created_utc * 1000;  // Converti in millisecondi
+        const date = new Date(timestamp);
+        const day = date.toLocaleDateString('en-us', { weekday: 'short' });
+        const hour = date.getHours();
+
+        const key = `${day}-${hour}`;
+        if (!dailyPeakActivity[key]) {
+            dailyPeakActivity[key] = { day, hour, activityScore: 0 };
+        }
+
+        // Aggiungi il punteggio di attività (ad esempio, numero di commenti)
+        dailyPeakActivity[key].activityScore += post.data.num_comments;
+    });
+
+    return dailyPeakActivity;
+};
+
+// Funzione principale
 export const redditStats = async (req, res) => {
 
     const authHeader = req.headers['authorization'];
@@ -70,51 +139,43 @@ export const redditStats = async (req, res) => {
 
         let { access_token } = data;
 
+        // Ottieni i post
+        const posts = await getRedditPosts(subreddit, access_token);
 
-        // Chiamata all'API di Reddit per i post recenti
-        const response = await axios.get(`https://oauth.reddit.com/r/${subreddit}/new`, {
-            params: { limit: 100 },
-            headers: {
-                Authorization: `Bearer ${access_token}`,
-                'User-Agent': 'web:postonreddit:v1.0.0 (by /u/WerewolfCapital4616)',
-                'Content-Type': 'application/json',
-            },
-        });
+        if (posts.length === 0) {
+            console.warn("BACKEND: Nessun post trovato per questo specifico subreddit negli ultimi 7 giorni");
+            return res.status(200).json([]);
+        }
 
-        const posts = response.data.data.children;
+        // Aggrega i dati
+        const dailyPeakActivity = aggregatePostsByDayAndHour(posts);
 
-        const activityMap = {};
+        // Preparazione dei dati per il frontend
+        const chartData = Object.values(dailyPeakActivity)
+            .map(({ day, hour, activityScore }) => ({
+                day,
+                peakHour: `${hour}:00`,
+                activityScore,
+            }))
+            .sort((a, b) => {
+                // Ordina i giorni dal più recente al più vecchio
+                return new Date(b.day) - new Date(a.day);
+            });
 
-        posts.forEach(post => {
-            const timestamp = post.data.created_utc * 1000;
-            const date = new Date(timestamp);
-            const day = date.toLocaleDateString('en-us', { weekday: "short" });
-            const hour = date.getHours();
-
-            const key = `${day}-${hour}`;
-            if (!activityMap[key]) {
-                activityMap[key] = { day, hour, posts: 0, comments: 0 };
-            }
-            activityMap[key].posts += 1;
-            activityMap[key].comments += post.data.num_comments;
-        });
-
-        const chartData = Object.values(activityMap).map(item => ({
-            day: item.day,
-            hour: item.hour,
-            activityScore: item.post + item.comments
-        })).sort((a, b) => a.hour - b.hour);
+        console.log("DATI DI RISPOSTA: ", chartData);
 
         return res.status(200).json(chartData);
 
     } catch (error) {
-        if (error.response) {
-            console.error("BACKEND: Errore Reddit: ", error.response.status, error.response.data);
+        if (error.status === 403) {
+            return res.status(200).json({
+                chartData: [],
+            });
         } else {
-            console.error("BACKEND: Errore Axios: ", error.message);
+            console.error('BACKEND: Errore generico del server', error.stack);
+            return res.status(500).json({
+                message: MESSAGES.SERVER_ERROR,
+            });
         }
-        return res.status(500).json({
-            message: MESSAGES.SERVER_ERROR,
-        });
     }
 }

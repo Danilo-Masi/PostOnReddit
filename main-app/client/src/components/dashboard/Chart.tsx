@@ -15,32 +15,14 @@ const SERVER_URL = 'http://localhost:3000';
 
 interface ChartData {
     day: string;
-    activeUsers: number;
+    peakHour: string;
+    activityScore: number;
 }
-
-// Funzione per ottenere gli ultimi 7 giorni
-const getLast7Days = () => {
-    const days = [];
-    const today = new Date();
-    for (let i = 6; i >= 0; i--) {
-        const date = new Date(today);
-        date.setDate(today.getDate() - i);
-        const day = date.toLocaleString('en-us', { weekday: 'short' });
-        days.push(day);
-    }
-    return days;
-}
-
-// Dati causali di default
-const chartDataDefault = getLast7Days().map(day => ({
-    day,
-    activeUsers: Math.floor(Math.random() * 300),
-}));
 
 // Configurazione del grafico
 const chartConfig = {
     desktop: {
-        label: "User active",
+        label: "User active: ",
         color: "hsl(var(--chart-1))",
     },
 } satisfies ChartConfig
@@ -48,8 +30,9 @@ const chartConfig = {
 export default function Chart({ subreddit }: { subreddit: string }) {
 
     const navigate: NavigateFunction = useNavigate();
-    const [chartData, setChartData] = useState<ChartData[]>(chartDataDefault);
+    const [chartData, setChartData] = useState<ChartData[]>([]);
 
+    // Funzione per recuperare e analizzare i dati dal backend
     const fetchData = async () => {
         const token = localStorage.getItem('authToken');
 
@@ -71,15 +54,23 @@ export default function Chart({ subreddit }: { subreddit: string }) {
                     Authorization: `Bearer ${token}`
                 }
             });
-            if (response.status === 200) {
-                console.log(response.data);
-                //setChartData(response.data);
-            } else {
-                setChartData(chartDataDefault);
+
+            if (response.status !== 200) {
+                setChartData([]);
+                toast.info("No data found for this subreddit!");
             }
+
+            const transformedData = response.data.map((item: ChartData) => ({
+                day: item.day,
+                activeUsers: item.activityScore,
+                peakHour: item.peakHour
+            }))
+
+            setChartData(transformedData);
+
         } catch (error: any) {
             console.error("CLIENT: Errore nel caricamento dei dati: ", error.stack);
-            setChartData(chartDataDefault);
+            setChartData([]);
         }
     }
 
@@ -105,7 +96,7 @@ export default function Chart({ subreddit }: { subreddit: string }) {
                     tickFormatter={(value) => value.slice(0, 3)} />
                 <ChartTooltip
                     cursor={false}
-                    content={<ChartTooltipContent indicator="dot" hideLabel />} />
+                    content={<ChartTooltipContent indicator="dot" hideLabel  />} />
                 <Area
                     type="monotone"
                     dataKey="activeUsers"
