@@ -1,5 +1,5 @@
 // React
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 // React-router
 import { NavigateFunction, useNavigate } from "react-router-dom";
 // Axios
@@ -7,8 +7,9 @@ import axios from "axios";
 // Re-chart
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 // Shadcnui
-import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent, } from "@/components/ui/chart";
+import { ChartConfig, ChartContainer, ChartTooltip } from "@/components/ui/chart";
 import { toast } from "sonner";
+import { Card } from "../ui/card";
 
 // Url del server di produzione
 const SERVER_URL = 'http://localhost:3000';
@@ -16,7 +17,15 @@ const SERVER_URL = 'http://localhost:3000';
 interface ChartData {
     day: string;
     peakHour: string;
-    activityScore: number;
+    activity: number;
+}
+
+interface ChartProps {
+    subreddit: string;
+    chartData: ChartData[];
+    setChartData: Dispatch<SetStateAction<ChartData[]>>;
+    isDataLoading: boolean;
+    setDataLoading: Dispatch<SetStateAction<boolean>>;
 }
 
 // Configurazione del grafico
@@ -27,10 +36,9 @@ const chartConfig = {
     },
 } satisfies ChartConfig
 
-export default function Chart({ subreddit }: { subreddit: string }) {
+export default function Chart({ subreddit, chartData, setChartData, setDataLoading }: ChartProps) {
 
     const navigate: NavigateFunction = useNavigate();
-    const [chartData, setChartData] = useState<ChartData[]>([]);
 
     // Funzione per recuperare e analizzare i dati dal backend
     const fetchData = async () => {
@@ -47,6 +55,9 @@ export default function Chart({ subreddit }: { subreddit: string }) {
         }
 
         try {
+
+            setDataLoading(true);
+
             const response = await axios.get(`${SERVER_URL}/api/reddit-stats`, {
                 params: { q: subreddit },
                 headers: {
@@ -62,17 +73,36 @@ export default function Chart({ subreddit }: { subreddit: string }) {
 
             const transformedData = response.data.map((item: ChartData) => ({
                 day: item.day,
-                activeUsers: item.activityScore,
+                activity: item.activity,
                 peakHour: item.peakHour
-            }))
+            }));
 
             setChartData(transformedData);
+
+            setDataLoading(false);
 
         } catch (error: any) {
             console.error("CLIENT: Errore nel caricamento dei dati: ", error.stack);
             setChartData([]);
+            setDataLoading(false);
         }
     }
+
+    // Funzione per creare la tooltip personalizzata
+    const renderTooltip = ({ active, payload }: any) => {
+        if (active && payload && payload.length > 0) {
+            const { day, peakHour, activity } = payload[0].payload;
+
+            return (
+                <Card className="p-3 flex flex-col">
+                    <p className="mb-2"><b>{day}</b></p>
+                    <p>• Peak hour: {peakHour}</p>
+                    <p>• Activity: {activity}</p>
+                </Card>
+            );
+        }
+        return null;
+    };
 
     useEffect(() => {
         fetchData();
@@ -82,7 +112,7 @@ export default function Chart({ subreddit }: { subreddit: string }) {
     return (
         <ChartContainer
             config={chartConfig}
-            className="w-full min-h-[200px] z-0">
+            className="w-full h-full z-0">
             <AreaChart
                 accessibilityLayer
                 data={chartData}
@@ -94,12 +124,10 @@ export default function Chart({ subreddit }: { subreddit: string }) {
                     axisLine={false}
                     tickMargin={8}
                     tickFormatter={(value) => value.slice(0, 3)} />
-                <ChartTooltip
-                    cursor={false}
-                    content={<ChartTooltipContent indicator="dot" hideLabel  />} />
+                <ChartTooltip cursor={false} content={renderTooltip} />
                 <Area
                     type="monotone"
-                    dataKey="activeUsers"
+                    dataKey="activity"
                     stroke="var(--color-desktop)"
                     fill="var(--color-desktop)"
                     fillOpacity={0.3} />

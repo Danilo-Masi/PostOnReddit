@@ -17,10 +17,16 @@ import Chart from './Chart';
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
 // Icons
-import { Clock4 } from 'lucide-react';
+import { Ban, Clock4, Loader2 } from 'lucide-react';
 
 // Url del server di produzione
 const SERVER_URL = 'http://localhost:3000';
+
+interface ChartData {
+  day: string;
+  peakHour: string;
+  activity: number;
+}
 
 export default function Dashboard() {
 
@@ -30,6 +36,9 @@ export default function Dashboard() {
   const [communityValue, setCommunityValue] = useState<string>("");
   const [flairValue, setFlairValue] = useState<string>("");
   const [combinedDateTime, setCombinedDateTime] = useState<Date>(new Date());
+  // Stati per il chart
+  const [chartData, setChartData] = useState<ChartData[]>([]);
+  const [isDataLoading, setDataLoading] = useState<boolean>(false);
 
   // Funzione per aggiornare la data
   const handleDateChange = (newDate: Date) => {
@@ -164,8 +173,23 @@ export default function Dashboard() {
             setDate={handleTimeChange}
             minTime={isToday(combinedDateTime) ? today : undefined} />
         </div>
-        <Chart
-          subreddit={communityValue} />
+        {isDataLoading ? (
+          <div className='w-full h-full flex items-center justify-center'>
+            <Loader2 className='animate-spin' />
+          </div>
+        ) : chartData.length === 0 ? (
+          <div className='w-full h-full flex items-center justify-center'>
+            <Ban className='mr-2' size={18} />
+            <p>No data found</p>
+          </div>
+        ) : (
+          <Chart
+            subreddit={communityValue}
+            chartData={chartData}
+            setChartData={setChartData}
+            isDataLoading={isDataLoading}
+            setDataLoading={setDataLoading} />
+        )}
         {/* BOTTONE */}
         <Button
           className='bg-buttonColor hover:bg-buttonHoverColor py-5 w-full'

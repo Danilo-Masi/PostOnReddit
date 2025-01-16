@@ -36,7 +36,7 @@ const getRedditPosts = async (subreddit, access_token) => {
             const response = await axios.get(`https://oauth.reddit.com/r/${subreddit}/search`, {
                 params: {
                     q: '*',               // Cerca tutti i post
-                    sort: 'hot',          // Ordina dal più recente
+                    sort: 'new',          // Ordina dal più recente
                     t: 'week',            // Filtra per l'ultima settimana
                     limit: limit,         // Numero massimo di post per richiesta
                     restrict_sr: true,    // Solo nella subreddit specificata
@@ -69,26 +69,41 @@ const getRedditPosts = async (subreddit, access_token) => {
     return posts;
 };
 
-// Funzione per aggregare i dati
 const aggregatePostsByDayAndHour = (posts) => {
-    const dailyPeakActivity = {};
+    const dailyActivity = {};
 
     posts.forEach(post => {
-        const timestamp = post.data.created_utc * 1000;  // Converti in millisecondi
+        const timestamp = post.data.created_utc * 1000;
         const date = new Date(timestamp);
-        const day = date.toLocaleDateString('en-us', { weekday: 'short' });
+        const day = date.toLocaleDateString('en-US', { weekday: 'long' });  // Giorno in inglese
         const hour = date.getHours();
 
-        const key = `${day}-${hour}`;
-        if (!dailyPeakActivity[key]) {
-            dailyPeakActivity[key] = { day, hour, activityScore: 0 };
+        if (!dailyActivity[day]) {
+            dailyActivity[day] = {};
         }
 
-        // Aggiungi il punteggio di attività (ad esempio, numero di commenti)
-        dailyPeakActivity[key].activityScore += post.data.num_comments;
+        if (!dailyActivity[day][hour]) {
+            dailyActivity[day][hour] = 0;
+        }
+
+        // Incrementa il numero di commenti per ora
+        dailyActivity[day][hour] += post.data.num_comments;
     });
 
-    return dailyPeakActivity;
+    // Converti l'oggetto in un array ordinato
+    const peakActivityByDay = Object.entries(dailyActivity).map(([day, hours]) => {
+        const peakHour = Object.entries(hours).reduce((max, [hour, activity]) => {
+            return activity > max.activity ? { hour, activity } : max;
+        }, { hour: null, activity: 0 });
+
+        return {
+            day,
+            peakHour: `${peakHour.hour}:00`,
+            activity: peakHour.activity
+        };
+    });
+
+    return Array.isArray(peakActivityByDay) ? peakActivityByDay : [];  // ✅ Assicura il ritorno di un array
 };
 
 // Funzione principale
@@ -148,18 +163,10 @@ export const redditStats = async (req, res) => {
         }
 
         // Aggrega i dati
-        const dailyPeakActivity = aggregatePostsByDayAndHour(posts);
-
-        // Preparazione dei dati per il frontend
-        const chartData = Object.values(dailyPeakActivity)
-            .map(({ day, hour, activityScore }) => ({
-                day,
-                peakHour: `${hour}:00`,
-                activityScore,
-            }))
+        const chartData = aggregatePostsByDayAndHour(posts)
             .sort((a, b) => {
-                // Ordina i giorni dal più recente al più vecchio
-                return new Date(b.day) - new Date(a.day);
+                const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+                return daysOfWeek.indexOf(a.day) - daysOfWeek.indexOf(b.day);
             });
 
         console.log("DATI DI RISPOSTA: ", chartData);
