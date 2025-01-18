@@ -173,22 +173,25 @@ export default function Dashboard() {
             setDate={handleTimeChange}
             minTime={isToday(combinedDateTime) ? today : undefined} />
         </div>
-        {isDataLoading ? (
-          <div className='w-full h-full flex items-center justify-center'>
-            <Loader2 className='animate-spin' />
+        {isDataLoading === true && chartData.length === 0 ? (
+          <div className='w-full h-full flex items-center justify-center bg-blue-500'>
+            <p>Loading...</p>
           </div>
-        ) : chartData.length === 0 ? (
-          <div className='w-full h-full flex items-center justify-center'>
+        ) : communityValue.length === 0 && chartData.length === 0 ? (
+          <div className='w-full h-full flex items-center justify-center bg-green-500'>
             <Ban className='mr-2' size={18} />
             <p>No data found</p>
           </div>
         ) : (
-          <Chart
-            subreddit={communityValue}
-            chartData={chartData}
-            setChartData={setChartData}
-            isDataLoading={isDataLoading}
-            setDataLoading={setDataLoading} />
+          <div className='w-full h-full flex items-center justify-center'>
+            <Chart
+              subreddit={communityValue}
+              chartData={chartData}
+              setChartData={setChartData}
+              isDataLoading={isDataLoading}
+              setDataLoading={setDataLoading}
+            />
+          </div>
         )}
         {/* BOTTONE */}
         <Button
@@ -198,6 +201,6 @@ export default function Dashboard() {
           Schedule your post
         </Button>
       </div>
-    </div>
+    </div >
   );
 }

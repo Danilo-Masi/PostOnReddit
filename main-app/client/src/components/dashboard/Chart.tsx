@@ -42,6 +42,9 @@ export default function Chart({ subreddit, chartData, setChartData, setDataLoadi
 
     // Funzione per recuperare e analizzare i dati dal backend
     const fetchData = async () => {
+
+        setDataLoading(true);
+
         const token = localStorage.getItem('authToken');
 
         if (!token) {
@@ -56,8 +59,6 @@ export default function Chart({ subreddit, chartData, setChartData, setDataLoadi
 
         try {
 
-            setDataLoading(true);
-
             const response = await axios.get(`${SERVER_URL}/api/reddit-stats`, {
                 params: { q: subreddit },
                 headers: {
@@ -68,7 +69,9 @@ export default function Chart({ subreddit, chartData, setChartData, setDataLoadi
 
             if (response.status !== 200) {
                 setChartData([]);
+                setDataLoading(false);
                 toast.info("No data found for this subreddit!");
+                return;
             }
 
             const transformedData = response.data.map((item: ChartData) => ({
@@ -78,7 +81,6 @@ export default function Chart({ subreddit, chartData, setChartData, setDataLoadi
             }));
 
             setChartData(transformedData);
-
             setDataLoading(false);
 
         } catch (error: any) {
@@ -105,14 +107,16 @@ export default function Chart({ subreddit, chartData, setChartData, setDataLoadi
     };
 
     useEffect(() => {
-        fetchData();
+        if (subreddit.trim().length > 1) {
+            fetchData();
+        }
     }, [subreddit]);
 
 
     return (
         <ChartContainer
             config={chartConfig}
-            className="w-full h-full z-0">
+            className="w-full">
             <AreaChart
                 accessibilityLayer
                 data={chartData}
