@@ -174,11 +174,11 @@ export default function Dashboard() {
             minTime={isToday(combinedDateTime) ? today : undefined} />
         </div>
         {isDataLoading === true && chartData.length === 0 ? (
-          <div className='w-full h-full flex items-center justify-center bg-blue-500'>
-            <p>Loading...</p>
+          <div className='w-full h-full flex items-center justify-center'>
+            <Loader2 className='animate-spin'/>
           </div>
         ) : communityValue.length === 0 && chartData.length === 0 ? (
-          <div className='w-full h-full flex items-center justify-center bg-green-500'>
+          <div className='w-full h-full flex items-center justify-center'>
             <Ban className='mr-2' size={18} />
             <p>No data found</p>
           </div>

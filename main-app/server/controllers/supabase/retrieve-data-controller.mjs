@@ -30,14 +30,14 @@ export const retrieveData = async (req, res) => {
     if (!token) {
         console.error('BACKEND: Token mancante');
         return res.status(400).json({
-            message: MESSAGE.MISSING_TOKEN,
+            message: MESSAGES.MISSING_TOKEN,
         });
     }
 
     const decoded = decodeToken(token);
     if (!decoded) {
         return res.status(400).json({
-            message: MESSAGE.INVALID_TOKEN,
+            message: MESSAGES.INVALID_TOKEN,
         });
     }
 

@@ -55,7 +55,8 @@ export const createPost = async (req, res) => {
     }
 
     const user_id = decoded.id;
-    const { title, content, community, flair, date_time } = req.body;
+    const { title, content, community, flair } = req.body;
+    const date_time = new Date(req.body.date_time).toISOString();
 
     const { error } = validatePostData({ title, content, community, flair, date_time });
 
@@ -78,7 +79,7 @@ export const createPost = async (req, res) => {
                     community,
                     flair,
                     date_time,
-                    status: 'scheduled',
+                    status: 'pending',
                 },
             ])
             .select();

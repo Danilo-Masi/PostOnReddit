@@ -14,33 +14,31 @@ const MESSAGES = {
     SERVER_ERROR: "Errore generico del server",
 };
 
-const decodeToken = (token) => {
-    try {
-        return jwt.verify(token, process.env.JWT_SECRET);
-    } catch (error) {
-        console.error('BACKEND: Token non valido', error.stack);
-        return;
-    }
-}
-
-// Funzione per effettuare la chiamata all'API di Reddit
+// Funzione per effettuare la chiamata all'API di Reddit e caricare tutti i post necessari, in base ai parametri inseriti
 const getRedditPosts = async (subreddit, access_token) => {
     let posts = [];
-    let after = null;  // Usato per la paginazione
-    const limit = 100; // Numero massimo di post per richiesta
+    let after = null;
     let reachedEnd = false;
+
+    // Calcolo dei timestamp UNIX per ottenere dati esatti per 7 giorni fa (escluso oggi)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Inizio di oggi (00:00 UTC)
+
+    const endTimestamp = Math.floor(today.getTime() / 1000); // Inizio di oggi
+    const startTimestamp = endTimestamp - 7 * 24 * 60 * 60;  // 7 giorni fa (escluso oggi)
+
+    console.log(`Cercando post tra: ${new Date(startTimestamp * 1000).toUTCString()} e ${new Date(endTimestamp * 1000).toUTCString()}`);
 
     while (!reachedEnd) {
         try {
-            // Chiamata all'API di Reddit con paginazione
             const response = await axios.get(`https://oauth.reddit.com/r/${subreddit}/search`, {
                 params: {
-                    q: '*',               // Cerca tutti i post
-                    sort: 'new',          // Ordina dal più recente
-                    t: 'week',            // Filtra per l'ultima settimana
-                    limit: limit,         // Numero massimo di post per richiesta
-                    restrict_sr: true,    // Solo nella subreddit specificata
-                    after: after          // Pagina successiva
+                    q: '*',
+                    sort: 'new',
+                    t: 'all',
+                    limit: 100,
+                    restrict_sr: true,
+                    after: after
                 },
                 headers: {
                     Authorization: `Bearer ${access_token}`,
@@ -51,31 +49,54 @@ const getRedditPosts = async (subreddit, access_token) => {
 
             const { data } = response.data;
 
-            // Aggiungi i post alla lista
-            posts = [...posts, ...data.children];
+            if (data.children.length === 0) {
+                console.log(`BACKEND: Nessun post trovato per r/${subreddit} negli ultimi 7 giorni.`);
+                reachedEnd = true;
+                break;
+            }
+
+            // Filtra i post nell'intervallo di tempo corretto
+            const filteredPosts = data.children.filter(post => {
+                const postTime = post.data.created_utc;
+                return postTime >= startTimestamp && postTime < endTimestamp;
+            });
+
+            posts = [...posts, ...filteredPosts];
 
             // Controlla se ci sono altri post da caricare
-            after = data.after;
-            if (!after || posts.length >= 700) {
-                // Fermati dopo aver caricato un numero sufficiente di post (ad esempio 700)
+            after = data.after || null;
+            if (!after || posts.length >= 1000) {
                 reachedEnd = true;
             }
         } catch (error) {
-            console.error("Errore nella chiamata all'API Reddit: ", error);
-            reachedEnd = true; // Fermati se c'è un errore
+            console.error("BACKEND: Errore nella chiamata all'API Reddit: ", error.message);
+            reachedEnd = true;
         }
     }
 
+    console.log(`Totale post trovati: ${posts.length}`);
     return posts;
 };
 
+// Funzione per aggregare i dati
 const aggregatePostsByDayAndHour = (posts) => {
+
     const dailyActivity = {};
 
+    // Inizializza tutti i giorni della settimana con ore vuote
+    const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    weekDays.forEach(day => {
+        dailyActivity[day] = {};
+        for (let hour = 0; hour < 24; hour++) {
+            dailyActivity[day][hour] = { totalComments: 0, totalUpvotes: 0, totalPosts: 0 };
+        }
+    });
+
+    // Aggrega i dati effettivi
     posts.forEach(post => {
         const timestamp = post.data.created_utc * 1000;
         const date = new Date(timestamp);
-        const day = date.toLocaleDateString('en-US', { weekday: 'long' });  // Giorno in inglese
+        const day = date.toLocaleDateString('en-US', { weekday: 'long' });
         const hour = date.getHours();
 
         if (!dailyActivity[day]) {
@@ -83,28 +104,51 @@ const aggregatePostsByDayAndHour = (posts) => {
         }
 
         if (!dailyActivity[day][hour]) {
-            dailyActivity[day][hour] = 0;
+            dailyActivity[day][hour] = { totalComments: 0, totalUpvotes: 0, totalPosts: 0 };
         }
 
-        // Incrementa il numero di commenti per ora
-        dailyActivity[day][hour] += post.data.num_comments;
+        // Incrementa i conteggi per l'ora specifica
+        dailyActivity[day][hour].totalComments += post.data.num_comments;
+        dailyActivity[day][hour].totalUpvotes += post.data.ups;
+        dailyActivity[day][hour].totalPosts += 1;
     });
 
-    // Converti l'oggetto in un array ordinato
-    const peakActivityByDay = Object.entries(dailyActivity).map(([day, hours]) => {
-        const peakHour = Object.entries(hours).reduce((max, [hour, activity]) => {
-            return activity > max.activity ? { hour, activity } : max;
-        }, { hour: null, activity: 0 });
+    // Trova l'ora con maggiore attività per ogni giorno
+    const peakActivityByDay = weekDays.map(day => {
+        const hours = dailyActivity[day];
+        let peakHour = 0;
+        let maxActivity = 0;
+
+        for (let hour = 0; hour < 24; hour++) {
+            const activityScore = hours[hour].totalComments + hours[hour].totalUpvotes;
+            if (activityScore > maxActivity) {
+                maxActivity = activityScore;
+                peakHour = hour;
+            }
+        }
 
         return {
             day,
-            peakHour: `${peakHour.hour}:00`,
-            activity: peakHour.activity
+            peakHour: `${peakHour}:00`,
+            totalComments: Object.values(hours).reduce((sum, h) => sum + h.totalComments, 0),
+            totalUpvotes: Object.values(hours).reduce((sum, h) => sum + h.totalUpvotes, 0),
+            totalPosts: Object.values(hours).reduce((sum, h) => sum + h.totalPosts, 0),
+            activity: maxActivity,
         };
     });
 
-    return Array.isArray(peakActivityByDay) ? peakActivityByDay : [];  // ✅ Assicura il ritorno di un array
+    return peakActivityByDay;
 };
+
+// Funzione per decodificare il token
+const decodeToken = (token) => {
+    try {
+        return jwt.verify(token, process.env.JWT_SECRET);
+    } catch (error) {
+        console.error('BACKEND: Token non valido', error.stack);
+        return;
+    }
+}
 
 // Funzione principale
 export const redditStats = async (req, res) => {
@@ -163,11 +207,11 @@ export const redditStats = async (req, res) => {
         }
 
         // Aggrega i dati
-        const chartData = aggregatePostsByDayAndHour(posts)
-            .sort((a, b) => {
-                const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-                return daysOfWeek.indexOf(a.day) - daysOfWeek.indexOf(b.day);
-            });
+        const chartData = aggregatePostsByDayAndHour(posts);
+        /*.sort((a, b) => {
+            const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+            return daysOfWeek.indexOf(a.day) - daysOfWeek.indexOf(b.day);
+        });*/
 
         console.log("DATI DI RISPOSTA: ", chartData);
 

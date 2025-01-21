@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import { applyRoutes } from './routes.mjs';
+import './services/redditScheduler.mjs';
 
 dotenv.config();
 
@@ -27,5 +28,7 @@ app.get('/', (req, res) => {
 
 // Avvia il server
 app.listen(PORT, () => {
-    console.log(`Server running on ${HOST}:${PORT}`)
+    console.log(`Server running on ${HOST}:${PORT}`);
+    console.log('Server Timezone:', new Date().toString()); //LOG
+    console.log('Current UTC Time:', new Date().toISOString()); //LOG
 })

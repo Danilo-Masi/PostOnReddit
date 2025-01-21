@@ -9,7 +9,7 @@ import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 // Shadcnui
 import { ChartConfig, ChartContainer, ChartTooltip } from "@/components/ui/chart";
 import { toast } from "sonner";
-import { Card } from "../ui/card";
+import { Tooltip, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 
 // Url del server di produzione
 const SERVER_URL = 'http://localhost:3000';
@@ -28,6 +28,7 @@ interface ChartProps {
     setDataLoading: Dispatch<SetStateAction<boolean>>;
 }
 
+
 // Configurazione del grafico
 const chartConfig = {
     desktop: {
@@ -40,11 +41,8 @@ export default function Chart({ subreddit, chartData, setChartData, setDataLoadi
 
     const navigate: NavigateFunction = useNavigate();
 
-    // Funzione per recuperare e analizzare i dati dal backend
     const fetchData = async () => {
-
         setDataLoading(true);
-
         const token = localStorage.getItem('authToken');
 
         if (!token) {
@@ -58,7 +56,6 @@ export default function Chart({ subreddit, chartData, setChartData, setDataLoadi
         }
 
         try {
-
             const response = await axios.get(`${SERVER_URL}/api/reddit-stats`, {
                 params: { q: subreddit },
                 headers: {
@@ -94,13 +91,14 @@ export default function Chart({ subreddit, chartData, setChartData, setDataLoadi
     const renderTooltip = ({ active, payload }: any) => {
         if (active && payload && payload.length > 0) {
             const { day, peakHour, activity } = payload[0].payload;
-
             return (
-                <Card className="p-3 flex flex-col">
-                    <p className="mb-2"><b>{day}</b></p>
-                    <p>• Peak hour: {peakHour}</p>
-                    <p>• Activity: {activity}</p>
-                </Card>
+                <Tooltip>
+                    <TooltipTrigger className="flex flex-col items-start p-4 rounded-xl shadow-md bg-zinc-100">
+                        <h1 className="font-semibold text-zinc-900 text-sm">{day}</h1>
+                        <p className="font-normal text-zinc-500 text-xs">Peack hour: {peakHour}</p>
+                        <p className="font-normal text-zinc-500 text-xs">Activity: {activity}</p>
+                    </TooltipTrigger>
+                </Tooltip>
             );
         }
         return null;
@@ -114,28 +112,30 @@ export default function Chart({ subreddit, chartData, setChartData, setDataLoadi
 
 
     return (
-        <ChartContainer
-            config={chartConfig}
-            className="w-full">
-            <AreaChart
-                accessibilityLayer
-                data={chartData}
-                margin={{ left: 12, right: 12 }}>
-                <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                <XAxis
-                    dataKey="day"
-                    tickLine={false}
-                    axisLine={false}
-                    tickMargin={8}
-                    tickFormatter={(value) => value.slice(0, 3)} />
-                <ChartTooltip cursor={false} content={renderTooltip} />
-                <Area
-                    type="monotone"
-                    dataKey="activity"
-                    stroke="var(--color-desktop)"
-                    fill="var(--color-desktop)"
-                    fillOpacity={0.3} />
-            </AreaChart>
-        </ChartContainer>
+        <TooltipProvider>
+            <ChartContainer
+                config={chartConfig}
+                className="w-full">
+                <AreaChart
+                    accessibilityLayer
+                    data={chartData}
+                    margin={{ left: 12, right: 12 }}>
+                    <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                    <XAxis
+                        dataKey="day"
+                        tickLine={false}
+                        axisLine={false}
+                        tickMargin={8}
+                        tickFormatter={(value) => value.slice(0, 3)} />
+                    <ChartTooltip cursor={false} content={renderTooltip} />
+                    <Area
+                        type="monotone"
+                        dataKey="activity"
+                        stroke="var(--color-desktop)"
+                        fill="var(--color-desktop)"
+                        fillOpacity={0.3} />
+                </AreaChart>
+            </ChartContainer>
+        </TooltipProvider>
     );
 }
