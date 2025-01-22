@@ -16,27 +16,16 @@ export default function Prices({ id }: { id: string }) {
     return (
         <MainContainer yAlign="justify-start" id={id}>
             <CustomHeader
-                badgeTitle="PRICES"
-                titleHeader="Pay-As-You-Go"
-                descriptionHeader="Only pay for what you need. Simple, flexible, and efficient." />
+                badgeTitle="PRICING"
+                titleHeader="Get started for Free"
+                descriptionHeader="We’re in the testing phase, and because you believe in us, you get full access to the platform—completely free" />
             <div className="w-full h-full flex flex-col md:flex-row items-center justify-center gap-6">
                 <PriceCard
-                    title="Basic pack"
-                    description="Perfect for occasional users who want to schedule posts effortlessly."
-                    futurePrice="7.5"
-                    price="5.00"
-                    details={['10 credits included', '€0.50 per credit', 'Email support with 1-hour response time']}
-                    buttonText="Buy 10 Credits"
-                    onClick={handleBuyCredit}
-                />
-                <PriceCard
-                    border="border-2 border-orange-500"
-                    title="Premium pack"
-                    description="Ideal for power users who need more credits at a lower cost"
-                    futurePrice="15.00"
-                    price="10.00"
-                    details={['25 credits included', '€0.40 per credit', 'Email support with 1-hour response time']}
-                    buttonText="Buy 25 Credits"
+                    title="Free Plan"
+                    description="No cost, no limits, just results"
+                    price="0.0"
+                    details={['Unlimited posting credits', 'Absolutely free, no hidden fees', 'Email support with 1-hour response time']}
+                    buttonText="Join the waitlist now"
                     onClick={handleBuyCredit}
                 />
             </div>

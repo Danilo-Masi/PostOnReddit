@@ -1,5 +1,5 @@
 // Shadenui
-import { ShoppingBag } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
 
@@ -7,7 +7,7 @@ interface PriceCardProps {
     border?: string;
     title: string;
     description: string;
-    futurePrice: string;
+    futurePrice?: string;
     price: string;
     details: string[];
     buttonText: string;
@@ -24,7 +24,9 @@ export default function PriceCard({ border, title, description, futurePrice, pri
             <CardContent className="flex flex-col gap-3">
                 <p className="text-2xl font-bold text-zinc-900">
                     €{price}
-                    <span className="text-xl font-medium text-zinc-400 line-through ml-2">€{futurePrice}</span>
+                    {futurePrice &&
+                        <span className="text-xl font-medium text-zinc-400 line-through ml-2">€{futurePrice}</span>
+                    }
                 </p>
                 {details.map((item, index) => (
                     <div className="flex items-center justify-start gap-x-2 " key={index}>
@@ -38,7 +40,7 @@ export default function PriceCard({ border, title, description, futurePrice, pri
                     type="button"
                     className="w-full bg-orange-500 hover:bg-orange-600 py-5"
                     onClick={onClick}>
-                    <ShoppingBag />
+                    <Sparkles />
                     {buttonText}
                 </Button>
             </CardFooter>

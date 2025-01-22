@@ -1,7 +1,7 @@
 {
   "name": "postonreddit",
   "short_name": "POR",
-  "description": "Reach your audience at the perfect moment",
+  "description": "Post on Reddit at the right time",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#fd9952",

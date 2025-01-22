@@ -13,7 +13,7 @@ export default function MainContainer({ children, minHeigth, yAlign, marginTop, 
     return (
         <div
             id={id}
-            className={`w-full h-auto flex flex-col items-center gap-y-16 text-center ${minHeigth && minHeigth} ${yAlign ? yAlign : 'justify-center'} ${marginTop ? marginTop : 'mt-24'}`}>
+            className={`w-full h-auto flex flex-col items-center gap-y-16 text-center ${minHeigth && minHeigth} ${yAlign ? yAlign : 'justify-center'} ${marginTop ? marginTop : 'mt-44'}`}>
             {children}
         </div>
     );

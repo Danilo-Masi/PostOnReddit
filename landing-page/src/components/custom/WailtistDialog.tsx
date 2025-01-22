@@ -3,7 +3,6 @@ import { useAppContext } from "@/context/AppContext";
 // Shadcnui
 import { AlertDialogCancel } from "@radix-ui/react-alert-dialog";
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
-import { Button } from "../ui/button";
 // Icons
 import { X } from "lucide-react";
 // Components
@@ -21,15 +20,9 @@ export default function WailtistDialog() {
         <AlertDialog open onOpenChange={handleOpenChange}>
             <AlertDialogContent className="w-[90%] rounded-xl">
                 <AlertDialogHeader className="w-full flex flex-row items-center justify-between">
-                    <AlertDialogTitle>Get Ready! Your Spot is Waiting!</AlertDialogTitle>
-                    <AlertDialogCancel>
-                        <Button
-                            aria-label="close-button"
-                            name="close-button"
-                            variant="outline"
-                            className="w-6 h-6 p-4 text-zinc-500 hover:text-orange-500 hover:bg-background hover:border-orange-500">
-                            <X />
-                        </Button>
+                    <AlertDialogTitle>Secure your spot now</AlertDialogTitle>
+                    <AlertDialogCancel className="border p-2 rounded-lg text-zinc-500 hover:text-orange-500 hover:bg-background hover:border-orange-500">
+                        <X className="w-4 h-4" />
                     </AlertDialogCancel>
                 </AlertDialogHeader>
                 <AlertDialogDescription>

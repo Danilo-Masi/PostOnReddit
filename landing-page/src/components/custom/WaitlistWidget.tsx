@@ -161,7 +161,6 @@ export default function WaitlistWidget() {
                     <Sparkles className="ml-2" />
                 </Button>
             )}
-
         </div>
     );
 }

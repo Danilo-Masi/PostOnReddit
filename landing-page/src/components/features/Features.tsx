@@ -9,7 +9,7 @@ export default function Features({ id }: { id: string }) {
             <CustomHeader
                 badgeTitle="HOW DOES IT WORK?"
                 titleHeader="How the platform works"
-                descriptionHeader="Discover how our platform helps you connect and engage with others efficiently." />
+                descriptionHeader="Learn how our platform helps you post at the perfect time, boost engagement, and grow your presence effortlessly" />
             <FeaturesCarousel />
         </MainContainer>
     );

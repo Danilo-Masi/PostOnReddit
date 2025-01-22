@@ -12,6 +12,7 @@ import Cookiepage from "./pages/Cookiepage";
 // Components
 import WailtistDialog from "./components/custom/WailtistDialog";
 import CookiesDialog from "./components/custom/CookiesDialog";
+import Errorpage from "./pages/Errorpage";
 
 function App() {
 
@@ -44,6 +45,7 @@ function App() {
           <Route path="/terms-services" element={<Termspage />} />
           <Route path="/privacy-policy" element={<Privacypage />} />
           <Route path="/cookie-policy" element={<Cookiepage />} />
+          <Route path="*" element={<Errorpage />} />
         </Routes>
       </BrowserRouter>
       {isWaitlistOpen && <WailtistDialog />}

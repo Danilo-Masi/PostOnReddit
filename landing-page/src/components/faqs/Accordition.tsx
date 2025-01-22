@@ -5,27 +5,27 @@ export default function Accordition() {
     return (
         <Accordion type="single" collapsible className="w-full md:w-2/3 lg:w-2/4 text-left">
             <AccordionItem value="item-1">
-                <AccordionTrigger className="text-md text-zinc-900">What’s postonreddit?</AccordionTrigger>
+                <AccordionTrigger className="text-md text-zinc-900">What is postonreddit?</AccordionTrigger>
                 <AccordionContent className="text-sm text-zinc-500">
-                    Postonreddit is a platform that lets you write and schedule Reddit posts for specific dates and times. Optimize your posting strategy effortlessly.
+                    postonreddit is an intuitive platform that helps you write and schedule Reddit posts with precision. Plan your content ahead of time and never miss an opportunity to engage with your audience.
                 </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-2">
-                <AccordionTrigger className="text-md text-zinc-900">How can I use it to increase traffic on my platform?</AccordionTrigger>
+                <AccordionTrigger className="text-md text-zinc-900">How can I use it to increase traffic to my platform?</AccordionTrigger>
                 <AccordionContent className="text-sm text-zinc-500">
-                    By scheduling posts at the most active times on relevant subreddits, you can reach a larger audience, drive engagement, and attract traffic to your platform.
+                    By scheduling your posts at the most active hours in your target subreddits, you maximize visibility and drive organic engagement, leading to more clicks and potential customers.
                 </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-3">
-                <AccordionTrigger className="text-md text-zinc-900">How much does 1 token cost?</AccordionTrigger>
+                <AccordionTrigger className="text-md text-zinc-900">Why is the platform free?</AccordionTrigger>
                 <AccordionContent className="text-sm text-zinc-500">
-                    The cost per token varies by package. For example, with the Basic Pack, each token costs €0.50, and with the Premium Pack, it costs €0.40.
+                    We are currently in the testing phase and want to gather valuable feedback from early adopters like you. This helps us improve the platform before introducing paid plans in the future.
                 </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-4">
-                <AccordionTrigger className="text-md text-zinc-900">What can I do with 1 token?</AccordionTrigger>
+                <AccordionTrigger className="text-md text-zinc-900">How can I start using postonreddit?</AccordionTrigger>
                 <AccordionContent className="text-sm text-zinc-500">
-                    One token allows you to schedule one post on Reddit. You can choose the subreddit, time, and date for maximum impact.
+                    Simply join our waitlist! Once the platform launches on February 1st, you’ll receive an invitation via email to start posting right away.
                 </AccordionContent>
             </AccordionItem>
         </Accordion>
