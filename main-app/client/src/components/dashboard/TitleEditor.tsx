@@ -18,7 +18,7 @@ export default function TitleEditor({ titleValue, setTitleValue }: TitleEditorPr
                 name="title-input"
                 required
                 maxLength={300}
-                placeholder="Type your title here... (max 300 characters)"
+                placeholder="Type your title here (max 300 characters)"
                 className="focus:border-orange-500 focus-visible:ring-0 focus-visible:ring-offset-0 font-bold placeholder:font-light text-sm text-zinc-900 placeholder:text-zinc-400 resize-none"
                 value={titleValue}
                 onChange={(e: any) => setTitleValue(e.target.value)} />
