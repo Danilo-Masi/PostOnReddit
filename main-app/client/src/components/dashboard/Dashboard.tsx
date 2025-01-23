@@ -4,15 +4,13 @@ import { useState } from 'react';
 import axios from 'axios';
 // minimal-tiptap
 import { Content } from '@tiptap/react';
-// time-picker
-import { TimePicker } from './time-picker/TimePicker';
 // Components
-import DataPicker from './DataPicker';
 import DescriptionEditor from './DescriptionEditor';
 import SelectOption from './SelectOption';
 import TitleEditor from './TitleEditor';
 import SearchInput from './SearchInput';
 import Chart from './Chart';
+import { DateTimePicker } from './DateTimePicker';
 // Shadcnui
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
@@ -30,55 +28,34 @@ interface ChartData {
 
 export default function Dashboard() {
 
-  const today = new Date();
+  // Ottiene la data attuale
+  const now = new Date();
+
+  // Crea una nuova data in UTC con secondi e millisecondi impostati a 0
+  const utcDate = new Date(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate(),
+    now.getUTCHours(),
+    now.getUTCMinutes(),
+    0,
+    0
+  );
+
+
   const [titleValue, setTitleValue] = useState<string>("");
   const [descriptionValue, setDescriptionValue] = useState<Content>("");
   const [communityValue, setCommunityValue] = useState<string>("");
   const [flairValue, setFlairValue] = useState<string>("");
-  const [combinedDateTime, setCombinedDateTime] = useState<Date>(new Date());
+  const [dateTime, setDateTime] = useState<Date>(utcDate);
   // Stati per il chart
   const [chartData, setChartData] = useState<ChartData[]>([]);
   const [isDataLoading, setDataLoading] = useState<boolean>(false);
 
-  // Funzione per aggiornare la data
-  const handleDateChange = (newDate: Date) => {
-    // Se la data selzionata è oggi mantieni l'ora corrente
-    if (isToday(newDate)) {
-      const updateDate = new Date(newDate);
-      updateDate.setHours(combinedDateTime.getHours());
-      updateDate.setMinutes(combinedDateTime.getMinutes());
-      setCombinedDateTime(updateDate);
-    } else {
-      setCombinedDateTime(newDate);
-    }
-  }
-
-  // Funzione per aggiornare l'orario
-  const handleTimeChange = (newTime: Date) => {
-    const updateDateTime = new Date(combinedDateTime);
-    updateDateTime.setHours(newTime.getHours());
-    updateDateTime.setMinutes(newTime.getMinutes());
-    // Se la data è oggi non permette un orario precedente ad adesso
-    if (isToday(combinedDateTime) && newTime < today) {
-      updateDateTime.setHours(today.getHours());
-      updateDateTime.setMinutes(today.getMinutes());
-    }
-    setCombinedDateTime(updateDateTime);
-  }
-
-  // Controlla se la data selezionata è uguale alla data di oggi
-  const isToday = (date: Date) => {
-    const now = new Date();
-    return (
-      date.getDate() === now.getDate() &&
-      date.getMonth() === now.getMonth() &&
-      date.getFullYear() === now.getFullYear()
-    );
-  }
 
   // Funzione per la creazione e caricamento del post nel DB
-  const handelPostCreation = async () => {
-    let errors = handleValidateForm(titleValue, descriptionValue, communityValue, combinedDateTime);
+  const handlePostCreation = async () => {
+    let errors = handleValidateForm(titleValue, descriptionValue, communityValue, dateTime);
     if (errors.length === 0) {
       try {
         const authToken = localStorage.getItem('authToken');
@@ -87,7 +64,7 @@ export default function Dashboard() {
           content: descriptionValue,
           community: communityValue,
           flair: flairValue,
-          date_time: combinedDateTime,
+          date_time: dateTime,
         }, {
           headers: { Authorization: `Bearer ${authToken}` },
         });
@@ -133,7 +110,12 @@ export default function Dashboard() {
     setDescriptionValue("");
     setCommunityValue("");
     setFlairValue("");
-    setCombinedDateTime(today);
+    setDateTime(utcDate);
+  }
+
+  // Funzione di TEST
+  const handleTest = () => {
+    alert(`Titolo: ${titleValue}\n Contenuto: ${descriptionValue}\n Subreddit: ${communityValue}\n Flair: ${flairValue}\n Date: ${dateTime}\n`);
   }
 
   return (
@@ -163,19 +145,11 @@ export default function Dashboard() {
             placeholder='Select a flair'
             value={flairValue}
             setValue={setFlairValue} />
-          {/* DATA PICKER */}
-          <DataPicker
-            date={combinedDateTime}
-            setDateValue={handleDateChange} />
-          {/* TIME PICKER */}
-          <TimePicker
-            date={combinedDateTime}
-            setDate={handleTimeChange}
-            minTime={isToday(combinedDateTime) ? today : undefined} />
+          <DateTimePicker date={dateTime} setDate={setDateTime} />
         </div>
         {isDataLoading === true && chartData.length === 0 ? (
           <div className='w-full h-full flex items-center justify-center'>
-            <Loader2 className='animate-spin'/>
+            <Loader2 className='animate-spin' />
           </div>
         ) : communityValue.length === 0 && chartData.length === 0 ? (
           <div className='w-full h-full flex items-center justify-center'>
@@ -196,7 +170,7 @@ export default function Dashboard() {
         {/* BOTTONE */}
         <Button
           className='bg-buttonColor hover:bg-buttonHoverColor py-5 w-full'
-          onClick={() => handelPostCreation()}>
+          onClick={handlePostCreation}>
           <Clock4 />
           Schedule your post
         </Button>

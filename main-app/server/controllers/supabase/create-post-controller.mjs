@@ -9,6 +9,7 @@ const MESSAGES = {
     MISSING_TOKEN: 'Token mancante',
     INVALID_TOKEN: 'Token non valido',
     INVALID_DATA: 'I dati per la creazione del post non sono validi',
+    INVALID_DATE: 'La data inserita non è valida',
     SUPABASE_ERROR: 'Errore generico di Supabase durante il caricamento dei dati sul DB',
     SUCCESS_MESSAGE: 'Post programmato correttamente',
     SERVER_ERROR: 'Errore generico del server',
@@ -56,7 +57,22 @@ export const createPost = async (req, res) => {
 
     const user_id = decoded.id;
     const { title, content, community, flair } = req.body;
-    const date_time = new Date(req.body.date_time).toISOString();
+
+    let date_time = req.body.date_time;
+
+    // Controlla se la data è valida
+    if (isNaN(new Date(date_time).getTime())) {
+        return res.status(400).json({
+            message: MESSAGES.INVALID_DATE,
+        });
+    }
+
+    // Crea l'oggetto data e imposta i millisecondi a 0
+    let parsedDate = new Date(date_time);
+    parsedDate.setMilliseconds(0);
+
+    // Converte la data nel formato desiderato senza millisecondi
+    date_time = parsedDate.toISOString().slice(0, 19) + 'Z';
 
     const { error } = validatePostData({ title, content, community, flair, date_time });
 
