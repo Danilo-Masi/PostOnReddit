@@ -107,15 +107,10 @@ export default function Dashboard() {
   const handleSuccess = () => {
     toast("Post scheduled correctly!");
     setTitleValue("");
-    setDescriptionValue("");
+    setDescriptionValue(null);
     setCommunityValue("");
     setFlairValue("");
     setDateTime(utcDate);
-  }
-
-  // Funzione di TEST
-  const handleTest = () => {
-    alert(`Titolo: ${titleValue}\n Contenuto: ${descriptionValue}\n Subreddit: ${communityValue}\n Flair: ${flairValue}\n Date: ${dateTime}\n`);
   }
 
   return (

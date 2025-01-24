@@ -10,35 +10,10 @@ export default function ChangelogSettings() {
             mdWidth="md:w-1/3">
             <div className="w-full flex flex-col gap-y-3 overflow-scroll">
                 <Changelog
-                    day="18"
-                    date="Dec. 2024"
-                    title="Lorem ipsum"
-                    description="Lorem ipsum dolor sit amet, ipsum dolor sit amet" />
-                <Changelog
-                    day="18"
-                    date="Dec. 2024"
-                    title="Lorem ipsum"
-                    description="Lorem ipsum dolor sit amet, ipsum dolor sit amet" />
-                <Changelog
-                    day="18"
-                    date="Dec. 2024"
-                    title="Lorem ipsum"
-                    description="Lorem ipsum dolor sit amet, ipsum dolor sit amet" />
-                <Changelog
-                    day="18"
-                    date="Dec. 2024"
-                    title="Lorem ipsum"
-                    description="Lorem ipsum dolor sit amet, ipsum dolor sit amet" />
-                <Changelog
-                    day="18"
-                    date="Dec. 2024"
-                    title="Lorem ipsum"
-                    description="Lorem ipsum dolor sit amet, ipsum dolor sit amet" />
-                <Changelog
-                    day="18"
-                    date="Dec. 2024"
-                    title="Lorem ipsum"
-                    description="Lorem ipsum dolor sit amet, ipsum dolor sit amet" />
+                    day="1"
+                    date="Feb. 2025"
+                    title="Launch day 🎉"
+                    description="platform is compplete and we are ready to launch" />
             </div>
         </CardBase>
     );

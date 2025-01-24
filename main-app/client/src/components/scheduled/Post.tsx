@@ -3,7 +3,9 @@ import { Button } from "../ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import { Badge } from "@/components/ui/badge";
 // Icons
-import { Pencil, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
+// Context
+import { useAppContext } from "../context/AppContext";
 
 interface PostProps {
     title: string;
@@ -11,10 +13,11 @@ interface PostProps {
     date: string;
     community: string;
     status: string;
-    onDelete: () => void;
 }
 
-export default function Post({ title, content, date, community, status, onDelete }: PostProps) {
+export default function Post({ title, content, date, community, status }: PostProps) {
+
+    const { setDeleteDialogOpen } = useAppContext();
 
     // Funzione per modificare lo stile dinamicamente in base allo stato del post
     const statusColor = () => {
@@ -65,14 +68,16 @@ export default function Post({ title, content, date, community, status, onDelete
                 {renderContent(JSON.parse(content))}
             </CardContent>
             <CardFooter className="flex justify-end gap-3">
+                {/* TODO
                 <Button
                     variant="outline"
                     className="bg-card hover:bg-buttonHoverEmpty shadow-none border-border">
                     <Pencil />
                     Edit
                 </Button>
+                */}
                 <Button
-                    onClick={onDelete}
+                    onClick={() => setDeleteDialogOpen(true)}
                     variant="outline"
                     className="bg-card hover:bg-buttonError shadow-none border-border hover:text-textForeground">
                     <Trash2 />

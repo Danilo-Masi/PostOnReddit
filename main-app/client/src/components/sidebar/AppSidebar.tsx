@@ -70,6 +70,7 @@ export function AppSidebar() {
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
+                {/* TODO
                 <SidebarGroupContent>
                     <div className="flex flex-col gap-y-2 p-2 w-full">
                         <p className="font-semibold text-base text-center text-textSecondary">Credits avabile: {creditsAvabile}</p>
@@ -82,6 +83,7 @@ export function AppSidebar() {
                         </Button>
                     </div>
                 </SidebarGroupContent>
+                */}
             </SidebarContent>
             {/* FOOTER */}
             <SidebarFooter>

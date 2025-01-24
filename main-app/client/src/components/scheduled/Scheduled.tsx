@@ -39,29 +39,8 @@ const formatDate = (isoString: any) => {
 
 export default function Scheduled() {
 
-  const { setSelectedSection } = useAppContext();
-  const [postList, setPostList] = useState<PostType[]>([]);
+  const { setSelectedSection, postList, setPostList } = useAppContext();
   const [selectedDate, setSelectedDate] = useState<string>("today");
-
-  // Funzione per eliminare un determinato un post dal DB
-  const handleDelete = async (postId: string) => {
-    try {
-      const authToken = localStorage.getItem('authToken');
-      const response = await axios.post(`${SERVER_URL}/supabase/delete-post`, {
-        post_id: postId
-      }, {
-        headers: { Authorization: `Bearer ${authToken}` },
-      });
-
-      if (response.status === 200) {
-        toast.info("Post succesfully deleted!");
-        setPostList((prevList) => prevList.filter((post) => post.id !== postId));
-      }
-    } catch (error: any) {
-      console.log("CLIENT: Errore durante l'eliminazione del post", error.message);
-      toast.warning("Error during the deleting process. Try later!");
-    }
-  }
 
   // Funzione per caricare i post contentuti nel DB
   const fetchPosts = async () => {
@@ -138,8 +117,7 @@ export default function Scheduled() {
             content={post.content}
             date={formatDate(post.date)}
             community={post.community}
-            status={post.status}
-            onDelete={() => handleDelete(post.id)} />
+            status={post.status} />
         ))
       )}
     </div>
