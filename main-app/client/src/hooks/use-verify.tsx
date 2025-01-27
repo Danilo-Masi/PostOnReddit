@@ -4,8 +4,8 @@ import axios from "axios";
 // Url del server di produzione
 const SERVER_URL = 'http://localhost:3000';
 
+// Funzione che verifica se il token di un utente è valido o meno
 export const checkToken = async () => {
-
     const token = localStorage.getItem('authToken');
     if (!token) {
         return false;

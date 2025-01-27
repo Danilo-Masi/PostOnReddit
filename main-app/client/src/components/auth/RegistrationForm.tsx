@@ -2,8 +2,6 @@
 import { useState } from "react";
 // React-router
 import { Link, NavigateFunction, useNavigate } from "react-router-dom";
-// Context
-import { useAppContext } from "../context/AppContext";
 // Axios
 import axios from 'axios';
 // Shadcnui
@@ -23,7 +21,6 @@ const SERVER_URL = 'http://localhost:3000';
 export default function RegistrationForm() {
 
     const navigate: NavigateFunction = useNavigate();
-    const { setCreditsDialogOpen } = useAppContext();
     const [name, setName] = useState<string>("");
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
@@ -95,8 +92,7 @@ export default function RegistrationForm() {
     const handleSuccess = (token: string) => {
         localStorage.setItem('authToken', token);
         toast.success("Registration successful");
-        setCreditsDialogOpen(true);
-        navigate('/home');
+        navigate('/');
     }
 
     return (

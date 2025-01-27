@@ -61,7 +61,7 @@ export default function LoginForm() {
         }
     }
 
-    // Funzione per validare le credenziali inserite dall'utente in fase di registrazione
+    // Funzione per validare le credenziali inserite dall'utente in fase di accesso
     const handleValidateCredentials = (email: string, password: string) => {
         let errors: string[] = [];
         const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;

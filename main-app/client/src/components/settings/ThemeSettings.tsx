@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 // Components
 import CardBase from "../custom/CardBase";
+// theme
 import { useTheme } from "../theme/ThemeProvider";
 
 type Theme = "dark" | "light"
@@ -14,6 +15,7 @@ interface ThemeToyProps {
     itemColor: string;
 }
 
+// Componente grafico per visualizzare il tema
 export const ThemeToy = ({ containerColor, itemColor }: ThemeToyProps) => {
     return (
         <div className={`w-[90%] h-auto flex items-start justify-start flex-wrap gap-2 p-5 rounded-xl absolute -bottom-2 -right-2 ${containerColor}`}>

@@ -1,11 +1,11 @@
+// Context
+import { useAppContext } from "../context/AppContext";
 // Shadcnui
 import { Button } from "../ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import { Badge } from "@/components/ui/badge";
 // Icons
 import { Trash2 } from "lucide-react";
-// Context
-import { useAppContext } from "../context/AppContext";
 
 interface PostProps {
     title: string;
@@ -13,15 +13,16 @@ interface PostProps {
     date: string;
     community: string;
     status: string;
+    postId: any;
 }
 
-export default function Post({ title, content, date, community, status }: PostProps) {
+export default function Post({ title, content, date, community, status, postId }: PostProps) {
 
-    const { setDeleteDialogOpen } = useAppContext();
+    const { setDeleteDialogOpen, setPostId } = useAppContext();
 
     // Funzione per modificare lo stile dinamicamente in base allo stato del post
     const statusColor = () => {
-        if (status === "scheduled") return "border-orange-500 text-orange-500";
+        if (status === "pending") return "border-yellow-500 text-yellow-500";
         if (status === "posted") return "border-green-500 text-green-500";
         return "border-red-500 text-red-500";
     }
@@ -29,31 +30,40 @@ export default function Post({ title, content, date, community, status }: PostPr
     // Funzione per renderizzare il contenuto del post in formato JSON
     const renderContent = (content: any) => {
         if (!content || typeof content !== "object") return null;
-        return content.content.map((node: any, index: number) => {
-            if (node.type === "paragraph") {
-                return (
-                    <p key={index} className="text-zinc-500">
-                        {node.content?.map((child: any, childIndex: number) =>
-                            <span key={childIndex}>{child.text}</span>
-                        )}
-                    </p>
-                );
-            }
-        });
+
+        // Unisce tutti i paragrafi in un unico testo
+        const fullText = content.content
+            .filter((node: any) => node.type === "paragraph")
+            .flatMap((node: any) => node.content?.map((child: any) => child.text) || [])
+            .join(" ");
+
+        // Divide il testo in parole e tronca se necessario
+        const words = fullText.split(/\s+/);
+        const truncatedText = words.length > 30 ? words.slice(0, 30).join(" ") + "..." : fullText;
+
+        return (
+            <p className="text-zinc-500">
+                {truncatedText}
+            </p>
+        );
+    };
+
+    // Funzione per passare il postId e aprire la dialog per la cancellazione
+    const handleOpenDeleteDialog = () => {
+        setPostId(postId);
+        setDeleteDialogOpen(true);
     }
 
     return (
         <Card className="border-elevation2 bg-background border w-full md:w-[calc(50%-0.5rem)]">
-            <CardHeader>
+            <CardHeader className="gap-y-2">
                 <CardTitle className="font-bold text-textPrimary text-xl">
                     {title}
                 </CardTitle>
                 <CardDescription className="font-light text-sm text-textSecondary">
                     Scheduled for <i className="font-semibold">{date}</i>
                 </CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-y-2 min-h-[10svh] font-light text-clip text-m text-textSecondary">
-                <div className="flex gap-3">
+                <div className="flex gap-2">
                     <Badge
                         variant="outline"
                         className="w-fit">
@@ -65,19 +75,13 @@ export default function Post({ title, content, date, community, status }: PostPr
                         {status}
                     </Badge>
                 </div>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-y-2 min-h-[10svh] font-light text-clip text-m text-textSecondary">
                 {renderContent(JSON.parse(content))}
             </CardContent>
             <CardFooter className="flex justify-end gap-3">
-                {/* TODO
                 <Button
-                    variant="outline"
-                    className="bg-card hover:bg-buttonHoverEmpty shadow-none border-border">
-                    <Pencil />
-                    Edit
-                </Button>
-                */}
-                <Button
-                    onClick={() => setDeleteDialogOpen(true)}
+                    onClick={handleOpenDeleteDialog}
                     variant="outline"
                     className="bg-card hover:bg-buttonError shadow-none border-border hover:text-textForeground">
                     <Trash2 />

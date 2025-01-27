@@ -42,16 +42,14 @@ export default function Dashboard() {
     0
   );
 
-
   const [titleValue, setTitleValue] = useState<string>("");
   const [descriptionValue, setDescriptionValue] = useState<Content>("");
   const [communityValue, setCommunityValue] = useState<string>("");
   const [flairValue, setFlairValue] = useState<string>("");
   const [dateTime, setDateTime] = useState<Date>(utcDate);
-  // Stati per il chart
+  // Stati che gestiscono i valori del chart
   const [chartData, setChartData] = useState<ChartData[]>([]);
   const [isDataLoading, setDataLoading] = useState<boolean>(false);
-
 
   // Funzione per la creazione e caricamento del post nel DB
   const handlePostCreation = async () => {
@@ -140,7 +138,9 @@ export default function Dashboard() {
             placeholder='Select a flair'
             value={flairValue}
             setValue={setFlairValue} />
-          <DateTimePicker date={dateTime} setDate={setDateTime} />
+          <DateTimePicker
+            date={dateTime}
+            setDate={setDateTime} />
         </div>
         {isDataLoading === true && chartData.length === 0 ? (
           <div className='w-full h-full flex items-center justify-center'>

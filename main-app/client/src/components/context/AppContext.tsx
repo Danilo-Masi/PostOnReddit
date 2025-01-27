@@ -26,6 +26,8 @@ type AppContextType = {
     setDeleteDialogOpen: (section: boolean) => void;
     postList: PostType[]
     setPostList: (section: PostType[]) => void;
+    postId: any;
+    setPostId: (section: any) => void;
 }
 
 // Crea il contesto e fornisci un valore predefinito
@@ -47,10 +49,12 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [isDeleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
     // Stato che gestisce la lista di post caricati dal DB
     const [postList, setPostList] = useState<PostType[]>([]);
+    // Stato per gestire il postId selezionato
+    const [postId, setPostId] = useState<any>(null);
 
     return (
         <AppContext.Provider
-            value={{ selectedSection, setSelectedSection, isExitDialogOpen, setExitDialogOpen, isSupportDialogOpen, setSupportDialogOpen, isCreditsDialogOpen, setCreditsDialogOpen, isCreditsUpdate, setCreditsUpdate, isDeleteDialogOpen, setDeleteDialogOpen, postList, setPostList }}>
+            value={{ selectedSection, setSelectedSection, isExitDialogOpen, setExitDialogOpen, isSupportDialogOpen, setSupportDialogOpen, isCreditsDialogOpen, setCreditsDialogOpen, isCreditsUpdate, setCreditsUpdate, isDeleteDialogOpen, setDeleteDialogOpen, postList, setPostList, postId, setPostId }}>
             {children}
         </AppContext.Provider>
     );

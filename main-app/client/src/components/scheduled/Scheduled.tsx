@@ -11,7 +11,7 @@ import SelectDate from "./SelectDate";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 // Icons
-import { Pencil } from "lucide-react";
+import { Loader2, Pencil } from "lucide-react";
 
 // Url del server di produzione
 const SERVER_URL = 'http://localhost:3000';
@@ -41,9 +41,11 @@ export default function Scheduled() {
 
   const { setSelectedSection, postList, setPostList } = useAppContext();
   const [selectedDate, setSelectedDate] = useState<string>("today");
+  const [isLoading, setLoading] = useState<boolean>(false);
 
   // Funzione per caricare i post contentuti nel DB
   const fetchPosts = async () => {
+    setLoading(true);
     try {
       const authToken = localStorage.getItem('authToken');
       const response = await axios.get(`${SERVER_URL}/supabase/retrieve-posts`, {
@@ -61,15 +63,19 @@ export default function Scheduled() {
           id: post.id,
         }));
         setPostList(formattedPosts);
+        setLoading(false);
       }
     } catch (error: any) {
       console.error("CLIENT: Errore durante il caricamento dei dati da DB", error.stack);
       toast.warning("An error occured during the posts loading");
+      setLoading(false);
       return;
+    } finally {
+      setLoading(false);
     }
   }
 
-  // Funzione per filtratre i post in base alla data selezionata
+  // Funzione per filtratre i post in base al periodo di tempo selezionato
   const filterPosts = (posts: PostType[], filter: string) => {
     const now = new Date();
     return posts.filter((post) => {
@@ -98,28 +104,33 @@ export default function Scheduled() {
       <SelectDate
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate} />
-      {filteredPosts.length <= 0 ? (
-        <div className="flex flex-col justify-center items-center gap-y-3 w-full h-[70svh] text-center">
-          <h1>You have no posts scheduled for the selected date</h1>
-          <Button
-            type="button"
-            className="bg-buttonColor hover:bg-buttonHoverColor"
-            onClick={() => setSelectedSection("dashboard")}>
-            Schedule a post
-            <Pencil />
-          </Button>
+      {isLoading ?
+        <div className="w-full h-auto md:h-[80svh] flex items-center justify-center">
+          <Loader2 className="w-8 h-8 text-zinc-500 animate-spin" />
         </div>
-      ) : (
-        filteredPosts.map((post, index) => (
-          <Post
-            key={index}
-            title={post.title}
-            content={post.content}
-            date={formatDate(post.date)}
-            community={post.community}
-            status={post.status} />
-        ))
-      )}
+        : filteredPosts.length <= 0 ? (
+          <div className="flex flex-col justify-center items-center gap-y-3 w-full h-[70svh] text-center">
+            <h1>You have no posts scheduled for the selected date</h1>
+            <Button
+              type="button"
+              className="bg-buttonColor hover:bg-buttonHoverColor"
+              onClick={() => setSelectedSection("dashboard")}>
+              Schedule a post
+              <Pencil />
+            </Button>
+          </div>
+        ) : (
+          filteredPosts.map((post, index) => (
+            <Post
+              key={index}
+              title={post.title}
+              content={post.content}
+              date={formatDate(post.date)}
+              community={post.community}
+              status={post.status}
+              postId={post.id} />
+          ))
+        )}
     </div>
   );
 }

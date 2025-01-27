@@ -32,10 +32,10 @@ export default function SearchInput({ communityValue, setCommunityValue }: Searc
     // AbortController per annullare richieste obsolete
     const abortControllerRef = useRef<AbortController | null>(null);
 
-    // Funzione di ricerca
+    // Funzione per ricercare i subreddit
     const handleSearch = async (searchTerm: string) => {
-        setQuery(searchTerm);
 
+        setQuery(searchTerm);
         if (searchTerm.trim().length < 2 || searchTerm.length > 100) {
             setResults([]);
             return;
@@ -47,9 +47,9 @@ export default function SearchInput({ communityValue, setCommunityValue }: Searc
 
         abortControllerRef.current = new AbortController();
 
-        setLoading(true);
-
         try {
+            setLoading(true);
+
             const response = await axios.get(`${SERVER_URL}/api/search-subreddits`, {
                 params: { q: searchTerm },
                 signal: abortControllerRef.current.signal,
@@ -88,6 +88,7 @@ export default function SearchInput({ communityValue, setCommunityValue }: Searc
     // Funzione che utilizza debounde per ritardare la chiamata di 300ms
     const debounceSearch = useCallback(debounce(handleSearch, 300), []);
 
+    // Funzione per selezionare una community tra quelle disponibili
     const handleSelectCommunity = (community: string) => {
         setCommunityValue(community);
         setOpen(false);

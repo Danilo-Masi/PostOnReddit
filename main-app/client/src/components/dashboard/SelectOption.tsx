@@ -1,11 +1,12 @@
 // React
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
+// React-router
+import { NavigateFunction, useNavigate } from "react-router-dom";
 // Axios
 import axios from "axios";
 // Shadcui
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { toast } from "sonner";
-import { NavigateFunction, useNavigate } from "react-router-dom";
 import { Label } from "../ui/label";
 
 // Url del server di produzione
@@ -24,10 +25,10 @@ export default function SelectOption({ subreddit, isDisabled, placeholder, value
     const navigate: NavigateFunction = useNavigate();
     const [options, setOptions] = useState<string[]>([]);
 
-    // Funzione per selezionare una flair
+    // Funzione per ricercare le flair disponibili
     const fetchFlairs = async () => {
+        
         const token = localStorage.getItem('authToken');
-
         if (!token) {
             toast.error("User without permissions");
             navigate('/login');

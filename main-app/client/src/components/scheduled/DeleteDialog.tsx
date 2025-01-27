@@ -1,30 +1,22 @@
 // Shadcnui
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogTitle } from '@radix-ui/react-alert-dialog';
-import { AlertDialogFooter, AlertDialogHeader } from '../ui/alert-dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
+import { toast } from 'sonner';
 // Context
 import { useAppContext } from '../context/AppContext';
 // Axios
 import axios from "axios";
-import { toast } from 'sonner';
+// Icons
+import { Trash2 } from "lucide-react";
 
 // Url del server di produzione
 const SERVER_URL = 'http://localhost:3000';
 
-type PostType = {
-    title: string;
-    content: string;
-    date: string;
-    community: string;
-    status: string;
-    id: string;
-  }
-
 export default function DeleteDialog() {
 
-    const { isDeleteDialogOpen, setDeleteDialogOpen, setPostList } = useAppContext();
+    const { isDeleteDialogOpen, setDeleteDialogOpen, postList, setPostList, postId } = useAppContext();
 
-    // Funzione per eliminare un determinato un post dal DB
-    const handleDeletePost = async (postId: string) => {
+    // Funzione per eliminare un determinato post dal DB
+    const handleDeletePost = async () => {
         try {
             const authToken = localStorage.getItem('authToken');
             const response = await axios.post(`${SERVER_URL}/supabase/delete-post`, {
@@ -35,7 +27,9 @@ export default function DeleteDialog() {
 
             if (response.status === 200) {
                 toast.info("Post succesfully deleted!");
-                setPostList((prevList) => prevList.filter((post) => post.id !== postId));
+                const updatedList = postList.filter((post) => post.id !== postId);
+                setPostList(updatedList);
+                setDeleteDialogOpen(false);
             }
         } catch (error: any) {
             console.log("CLIENT: Errore durante l'eliminazione del post", error.message);
@@ -47,17 +41,18 @@ export default function DeleteDialog() {
         <AlertDialog open={isDeleteDialogOpen} onOpenChange={() => setDeleteDialogOpen(!isDeleteDialogOpen)}>
             <AlertDialogContent className="rounded-lg w-[90%]">
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Logout</AlertDialogTitle>
+                    <AlertDialogTitle>Confirm Post Deletion</AlertDialogTitle>
                     <AlertDialogDescription>
-                        Are you sure you want to log out? You will need to login again to access your account
+                        Are you sure you want to delete this post? This action cannot be undone.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel className="hover:bg-gray-100">Cancel</AlertDialogCancel>
                     <AlertDialogAction
-                        className="bg-red-500 hover:bg-red-600 text-white"
-                        onClick={handleDeletePost(1)}>
-                        Confirm Logout
+                        onClick={handleDeletePost}
+                        className="bg-red-500 hover:bg-red-600 text-white">
+                        <Trash2 />
+                        Delete Permanently
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>

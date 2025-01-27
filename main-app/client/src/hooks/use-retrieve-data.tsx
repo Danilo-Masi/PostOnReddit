@@ -4,10 +4,10 @@ import axios from "axios";
 // Url del server di produzione
 const SERVER_URL = 'http://localhost:3000';
 
+// Funzione per caricare i dati di un utente dal DB
 export const checkData = async () => {
     try {
         const token = localStorage.getItem('authToken');
-
         if (!token) {
             console.error('CLIENT: Token mancante');
             localStorage.removeItem('authToken');
@@ -23,8 +23,8 @@ export const checkData = async () => {
         if (response.status === 200) {
             return response.data.data;
         } else {
-            console.error('CLIENT: Errore nel recupero dei dati dal DB', response.status);
-            return null
+            console.error('CLIENT: Errore nel recupero dei dati dal DB', response.data);
+            return null;
         }
 
     } catch (error: any) {
@@ -33,11 +33,10 @@ export const checkData = async () => {
     }
 }
 
-// Funzione per verificare se sono presenti il token di permesso per Reddit
+// Funzione per verificare se sono presenti i permessi per accedere a Reddit
 export const checkRedditAuthorization = async () => {
     try {
         const token = localStorage.getItem('authToken');
-
         if (!token) {
             console.error('CLIENT: Token mancante');
             localStorage.removeItem('authToken');

@@ -16,7 +16,7 @@ interface DateTimePickerProps {
     setDate: Dispatch<SetStateAction<Date>>;
 }
 
-export function DateTimePicker({date, setDate}:DateTimePickerProps) {
+export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
 
     const [isOpen, setIsOpen] = useState(false);
 
@@ -27,6 +27,7 @@ export function DateTimePicker({date, setDate}:DateTimePickerProps) {
         }
     };
 
+    // Funzione per gestire la data e l'orario selezionati
     const handleTimeChange = (type: "hour" | "minute" | "ampm", value: string) => {
         if (date) {
             const newDate = new Date(date);
@@ -47,22 +48,10 @@ export function DateTimePicker({date, setDate}:DateTimePickerProps) {
                 }
             }
 
-            // Imposta i secondi e i millisecondi a zero
             newDate.setSeconds(0);
             newDate.setMilliseconds(0);
 
-            // Rimuove la conversione UTC mantenendo il fuso orario locale
-            const localDate = new Date(
-                newDate.getFullYear(),
-                newDate.getMonth(),
-                newDate.getDate(),
-                newDate.getHours(),
-                newDate.getMinutes(),
-                0, // Secondi a zero
-                0  // Millisecondi a zero
-            );
-
-            setDate(localDate);
+            setDate(newDate);
         }
     };
 
@@ -89,7 +78,8 @@ export function DateTimePicker({date, setDate}:DateTimePickerProps) {
                         mode="single"
                         selected={date}
                         onSelect={handleDateSelect}
-                        initialFocus />
+                        initialFocus
+                        disabled={(day) => day < new Date(new Date().setHours(0, 0, 0, 0))} />
                     <div className="flex flex-col sm:flex-row sm:h-[300px] divide-y sm:divide-y-0 sm:divide-x">
                         <ScrollArea className="w-64 sm:w-auto">
                             <div className="flex sm:flex-col p-2">

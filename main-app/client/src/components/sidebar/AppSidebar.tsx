@@ -3,10 +3,9 @@ import { useEffect, useState } from "react"
 // Shadcnui
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "../ui/button"
 // Icons
-import { Command, CalendarCheck2, Settings, ChevronUp, CircleHelp, LogOut, ShoppingCart } from "lucide-react"
+import { Command, CalendarCheck2, Settings, ChevronUp, CircleHelp, LogOut } from "lucide-react"
 // Context
 import { useAppContext } from "../context/AppContext"
 // Components
@@ -22,23 +21,20 @@ const links = [
 
 export function AppSidebar() {
 
-    const { selectedSection, setSelectedSection, setExitDialogOpen, setSupportDialogOpen, setCreditsDialogOpen, isCreditsUpdate } = useAppContext();
+    const { selectedSection, setSelectedSection, setExitDialogOpen, setSupportDialogOpen } = useAppContext();
     const [userEmail, setUserEmail] = useState<string>("");
-    const [creditsAvabile, setCreditsAvabile] = useState<null | any>(null);
 
     useEffect(() => {
-        const fetchCredits = async () => {
+        const fetchInfo = async () => {
             const data = await checkData();
             if (data === null) {
                 setUserEmail('user@email.com');
-                setCreditsAvabile('N/A');
             } else {
                 setUserEmail(data.email);
-                setCreditsAvabile(data.credits);
             }
         }
-        fetchCredits();
-    }, [isCreditsUpdate]);
+        fetchInfo();
+    }, []);
 
     return (
         <Sidebar className="md:border-sidebar-background bg-sidebar-background p-2">
@@ -70,20 +66,6 @@ export function AppSidebar() {
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
-                {/* TODO
-                <SidebarGroupContent>
-                    <div className="flex flex-col gap-y-2 p-2 w-full">
-                        <p className="font-semibold text-base text-center text-textSecondary">Credits avabile: {creditsAvabile}</p>
-                        <Button
-                            type="button"
-                            className="bg-buttonColor hover:bg-buttonHoverColor py-5 w-full font-bold text-md text-textForeground"
-                            onClick={() => setCreditsDialogOpen(true)}>
-                            <ShoppingCart />
-                            Buy credits
-                        </Button>
-                    </div>
-                </SidebarGroupContent>
-                */}
             </SidebarContent>
             {/* FOOTER */}
             <SidebarFooter>
@@ -92,10 +74,9 @@ export function AppSidebar() {
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <SidebarMenuButton className="flex justify-start items-center bg-elevation2 hover:bg-elevation3 m-0 px-3 py-7 w-full font-semibold text-sm text-textSecondary">
-                                    <Avatar className="rounded-lg w-8 h-8">
-                                        <AvatarImage src="https://github.com/shadcn.png" />
-                                        <AvatarFallback>CN</AvatarFallback>
-                                    </Avatar>
+                                    <div className="w-8 h-8 rounded-full flex items-center justify-center bg-zinc-400 text-zinc-50">
+                                        {userEmail.slice(0, 2).toUpperCase()}
+                                    </div>
                                     <p className="w-2/3 overflow-hidden">
                                         {userEmail}
                                     </p>

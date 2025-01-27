@@ -8,8 +8,8 @@ import axios from "axios";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 // Shadcnui
 import { ChartConfig, ChartContainer, ChartTooltip } from "@/components/ui/chart";
-import { toast } from "sonner";
 import { Tooltip, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
+import { toast } from "sonner";
 
 // Url del server di produzione
 const SERVER_URL = 'http://localhost:3000';
@@ -28,7 +28,6 @@ interface ChartProps {
     setDataLoading: Dispatch<SetStateAction<boolean>>;
 }
 
-
 // Configurazione del grafico
 const chartConfig = {
     desktop: {
@@ -41,10 +40,12 @@ export default function Chart({ subreddit, chartData, setChartData, setDataLoadi
 
     const navigate: NavigateFunction = useNavigate();
 
+    // Funzione per caricare i dati del chart
     const fetchData = async () => {
-        setDataLoading(true);
-        const token = localStorage.getItem('authToken');
 
+        setDataLoading(true);
+
+        const token = localStorage.getItem('authToken');
         if (!token) {
             toast.error("User without permissions");
             navigate('/login');
@@ -84,6 +85,8 @@ export default function Chart({ subreddit, chartData, setChartData, setDataLoadi
             console.error("CLIENT: Errore nel caricamento dei dati: ", error.stack);
             setChartData([]);
             setDataLoading(false);
+        } finally {
+            setDataLoading(false);
         }
     }
 
@@ -109,7 +112,6 @@ export default function Chart({ subreddit, chartData, setChartData, setDataLoadi
             fetchData();
         }
     }, [subreddit]);
-
 
     return (
         <TooltipProvider>

@@ -7,6 +7,8 @@ import axios from 'axios';
 // Shadcnui
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
 import { toast } from "sonner";
+// Icons
+import { LogOut } from "lucide-react";
 
 // Url del server di produzione
 const SERVER_URL = 'http://localhost:3000';
@@ -64,6 +66,7 @@ export default function ExitDialog() {
                     <AlertDialogAction
                         className="bg-red-500 hover:bg-red-600 text-white"
                         onClick={() => handleLogout()}>
+                        <LogOut />
                         Confirm Logout
                     </AlertDialogAction>
                 </AlertDialogFooter>
