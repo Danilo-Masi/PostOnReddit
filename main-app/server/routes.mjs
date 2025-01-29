@@ -1,6 +1,6 @@
 // Auth
 import registrationRoutes from './routes/auth/registration-routes.mjs';
-import logoutRoutes from './routes/auth/login-routes.mjs';
+import logoutRoutes from './routes/auth/logout-routes.mjs';
 import loginRoutes from './routes/auth/login-routes.mjs';
 // Supabase
 import verifyTokenRoutes from './routes/supabase/verify-token-route.mjs';

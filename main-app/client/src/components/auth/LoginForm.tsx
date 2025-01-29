@@ -62,23 +62,25 @@ export default function LoginForm() {
     }
 
     // Funzione per validare le credenziali inserite dall'utente in fase di accesso
-    const handleValidateCredentials = (email: string, password: string) => {
-        let errors: string[] = [];
-        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        if (email.length === 0) {
+    const handleValidateCredentials = (email: string, password: string): string[] => {
+        const errors: string[] = [];
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[\W_]).{6,}$/;
+
+        if (!email.trim()) {
             errors.push("Email can't be empty");
         } else if (!emailRegex.test(email)) {
             errors.push("Email is not valid");
         }
-        if (password.length < 6) {
-            errors.push("Password must be at least 6 characters\n");
-        }
-        /*const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/;
-        if (!passwordRegex.test(password)) {
-            errors.push("Password must contain at least one letter, one number, and one special character\n");
+
+        /*if (password.length < 6) {
+            errors.push("Password must be at least 6 characters");
+        } else if (!passwordRegex.test(password)) {
+            errors.push("Password must contain at least one letter, one number, and one special character");
         }*/
+
         return errors;
-    }
+    };
 
     // Funzione per gestire gli errori
     const handleError = (errorMsg: string, status: number) => {
@@ -92,21 +94,21 @@ export default function LoginForm() {
     const handleSuccess = (token: string) => {
         localStorage.setItem('authToken', token);
         toast.success("Access successful");
-        navigate('/home');
+        navigate('/');
     }
 
     return (
         <Card className="flex flex-col gap-y-1 bg-background shadow-elevation3 shadow-md w-[90%] md:w-1/2">
             <CardHeader className="flex justify-center items-center w-full">
                 <CardTitle><Logo /></CardTitle>
-                <CardDescription>Welcome back to postonreddit</CardDescription>
+                <CardDescription>Welcome back to postonreddit!</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-y-2">
-                <Label aria-label="emailInputId">Email</Label>
+                <Label aria-label="emailInputId">Email Address</Label>
                 <Input
                     id="emailInputId"
                     type="email"
-                    placeholder="email"
+                    placeholder="Enter your email"
                     required
                     value={email}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} />
@@ -116,7 +118,7 @@ export default function LoginForm() {
                 <Input
                     id="passwordInputId"
                     type="password"
-                    placeholder="·········"
+                    placeholder="••••••••"
                     required
                     value={password}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} />
@@ -126,12 +128,12 @@ export default function LoginForm() {
                     type="submit"
                     className="bg-buttonColor hover:bg-buttonHoverColor w-full"
                     onClick={handleLogin}>
-                    <LogIn /> Login to your account
+                    <LogIn /> Log In to Your Account
                 </Button>
-                <Link to="/registration" className="text-foreground hover:text-primary">
-                    Dont'have an account?
+                <Link to="/registration" className="text-foreground">
+                    Don't have an account? <span className="hover:text-orange-500">Sign up here</span>
                 </Link>
             </CardFooter>
         </Card>
-    )
+    );
 }

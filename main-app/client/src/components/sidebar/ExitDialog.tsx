@@ -26,18 +26,22 @@ export default function ExitDialog() {
             navigate('/login');
             return;
         }
+
         try {
-            const response = await axios.post(`${SERVER_URL}/auth/logout`, {}, {
+            const response = await axios.post(`${SERVER_URL}/auth/logout`, null, {
                 headers: {
                     Authorization: `Bearer ${authToken}`,
                 }
             });
-            if (response.status === 200) {
-                localStorage.removeItem('authToken');
-                navigate('/login');
-            } else {
+
+            if (response.status !== 200) {
                 toast.error("Logout failed. Please try again");
+                return;
             }
+
+            localStorage.removeItem('authToken');
+            navigate('/login');
+
         } catch (error: any) {
             if (error.response) {
                 console.error("CLIENT: Server error:", error.stack);
@@ -54,20 +58,23 @@ export default function ExitDialog() {
 
     return (
         <AlertDialog open={isExitDialogOpen} onOpenChange={() => setExitDialogOpen(!isExitDialogOpen)}>
-            <AlertDialogContent className="rounded-lg w-[90%]">
+            <AlertDialogContent
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+                className="rounded-lg w-[90%]">
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Logout</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        Are you sure you want to log out? You will need to login again to access your account
+                    <AlertDialogTitle id="alert-dialog-title">Log Out</AlertDialogTitle>
+                    <AlertDialogDescription id="alert-dialog-description">
+                        Are you sure you want to log out? You will need to log in again to access your account.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel className="hover:bg-gray-100">Cancel</AlertDialogCancel>
                     <AlertDialogAction
                         className="bg-red-500 hover:bg-red-600 text-white"
-                        onClick={() => handleLogout()}>
+                        onClick={handleLogout}>
                         <LogOut />
-                        Confirm Logout
+                        Confirm Log Out
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>

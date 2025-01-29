@@ -67,13 +67,13 @@ export function AppSidebar() {
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
-            {/* FOOTER */}
+            {/* SIDEBAR FOOTER */}
             <SidebarFooter>
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <SidebarMenuButton className="flex justify-start items-center bg-elevation2 hover:bg-elevation3 m-0 px-3 py-7 w-full font-semibold text-sm text-textSecondary">
+                                <SidebarMenuButton className="flex justify-start items-center bg-elevation2 hover:bg-elevation3 m-0 px-3 py-7 w-full font-semibold text-sm text-textSecondary rounded-lg">
                                     <div className="w-8 h-8 rounded-full flex items-center justify-center bg-zinc-400 text-zinc-50">
                                         {userEmail.slice(0, 2).toUpperCase()}
                                     </div>

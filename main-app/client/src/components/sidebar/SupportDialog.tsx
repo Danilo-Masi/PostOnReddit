@@ -1,9 +1,7 @@
 // Context
 import { useAppContext } from "../context/AppContext";
 // Shadcnui
-import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
-// Icons
-import { X } from "lucide-react";
+import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
 
 export default function SupportDialog() {
 
@@ -11,21 +9,20 @@ export default function SupportDialog() {
 
     return (
         <AlertDialog open={isSupportDialogOpen} onOpenChange={() => setSupportDialogOpen(!isSupportDialogOpen)}>
-            <AlertDialogContent className="w-[90%] rounded-lg">
+            <AlertDialogContent
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+                className="w-[90%] rounded-lg">
                 <AlertDialogHeader>
-                    <div className="flex justify-between items-start">
-                        <AlertDialogTitle className="text-balance">Do you have any feedback or problem?</AlertDialogTitle>
-                        <AlertDialogCancel className="w-8 h-8 bg-white border shadow-none hover:border-border hover:bg-white">
-                            <X />
-                        </AlertDialogCancel>
-                    </div>
-                    <AlertDialogDescription className="text-balance">
-                        For any issues, question or feedback, send an email at
-                        <span>
-                            <p className="text-textColor hover:underline"> danilomasi999@gmail.com</p>
-                        </span>
+                    <AlertDialogTitle id="alert-dialog-title" className="text-balance">Need Assistance or Have Feedback?</AlertDialogTitle>
+                    <AlertDialogDescription id="alert-dialog-description" className="text-balance">
+                        If you encounter any issues or have any suggestions, feel free to reach out by emailing us at
+                        <span className="text-orange-500 hover:underline"> danilomasi999@gmail.com</span>
                     </AlertDialogDescription>
                 </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogCancel className="hover:bg-gray-100">Close</AlertDialogCancel>
+                </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
     );

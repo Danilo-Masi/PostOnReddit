@@ -58,26 +58,29 @@ export default function RegistrationForm() {
     }
 
     // Funzione per validare le credenziali inserite dall'utente in fase di registrazione
-    const handleValidateCredentials = (name: string, email: string, password: string) => {
-        let errors: string[] = [];
-        if (name.length === 0) {
+    const handleValidateCredentials = (name: string, email: string, password: string): string[] => {
+        const errors: string[] = [];
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[\W_]).{6,}$/;
+
+        if (!name.trim()) {
             errors.push("Name can't be empty");
         }
-        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        if (email.length === 0) {
+
+        if (!email.trim()) {
             errors.push("Email can't be empty");
         } else if (!emailRegex.test(email)) {
             errors.push("Email is not valid");
         }
+
         if (password.length < 6) {
-            errors.push("Password must be at least 6 characters\n");
+            errors.push("Password must be at least 6 characters");
+        } else if (!passwordRegex.test(password)) {
+            errors.push("Password must contain at least one letter, one number, and one special character");
         }
-        /*const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/;
-        if (!passwordRegex.test(password)) {
-            errors.push("Password must contain at least one letter, one number, and one special character\n");
-        }*/
+        
         return errors;
-    }
+    };
 
     // Funzione per gestire gli errori
     const handleError = (errorMsg: string, status: number) => {
@@ -99,24 +102,24 @@ export default function RegistrationForm() {
         <Card className="flex flex-col gap-y-1 bg-background shadow-elevation3 shadow-md w-[90%] md:w-1/2">
             <CardHeader className="flex justify-center items-center w-full">
                 <CardTitle><Logo /></CardTitle>
-                <CardDescription>Welcome to PostOnReddit</CardDescription>
+                <CardDescription>Welcome to PostOnReddit!</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-y-2">
-                <Label htmlFor="registrationNameInput">Name</Label>
+                <Label htmlFor="registrationNameInput">Full Name</Label>
                 <Input
                     id="registrationNameInput"
                     type="text"
-                    placeholder="name"
+                    placeholder="Enter your full name"
                     required
                     value={name}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
             </CardContent>
             <CardContent className="flex flex-col gap-y-2">
-                <Label htmlFor="registrationEmailInput">Email</Label>
+                <Label htmlFor="registrationEmailInput">Email Address</Label>
                 <Input
                     id="registrationEmailInput"
                     type="email"
-                    placeholder="email"
+                    placeholder="Enter your email"
                     required
                     value={email}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} />
@@ -126,7 +129,7 @@ export default function RegistrationForm() {
                 <Input
                     id="registrationPasswordInput"
                     type="password"
-                    placeholder="·········"
+                    placeholder="••••••••"
                     required
                     value={password}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} />
@@ -136,10 +139,10 @@ export default function RegistrationForm() {
                     type="button"
                     className="bg-buttonColor hover:bg-buttonHoverColor w-full"
                     onClick={() => handleRegistration()}>
-                    <LogIn /> Register new account
+                    <LogIn /> Register a New Account
                 </Button>
-                <Link to="/login" className="text-foreground hover:text-primary">
-                    Have an account yet?
+                <Link to="/login" className="text-foreground">
+                    Already have an account? <span className="hover:text-orange-500">Log in here</span>
                 </Link>
             </CardFooter>
         </Card>
