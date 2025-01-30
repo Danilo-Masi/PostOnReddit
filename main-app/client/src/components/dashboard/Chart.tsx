@@ -117,7 +117,7 @@ export default function Chart({ subreddit, chartData, setChartData, setDataLoadi
         <TooltipProvider>
             <ChartContainer
                 config={chartConfig}
-                className="w-full">
+                className="w-full min-h-[50svh] md:min-h-0">
                 <AreaChart
                     accessibilityLayer
                     data={chartData}

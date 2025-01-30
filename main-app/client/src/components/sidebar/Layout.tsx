@@ -6,14 +6,12 @@ import MainContainer from "../custom/MainContainer";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     return (
-        <SidebarProvider className="relative bg-elevation p-2 w-screen h-screen overflow-hidden">
+        <SidebarProvider className="w-full h-svh flex bg-elevation">
             <AppSidebar />
             <MainContainer>
-                {/* Trigger per mobile */}
                 <SidebarTrigger
-                    aria-label="Apri la barra laterale"
-                    className="w-10 h-10 hover:text-primary md:hidden"
-                />
+                    aria-label="Open the sidebar"
+                    className="w-10 h-10 hover:text-primary md:hidden" />
                 {children}
             </MainContainer>
         </SidebarProvider>

@@ -37,7 +37,7 @@ export function AppSidebar() {
     }, []);
 
     return (
-        <Sidebar className="md:border-sidebar-background bg-sidebar-background p-2">
+        <Sidebar className="md:py-2 bg-zinc-100 dark:bg-zinc-800 border-zinc-100 dark:border-zinc-800">
             {/* HEADER */}
             <SidebarHeader>
                 <Logo />
@@ -73,7 +73,7 @@ export function AppSidebar() {
                     <SidebarMenuItem>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <SidebarMenuButton className="flex justify-start items-center bg-elevation2 hover:bg-elevation3 m-0 px-3 py-7 w-full font-semibold text-sm text-textSecondary rounded-lg">
+                                <SidebarMenuButton className="w-full flex justify-start items-center m-0 px-3 py-7 font-semibold text-sm rounded-lg bg-zinc-200 dark:bg-zinc-700 text-zinc-500 dark:text-zinc-500">
                                     <div className="w-8 h-8 rounded-full flex items-center justify-center bg-zinc-400 text-zinc-50">
                                         {userEmail.slice(0, 2).toUpperCase()}
                                     </div>

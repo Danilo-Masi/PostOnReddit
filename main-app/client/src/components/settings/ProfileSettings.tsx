@@ -89,14 +89,14 @@ export default function ProfileSettings() {
         <CardBase
             cardTitle='Profile Settings'
             cardDescription='Manage your profile preferences'
-            mdWidth="md:w-1/3">
-            <div className="flex justify-center items-center bg-zinc-200 mb-3 rounded-xl w-full h-full min-h-[60svh]">
+            mdWidth="md:w-1/3 h-fit">
+            <div className="w-full min-h-[50svh] flex justify-center items-center mb-3 rounded-xl bg-zinc-300">
                 Coming Soon
             </div>
             {isRedditAuthorized ? (
                 <Button
                     type="button"
-                    className="bg-red-500 hover:bg-red-600 w-full"
+                    className="w-full bg-red-500 hover:bg-red-600"
                     onClick={() => handleRemovePermits()}>
                     <KeySquare />
                     Revoke Reddit Permissions
@@ -104,7 +104,7 @@ export default function ProfileSettings() {
             ) : (
                 <Button
                     type="button"
-                    className="bg-buttonColor hover:bg-buttonHoverColor w-full"
+                    className="w-full bg-orange-500 hover:bg-orange-600"
                     onClick={() => handleRequestPermits()}>
                     <KeySquare />
                     Request Reddit Permissions

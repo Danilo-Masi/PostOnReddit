@@ -17,7 +17,7 @@ export default function LoginPage() {
     const checkUser = async () => {
       const isAuthenticated = await checkToken();
       if (isAuthenticated) {
-        navigate('/home');
+        navigate('/');
       }
     }
     checkUser();

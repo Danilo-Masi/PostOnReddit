@@ -18,7 +18,7 @@ interface ThemeToyProps {
 // Componente grafico per visualizzare il tema
 export const ThemeToy = ({ containerColor, itemColor }: ThemeToyProps) => {
     return (
-        <div className={`w-[90%] h-auto flex items-start justify-start flex-wrap gap-2 p-5 rounded-xl absolute -bottom-2 -right-2 ${containerColor}`}>
+        <div className={`w-[90%] flex items-start justify-start flex-wrap gap-2 p-5 rounded-xl absolute -bottom-2 -right-2 ${containerColor}`}>
             <div className={`w-6 h-6 rounded-full ${itemColor}`} />
             <div className={`w-[calc(100%-2rem)] h-6 rounded-2xl ${itemColor}`} />
             <div className={`w-full h-3 rounded-2xl ${itemColor}`} />
@@ -62,7 +62,7 @@ export default function ThemeSettings() {
                 className="flex flex-col justify-between items-start gap-y-3 w-full h-full">
                 <Label
                     htmlFor="dark"
-                    className={`w-full min-h-[33svh] flex items-center justify-center border rounded-xl cursor-pointer relative overflow-hidden bg-zinc-600 ${selectedTheme === "dark" && 'border-2 border-orange-500'}`}>
+                    className={`w-full h-[30svh] flex items-center justify-center border rounded-xl cursor-pointer relative overflow-hidden bg-zinc-600 ${selectedTheme === "dark" && 'border-2 border-orange-500'}`}>
                     <RadioGroupItem value="dark" id="dark" className="hidden" />
                     <ThemeToy
                         containerColor="bg-zinc-700"
@@ -70,7 +70,7 @@ export default function ThemeSettings() {
                 </Label>
                 <Label
                     htmlFor="light"
-                    className={`w-full min-h-[33svh] flex items-center justify-center border rounded-xl cursor-pointer relative overflow-hidden bg-zinc-100 ${selectedTheme === "light" && 'border-2 border-orange-500'}`}>
+                    className={`w-full h-[30svh] flex items-center justify-center border rounded-xl cursor-pointer relative overflow-hidden bg-zinc-100 ${selectedTheme === "light" && 'border-2 border-orange-500'}`}>
                     <RadioGroupItem value="light" id="light" className="hidden" />
                     <ThemeToy
                         containerColor="bg-zinc-200"

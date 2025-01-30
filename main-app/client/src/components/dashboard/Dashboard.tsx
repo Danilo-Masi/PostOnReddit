@@ -112,9 +112,9 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="flex md:flex-row flex-col gap-10 mt-3 px-3 w-full h-full overflow-scroll">
+    <div className="w-full h-fit md:h-full flex md:flex-row flex-col gap-10 p-5 mb-10 md:mb-0 rounded-xl bg-zinc-200 dark:bg-zinc-700">
       {/*** BLOCCO SINISTRA ***/}
-      <div className='flex flex-col justify-start items-start gap-y-6 w-full md:w-1/2 md:max-w-1/2 overflow-scroll'>
+      <div className='w-full md:w-1/2 h-full flex flex-col gap-y-6'>
         {/* TITLE EDITOR */}
         <TitleEditor
           titleValue={titleValue}
@@ -125,13 +125,12 @@ export default function Dashboard() {
           setDescriptionValue={setDescriptionValue} />
       </div>
       {/*** BLOCCO DESTRA ***/}
-      <div className='w-full md:w-1/2 flex flex-col justify-start items-start gap-6 bg-elevation p-5 border border-border rounded-xl overflow-scroll'>
-        <div className='w-full h-auto flex flex-col md:flex-row md:flex-wrap gap-4'>
-          {/* SELECT COMMUNITY */}
+      <div className='w-full md:w-1/2 h-full flex flex-col p-5 gap-y-10 md:gap-y-0 bg-zinc-100 dark:bg-zinc-800 border border-border rounded-lg'>
+        {/* Input subreddit, flair, date */}
+        <div className='w-full flex flex-col md:flex-row md:flex-wrap gap-4'>
           <SearchInput
             communityValue={communityValue}
             setCommunityValue={setCommunityValue} />
-          {/* SELECT FLAG */}
           <SelectOption
             subreddit={communityValue}
             isDisabled={communityValue === "" ? true : false}
@@ -142,17 +141,18 @@ export default function Dashboard() {
             date={dateTime}
             setDate={setDateTime} />
         </div>
+        {/* Chart o invalida data */}
         {isDataLoading === true && chartData.length === 0 ? (
-          <div className='w-full h-full flex items-center justify-center'>
+          <div className='w-full h-full min-h-[40svh] md:min-h-0 flex items-center justify-center'>
             <Loader2 className='animate-spin' />
           </div>
         ) : communityValue.length === 0 && chartData.length === 0 ? (
-          <div className='w-full h-full flex items-center justify-center'>
+          <div className='w-full h-full min-h-[40svh] md:min-h-0 flex items-center justify-center'>
             <Ban className='mr-2' size={18} />
             <p>No data found</p>
           </div>
         ) : (
-          <div className='w-full h-full flex items-center justify-center'>
+          <div className='w-full h-full min-h-[40svh] md:min-h-0 flex items-center justify-center'>
             <Chart
               subreddit={communityValue}
               chartData={chartData}
@@ -162,9 +162,9 @@ export default function Dashboard() {
             />
           </div>
         )}
-        {/* BOTTONE */}
+        {/* Button */}
         <Button
-          className='bg-buttonColor hover:bg-buttonHoverColor py-5 w-full'
+          className='w-full py-5 bg-orange-500 hover:bg-orange-600'
           onClick={handlePostCreation}>
           <Clock4 />
           Schedule your post

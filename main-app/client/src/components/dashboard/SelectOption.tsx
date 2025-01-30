@@ -27,7 +27,7 @@ export default function SelectOption({ subreddit, isDisabled, placeholder, value
 
     // Funzione per ricercare le flair disponibili
     const fetchFlairs = async () => {
-        
+
         const token = localStorage.getItem('authToken');
         if (!token) {
             toast.error("User without permissions");
@@ -65,14 +65,12 @@ export default function SelectOption({ subreddit, isDisabled, placeholder, value
 
     return (
         <div className="w-full md:w-[calc(50%-0.5rem)] flex flex-col gap-y-3">
-            <Label>
-                Select a flair
-            </Label>
+            <Label className="text-zinc-700 dark:text-zinc-200">Select a flair</Label>
             <Select
                 disabled={isDisabled}
                 value={value}
                 onValueChange={(val) => setValue(val)}>
-                <SelectTrigger className="w-full z-0">
+                <SelectTrigger className="w-full z-0 bg-zinc-50 dark:bg-zinc-950">
                     <SelectValue placeholder={placeholder} />
                 </SelectTrigger>
                 <SelectContent>

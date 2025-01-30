@@ -98,16 +98,14 @@ export default function SearchInput({ communityValue, setCommunityValue }: Searc
 
     return (
         <div className="w-full md:w-[calc(50%-0.5rem)] flex flex-col gap-y-3">
-            <Label>
-                Select a subreddit
-            </Label>
+            <Label className="text-zinc-700 dark:text-zinc-200">Select a subreddit</Label>
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <Button
                         variant="outline"
                         role="combobox"
                         aria-expanded={open}
-                        className="w-full justify-between border-elevation3 bg-background">
+                        className="w-full justify-between">
                         {communityValue
                             ? <p className="font-medium text-sm text-textPrimary">{communityValue}</p>
                             : <p className="font-medium text-sm text-textSecondary">Select a community</p>}
@@ -115,7 +113,7 @@ export default function SearchInput({ communityValue, setCommunityValue }: Searc
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent className="z-50">
-                    <Command className="w-[250px] border-elevation3 bg-white shadow-elevation3 shadow-md mt-1 border">
+                    <Command className="w-[250px] border-elevation3 shadow-elevation3 shadow-md mt-1 border">
                         {/* Input di ricerca */}
                         <CommandInput
                             placeholder="Search for communities..."
