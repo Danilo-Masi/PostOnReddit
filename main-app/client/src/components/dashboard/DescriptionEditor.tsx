@@ -17,10 +17,13 @@ export default function DescriptionEditor({ descriptionValue, setDescriptionValu
             <Label htmlFor="description-input" className="text-zinc-700 dark:text-zinc-200">Post content</Label>
             <MinimalTiptapEditor
                 value={descriptionValue}
-                onChange={(content: Content) => setDescriptionValue(content)}
+                onChange={(content: Content) => {
+                    console.log("Editor JSON output: ", content);
+                    setDescriptionValue(content)
+                }}
                 className="w-full h-full min-h-[80svh] md:min-h-0 break-all overflow-y-scroll bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 placeholder:text-zinc-500 dark:placeholder:text-zinc-200 shadow-none border border-zinc-300 dark:border-zinc-600 focus:border-orange-500 focus-visible:ring-0 focus-visible:ring-offset-0"
                 editorContentClassName="p-5"
-                output="json"
+                output="html"
                 placeholder="Type your content here"
                 autofocus={false}
                 editable={true}

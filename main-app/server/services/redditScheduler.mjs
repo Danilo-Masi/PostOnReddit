@@ -6,7 +6,9 @@ const scheduleRedditPosts = async () => {
 
     const nowUtc = new Date().toISOString().slice(0, 19) + 'Z';
 
-    let { data: posts, error } = await supabase
+    console.log(`Controllo i post delle: ${nowUtc}`); //LOG
+
+    let { data, error } = await supabase
         .from('posts')
         .select('*')
         .eq('status', 'pending')
@@ -17,20 +19,15 @@ const scheduleRedditPosts = async () => {
         return;
     }
 
-    if (data.length === 0) {
-        console.log("Nessun post da pubblicare in attesa");
-        return;
-    }
+    console.log("Post da pubblicare: ", data); //LOG
 
-    console.log("Post da pubblicare: ", posts);
-
-    for (let post of posts) {
-        console.log(`Pianificanod il post: ${post.title}`);
+    for (let post of data) {
+        console.log(`Pianificando il post: ${post.title}`);
         const submit = await submitPostToReddit(post);
         if (submit) {
-            console.log(`Post ${post.id} pubblicato con successo`);
+            console.log(`Post con id: ${post.id} pubblicato con successo`);
         } else {
-            console.log(`Errore nelal pubblicazione del post ${post.id}`);
+            console.log(`Errore nella pubblicazione del post con id: ${post.id}`);
         }
     }
 };

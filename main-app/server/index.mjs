@@ -5,6 +5,8 @@ import { applyRoutes } from './routes.mjs';
 
 // Legge ogni minuto i post e li carica su Reddit
 import './services/redditScheduler.mjs';
+// Ogni giorno a mezzanotte cancella i post con status `posted`
+import './services/cleanupPost.mjs';
 
 dotenv.config();
 

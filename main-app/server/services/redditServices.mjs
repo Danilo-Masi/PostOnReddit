@@ -1,8 +1,15 @@
 import axios from "axios";
 import supabase from '../config/supabase.mjs';
 import dotenv from 'dotenv';
+import TurndownService from 'turndown';
 
 dotenv.config();
+
+// Funzione per convertire HMTL in Markdown
+const turndowService = new TurndownService();
+const convertHTMLtoMarkdown = (html) => {
+    return turndowService.turndown(html);
+}
 
 export const submitPostToReddit = async (post) => {
     try {
@@ -23,13 +30,13 @@ export const submitPostToReddit = async (post) => {
             api_type: 'json',
             sr: post.community,
             title: post.title,
-            text: post.content.text || '',
-            kind: post.content.kind || 'self',
+            text: convertHTMLtoMarkdown(post.content) || '',
+            kind: 'self',
             flair_id: post.flair || '',
             sendreplies: true,
         }
 
-        const response = await axios.post('htttps://oauth.reddit.com/api/submit', postData, {
+        const response = await axios.post('https://oauth.reddit.com/api/submit', postData, {
             headers: {
                 Authorization: `Bearer ${access_token}`,
                 'User-Agent': 'web:postonreddit:v1.0.0 (by /u/WerewolfCapital4616)',
@@ -46,6 +53,10 @@ export const submitPostToReddit = async (post) => {
             return true;
         } else {
             console.error("BACKEND: Errore nella pubblicazione: ", response.data.json.errors);
+            await supabase
+                .from('posts')
+                .update({ status: 'failed' })
+                .eq('id', post.id);
             return false;
         }
 

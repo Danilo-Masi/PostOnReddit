@@ -208,12 +208,6 @@ export const redditStats = async (req, res) => {
 
         // Aggrega i dati
         const chartData = aggregatePostsByDayAndHour(posts);
-        /*.sort((a, b) => {
-            const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-            return daysOfWeek.indexOf(a.day) - daysOfWeek.indexOf(b.day);
-        });*/
-
-        console.log("DATI DI RISPOSTA: ", chartData);
 
         return res.status(200).json(chartData);
 

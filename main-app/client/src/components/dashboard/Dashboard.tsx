@@ -69,17 +69,29 @@ export default function Dashboard() {
 
         if (response.status === 200) {
           handleSuccess();
+          toast.success("Post successfully created!");
         }
+
       } catch (error: any) {
         console.error("CLIENT: Errore durante il salvataggio del post su DB", error.message);
-        toast.warning("An error occour, please try again later!");
+
+        // Se l'errore contiene un messaggio di errore personalizzato, mostralo
+        if (error.response && error.response.data && error.response.data.details) {
+          error.response.data.details.forEach((errMsg: string) => {
+            toast.error(errMsg);
+          });
+        } else {
+          // Se non c'è un errore specifico nel messaggio, mostra un errore generico
+          toast.error("An error occurred, please try again later");
+        }
       }
     } else {
+      // Mostra gli errori di validazione del form
       errors.map(error => {
         toast.warning(error);
       });
     }
-  }
+  };
 
   // Funzione per validare i dati inseriti nel form per la creazione del post
   const handleValidateForm = (title: string, content: Content, community: string, data: Date) => {
