@@ -64,7 +64,7 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
                     <Button
                         variant="outline"
                         className={cn(
-                            "w-full justify-start text-left font-normal",
+                            "w-full justify-start text-left font-normal dark:bg-zinc-700 dark:hover:bg-zinc-600",
                             !date && "text-muted-foreground"
                         )}>
                         <CalendarDays className="mr-2 h-4 w-4" />
@@ -82,8 +82,9 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
                             selected={date}
                             onSelect={handleDateSelect}
                             initialFocus
-                            disabled={(day) => day < new Date(new Date().setHours(0, 0, 0, 0))} />
-                        <div className="flex flex-col sm:flex-row sm:h-[300px] divide-y sm:divide-y-0 sm:divide-x">
+                            disabled={(day) => day < new Date(new Date().setHours(0, 0, 0, 0))}
+                            className="dark:bg-zinc-700" />
+                        <div className="flex flex-col sm:flex-row sm:h-[300px] divide-y sm:divide-y-0 sm:divide-x dark:bg-zinc-700">
                             <ScrollArea className="w-64 sm:w-auto">
                                 <div className="flex sm:flex-col p-2">
                                     {hours.reverse().map((hour) => (

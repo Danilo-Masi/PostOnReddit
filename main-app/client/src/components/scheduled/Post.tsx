@@ -22,27 +22,29 @@ export default function Post({ title, content, date, community, status, postId }
 
     // Funzione per modificare lo stile dinamicamente in base allo stato del post
     const statusColor = () => {
-        if (status === "pending") return "border-yellow-500 text-yellow-500";
-        if (status === "posted") return "border-green-500 text-green-500";
-        return "border-red-500 text-red-500";
+        if (status === "pending") return "border-yellow-500 text-yellow-500 dark:border-yellow-300 dark:text-yellow-300";
+        if (status === "posted") return "border-green-500 text-green-500 dark:border-green-500 dark:text-green-500";
+        return "border-red-500 text-red-500 dark:border-red-500 dark:text-red-500";
     }
 
-    // Funzione per renderizzare il contenuto del post in formato JSON
-    const renderContent = (content: any) => {
-        if (!content || typeof content !== "object") return null;
+    // Funzione per renderizzare il contenuto del post in formato HTML
+    const renderContent = (content: string) => {
+        if (!content || typeof content !== "string") return null;
 
-        // Unisce tutti i paragrafi in un unico testo
-        const fullText = content.content
-            .filter((node: any) => node.type === "paragraph")
-            .flatMap((node: any) => node.content?.map((child: any) => child.text) || [])
-            .join(" ");
+        // Creiamo un div temporaneo per estrarre il testo puro dall'HTML
+        const tempElement = document.createElement("div");
+        tempElement.innerHTML = content;
+        let plainText = tempElement.textContent || tempElement.innerText || "";
 
-        // Divide il testo in parole e tronca se necessario
-        const words = fullText.split(/\s+/);
-        const truncatedText = words.length > 30 ? words.slice(0, 30).join(" ") + "..." : fullText;
+        // Rimuoviamo virgolette doppie e singole all'inizio e alla fine
+        plainText = plainText.trim().replace(/^["']|["']$/g, '');
+
+        // Divide il testo in parole e lo tronca se necessario
+        const words = plainText.split(/\s+/);
+        const truncatedText = words.length > 30 ? words.slice(0, 30).join(" ") + "..." : plainText;
 
         return (
-            <p className="text-zinc-500">
+            <p className="text-zinc-500 dark:text-zinc-300">
                 {truncatedText}
             </p>
         );
@@ -55,18 +57,18 @@ export default function Post({ title, content, date, community, status, postId }
     }
 
     return (
-        <Card className="border-elevation2 bg-background border w-full md:w-[calc(50%-0.5rem)]">
+        <Card className="w-full md:w-[calc(50%-0.5rem)] bg-zinc-100 dark:bg-zinc-800 border-0">
             <CardHeader className="gap-y-2">
-                <CardTitle className="font-bold text-textPrimary text-xl">
+                <CardTitle className="font-bold text-xl text-zinc-900 dark:text-zinc-50">
                     {title}
                 </CardTitle>
-                <CardDescription className="font-light text-sm text-textSecondary">
+                <CardDescription className="font-light text-sm text-zinc-500 dark:text-zinc-300">
                     Scheduled for <i className="font-semibold">{date}</i>
                 </CardDescription>
                 <div className="flex gap-2">
                     <Badge
                         variant="outline"
-                        className="w-fit">
+                        className="w-fit text-zinc-500 border-zinc-500 dark:text-zinc-300 dark:border-zinc-300">
                         {community}
                     </Badge>
                     <Badge
@@ -76,14 +78,14 @@ export default function Post({ title, content, date, community, status, postId }
                     </Badge>
                 </div>
             </CardHeader>
-            <CardContent className="flex flex-col gap-y-2 min-h-[10svh] font-light text-clip text-m text-textSecondary">
-                {renderContent(JSON.parse(content))}
+            <CardContent className="flex flex-col gap-y-2 min-h-[10svh] font-light text-clip text-m text-zinc-500 dark:text-zinc-300">
+                {renderContent(content)}
             </CardContent>
             <CardFooter className="flex justify-end gap-3">
                 <Button
                     onClick={handleOpenDeleteDialog}
                     variant="outline"
-                    className="bg-card hover:bg-buttonError shadow-none border-border hover:text-textForeground">
+                    className="shadow-none border-zinc-600 text-zinc-600 hover:text-zinc-50 bg-zinc-100 hover:bg-zinc-600 dark:bg-zinc-600 dark:hover:bg-zinc-500">
                     <Trash2 />
                     Delete
                 </Button>

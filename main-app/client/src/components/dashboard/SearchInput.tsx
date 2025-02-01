@@ -105,7 +105,7 @@ export default function SearchInput({ communityValue, setCommunityValue }: Searc
                         variant="outline"
                         role="combobox"
                         aria-expanded={open}
-                        className="w-full justify-between">
+                        className="w-full justify-between dark:bg-zinc-700 dark:hover:bg-zinc-600">
                         {communityValue
                             ? <p className="font-medium text-sm text-textPrimary">{communityValue}</p>
                             : <p className="font-medium text-sm text-textSecondary">Select a community</p>}
@@ -113,7 +113,7 @@ export default function SearchInput({ communityValue, setCommunityValue }: Searc
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent className="z-50">
-                    <Command className="w-[250px] border-elevation3 shadow-elevation3 shadow-md mt-1 border">
+                    <Command className="w-[250px] border-elevation3 shadow-elevation3 shadow-md mt-1 border dark:bg-zinc-700 dark:hover:bg-zinc-600">
                         {/* Input di ricerca */}
                         <CommandInput
                             placeholder="Search for communities..."

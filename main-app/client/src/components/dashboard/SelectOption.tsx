@@ -70,10 +70,10 @@ export default function SelectOption({ subreddit, isDisabled, placeholder, value
                 disabled={isDisabled}
                 value={value}
                 onValueChange={(val) => setValue(val)}>
-                <SelectTrigger className="w-full z-0 bg-zinc-50 dark:bg-zinc-950">
+                <SelectTrigger className="w-full z-0 bg-zinc-50 dark:bg-zinc-700 dark:hover:bg-zinc-600 dark:disabled:bg-zinc-900">
                     <SelectValue placeholder={placeholder} />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="dark:bg-zinc-700">
                     <SelectGroup>
                         {options.length === 0 && subreddit.trim().length >= 2 && (
                             <SelectItem disabled value="No flair found">

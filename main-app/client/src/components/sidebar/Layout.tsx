@@ -6,7 +6,7 @@ import MainContainer from "../custom/MainContainer";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     return (
-        <SidebarProvider className="w-full h-svh flex bg-elevation">
+        <SidebarProvider className="w-full h-svh">
             <AppSidebar />
             <MainContainer>
                 <SidebarTrigger

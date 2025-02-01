@@ -15,10 +15,10 @@ export default function SelectDate({ selectedDate, setSelectedDate }: SelectDate
       <Select
         value={selectedDate}
         onValueChange={(value) => setSelectedDate(value)}>
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-[180px] bg-zinc-100 dark:bg-zinc-800">
           <SelectValue placeholder="Select period" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="bg-zinc-100 dark:bg-zinc-800">
           <SelectItem value="today">Today</SelectItem>
           <SelectItem value="week">Next 7 days</SelectItem>
           <SelectItem value="month">Next 30 days</SelectItem>

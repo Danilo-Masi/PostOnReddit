@@ -50,7 +50,7 @@ export default function DeleteDialog() {
                     <AlertDialogCancel className="hover:bg-gray-100">Cancel</AlertDialogCancel>
                     <AlertDialogAction
                         onClick={handleDeletePost}
-                        className="bg-red-500 hover:bg-red-600 text-white">
+                        className="bg-red-500 hover:bg-red-600 dark:bg-red-500 dark:hover:bg-red-600 dark:text-zinc-50">
                         <Trash2 />
                         Delete Permanently
                     </AlertDialogAction>

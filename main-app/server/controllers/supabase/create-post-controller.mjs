@@ -41,7 +41,7 @@ const checkSubredditPostRequirements = async (subreddit, access_token) => {
                 'Content-Type': 'application/json',
             },
             params: {
-                subreddit: subreddit, 
+                subreddit: subreddit,
             }
         });
 
@@ -156,17 +156,26 @@ export const createPost = async (req, res) => {
 
     const errors = [];
 
+    const titleMinLength = requirements.title_text_min_length ?? 0; // Se è null/undefined, assegna 0
+    const titleMaxLength = requirements.title_text_max_length ?? Infinity; // Se è null/undefined, assegna un valore infinito
+
     // Validazione del titolo
-    if (requirements.title_required_strings && !requirements.title_required_strings.some(str => title.includes(str))) {
+    if (Array.isArray(requirements.title_required_strings) &&
+        requirements.title_required_strings.length > 0 &&
+        !requirements.title_required_strings.some(str => title.includes(str))) {
         errors.push(`The title must contain one of the following words: ${requirements.title_required_strings.join(', ')}`);
     }
-    if (title.length < requirements.title_text_min_length) {
-        errors.push(`The title must be at least ${requirements.title_text_min_length} characters long.`);
+
+    if (title.length < titleMinLength) {
+        errors.push(`The title must be at least ${titleMinLength} characters long.`);
     }
-    if (title.length > requirements.title_text_max_length) {
-        errors.push(`The title cannot exceed ${requirements.title_text_max_length} characters.`);
+
+    if (title.length > titleMaxLength) {
+        errors.push(`The title cannot exceed ${titleMaxLength} characters.`);
     }
-    if (requirements.title_blacklisted_strings && requirements.title_blacklisted_strings.some(str => title.includes(str))) {
+
+    if (Array.isArray(requirements.title_blacklisted_strings) &&
+        requirements.title_blacklisted_strings.some(str => title.includes(str))) {
         errors.push('The title contains forbidden words.');
     }
 
@@ -174,7 +183,9 @@ export const createPost = async (req, res) => {
     if (requirements.body_restriction_policy === 'notAllowed' && content) {
         errors.push('This subreddit does not allow post bodies.');
     }
-    if (requirements.body_blacklisted_strings && requirements.body_blacklisted_strings.some(str => content.includes(str))) {
+
+    if (Array.isArray(requirements.body_blacklisted_strings) &&
+        requirements.body_blacklisted_strings.some(str => content.includes(str))) {
         errors.push('The post body contains forbidden words.');
     }
 

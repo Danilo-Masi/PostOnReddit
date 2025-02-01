@@ -1,9 +1,9 @@
 // React
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 // Axios
 import axios from 'axios';
 // minimal-tiptap
-import { Content } from '@tiptap/react';
+import { Content, Editor } from '@tiptap/react';
 // Components
 import DescriptionEditor from './DescriptionEditor';
 import SelectOption from './SelectOption';
@@ -69,7 +69,6 @@ export default function Dashboard() {
 
         if (response.status === 200) {
           handleSuccess();
-          toast.success("Post successfully created!");
         }
 
       } catch (error: any) {
@@ -115,9 +114,9 @@ export default function Dashboard() {
 
   // Funzione per gestire il successo
   const handleSuccess = () => {
-    toast("Post scheduled correctly!");
+    toast.success("Post scheduled correctly!");
     setTitleValue("");
-    setDescriptionValue(null);
+    setDescriptionValue("");
     setCommunityValue("");
     setFlairValue("");
     setDateTime(utcDate);
@@ -176,7 +175,7 @@ export default function Dashboard() {
         )}
         {/* Button */}
         <Button
-          className='w-full py-5 bg-orange-500 hover:bg-orange-600'
+          className='w-full py-5 bg-orange-500 dark:bg-orange-500 hover:bg-orange-500 dark:hover:bg-orange-600 text-zinc-50 dark:text-zinc-50'
           onClick={handlePostCreation}>
           <Clock4 />
           Schedule your post

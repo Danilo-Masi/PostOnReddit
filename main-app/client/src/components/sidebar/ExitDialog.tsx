@@ -71,7 +71,7 @@ export default function ExitDialog() {
                 <AlertDialogFooter>
                     <AlertDialogCancel className="hover:bg-gray-100">Cancel</AlertDialogCancel>
                     <AlertDialogAction
-                        className="bg-red-500 hover:bg-red-600 text-white"
+                        className="bg-red-500 hover:bg-red-600 dark:bg-red-500 dark:hover:bg-red-600 dark:text-zinc-50"
                         onClick={handleLogout}>
                         <LogOut />
                         Confirm Log Out

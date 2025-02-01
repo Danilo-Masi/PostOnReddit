@@ -12,7 +12,7 @@ interface CardBase {
 
 export default function CardBase({ children, cardTitle, cardDescription, mdWidth }: CardBase) {
     return (
-        <Card className={`w-full md:min-h-full overflow-auto ${mdWidth}`}>
+        <Card className={`w-full md:min-h-full overflow-auto ${mdWidth} dark:bg-zinc-700`}>
             <CardHeader>
                 <CardTitle>{cardTitle}</CardTitle>
                 <CardDescription>{cardDescription}</CardDescription>

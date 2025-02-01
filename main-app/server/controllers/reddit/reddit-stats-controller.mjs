@@ -22,12 +22,11 @@ const getRedditPosts = async (subreddit, access_token) => {
 
     // Calcolo dei timestamp UNIX per ottenere dati esatti per 7 giorni fa (escluso oggi)
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // Inizio di oggi (00:00 UTC)
+    today.setHours(0, 0, 0, 0);
 
-    const endTimestamp = Math.floor(today.getTime() / 1000); // Inizio di oggi
-    const startTimestamp = endTimestamp - 7 * 24 * 60 * 60;  // 7 giorni fa (escluso oggi)
+    const endTimestamp = Math.floor(today.getTime() / 1000);
+    const startTimestamp = endTimestamp - 7 * 24 * 60 * 60;
 
-    console.log(`Cercando post tra: ${new Date(startTimestamp * 1000).toUTCString()} e ${new Date(endTimestamp * 1000).toUTCString()}`);
 
     while (!reachedEnd) {
         try {

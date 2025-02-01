@@ -90,13 +90,13 @@ export default function ProfileSettings() {
             cardTitle='Profile Settings'
             cardDescription='Manage your profile preferences'
             mdWidth="md:w-1/3 h-fit">
-            <div className="w-full min-h-[50svh] flex justify-center items-center mb-3 rounded-xl bg-zinc-300">
+            <div className="w-full min-h-[50svh] flex justify-center items-center mb-3 rounded-xl bg-zinc-300 dark:bg-zinc-800">
                 Coming Soon
             </div>
             {isRedditAuthorized ? (
                 <Button
                     type="button"
-                    className="w-full bg-red-500 hover:bg-red-600"
+                    className="w-full bg-red-500 hover:bg-red-600 dark:bg-red-500 dark:hover:bg-red-600 dark:text-zinc-50"
                     onClick={() => handleRemovePermits()}>
                     <KeySquare />
                     Revoke Reddit Permissions
@@ -104,7 +104,7 @@ export default function ProfileSettings() {
             ) : (
                 <Button
                     type="button"
-                    className="w-full bg-orange-500 hover:bg-orange-600"
+                    className="w-full bg-orange-500 hover:bg-orange-600 dark:bg-orange-500 dark:hover:bg-orange-600 dark:text-zinc-50"
                     onClick={() => handleRequestPermits()}>
                     <KeySquare />
                     Request Reddit Permissions

@@ -100,7 +100,7 @@ export default function Scheduled() {
   const filteredPosts = filterPosts(postList, selectedDate);
 
   return (
-    <div className="flex md:flex-row flex-col md:flex-wrap gap-4 p-3 w-full overflow-scroll">
+    <div className="w-full h-fit md:h-full flex flex-col gap-10 p-5 mb-10 md:mb-0 rounded-xl bg-zinc-200 dark:bg-zinc-700">
       <SelectDate
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate} />
@@ -109,27 +109,29 @@ export default function Scheduled() {
           <Loader2 className="w-8 h-8 text-zinc-500 animate-spin" />
         </div>
         : filteredPosts.length <= 0 ? (
-          <div className="flex flex-col justify-center items-center gap-y-3 w-full h-[70svh] text-center">
+          <div className="w-full h-full flex flex-col justify-center items-center gap-y-3 overflow-scroll">
             <h1>You have no posts scheduled for the selected date</h1>
             <Button
               type="button"
-              className="bg-buttonColor hover:bg-buttonHoverColor"
+              className="bg-orange-500 dark:bg-orange-500 hover:bg-orange-600 dark:hover:bg-orange-600 dark:text-zinc-50"
               onClick={() => setSelectedSection("dashboard")}>
               Schedule a post
               <Pencil />
             </Button>
           </div>
         ) : (
-          filteredPosts.map((post, index) => (
-            <Post
-              key={index}
-              title={post.title}
-              content={post.content}
-              date={formatDate(post.date)}
-              community={post.community}
-              status={post.status}
-              postId={post.id} />
-          ))
+          <div className="w-full h-full max-h-svh flex flex-col md:flex-row md:flex-wrap justify-start items-start gap-4 overflow-scroll">
+            {filteredPosts.map((post, index) => (
+              <Post
+                key={index}
+                title={post.title}
+                content={post.content}
+                date={formatDate(post.date)}
+                community={post.community}
+                status={post.status}
+                postId={post.id} />
+            ))}
+          </div>
         )}
     </div>
   );

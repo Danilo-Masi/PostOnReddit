@@ -52,9 +52,9 @@ export function AppSidebar() {
                         <SidebarMenu>
                             {links.map((link) => (
                                 <SidebarMenuItem key={link.title}>
-                                    <SidebarMenuButton asChild isActive={selectedSection === link.key}>
+                                    <SidebarMenuButton asChild isActive={selectedSection === link.key} className={`hover:bg-zinc-200 dark:hover:bg-zinc-700 ${selectedSection === link.key && 'bg-zinc-200 dark:bg-zinc-700'}`}>
                                         <Button
-                                            className={`flex items-center justify-start text-textPrimary hover:text-textColor ${selectedSection === link.key && 'text-textColor font-bold'}`}
+                                            className={`flex items-center justify-start text-zinc-700 dark:text-zinc-50`}
                                             variant="ghost"
                                             onClick={() => setSelectedSection(link.key)}>
                                             <link.icon />
@@ -73,8 +73,8 @@ export function AppSidebar() {
                     <SidebarMenuItem>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <SidebarMenuButton className="w-full flex justify-start items-center m-0 px-3 py-7 font-semibold text-sm rounded-lg bg-zinc-200 dark:bg-zinc-700 text-zinc-500 dark:text-zinc-500">
-                                    <div className="w-8 h-8 rounded-full flex items-center justify-center bg-zinc-400 text-zinc-50">
+                                <SidebarMenuButton className="w-full flex justify-start items-center m-0 px-3 py-7 font-semibold text-sm rounded-lg bg-zinc-200 dark:bg-zinc-600 text-zinc-500 dark:text-zinc-300">
+                                    <div className="w-8 h-8 rounded-full flex items-center justify-center bg-zinc-400 dark:bg-zinc-400 text-zinc-50">
                                         {userEmail.slice(0, 2).toUpperCase()}
                                     </div>
                                     <p className="w-2/3 overflow-hidden">
@@ -85,7 +85,7 @@ export function AppSidebar() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent
                                 side="top"
-                                className="flex flex-col gap-y-3 w-[--radix-popper-anchor-width]" >
+                                className="flex flex-col gap-y-3 w-[--radix-popper-anchor-width] dark:bg-zinc-700" >
                                 <DropdownMenuItem onClick={() => setSelectedSection(links[0].key)}>
                                     <Command />
                                     <span>Dashboard</span>
