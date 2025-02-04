@@ -2,6 +2,7 @@ import axios from "axios";
 import supabase from '../../config/supabase.mjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import logger from '../../config/logger.mjs';
 
 dotenv.config();
 
@@ -21,7 +22,7 @@ const decodeToken = (token) => {
     try {
         return jwt.verify(token, process.env.JWT_SECRET);
     } catch (error) {
-        console.error('BACKEND: Token non valido', error.stack);
+        logger.error('Token non valido: ', error.message);
         return;
     }
 }
@@ -51,11 +52,11 @@ const refreshAccessToken = async (refresh_token, user_id) => {
             .update({ access_token: newAccessToken, token_expiry: newExpiry })
             .eq('user_id', user_id);
 
-        console.log("BACKEND: Access token aggiornato");
+        logger.info('access_token di Reddit aggiornato');
         return newAccessToken;
 
     } catch (error) {
-        console.error("BACKEND: Errore durante il refresh del token", error.stack);
+        logger.error('Errore durante il refresh dell\'access_token di Reddit: ', error.message);
         throw new Error(MESSAGES.REFRESH_ERROR);
     }
 };
@@ -66,7 +67,7 @@ export const searchFlair = async (req, res) => {
     const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
-        console.error('BACKEND: Token mancante');
+        logger.error('Token mancante');
         return res.status(401).json({
             message: MESSAGES.MISSING_TOKEN,
         });
@@ -84,6 +85,7 @@ export const searchFlair = async (req, res) => {
     const { q } = req.query;
 
     if (q.trim().length < 2 || q.length > 100) {
+        logger.error('Query non valida');
         return res.status(400).json({
             message: MESSAGES.INVALID_QUERY,
         });
@@ -99,7 +101,7 @@ export const searchFlair = async (req, res) => {
             .single();
 
         if (error || !data) {
-            console.error("BACKEND: Errore di Supabase durante il caricamento del reddit_token: ", error.stack);
+            logger.error('Errore generico di Supabsee durante la fase di caricamento del\'access_token di Reddit: ', error.cause);
             return res.status(401).json({
                 message: MESSAGES.SUPABASE_ERROR,
             })
@@ -108,7 +110,7 @@ export const searchFlair = async (req, res) => {
         let { access_token, refresh_token, token_expiry } = data;
 
         if (new Date(token_expiry) <= new Date()) {
-            console.log("BACKEND: Access token scaduto, procedo con il refresh");
+            logger.info('access_token di Reddit scaduto, procedo con il refresh');
             access_token = await refreshAccessToken(refresh_token, user_id);
         }
 
@@ -136,11 +138,12 @@ export const searchFlair = async (req, res) => {
 
     } catch (error) {
         if (error.status === 403) {
+            logger.info('Nessun flair disponibile per questa subreddit');
             return res.status(200).json({
                 flair: [],
             });
         } else {
-            console.error('BACKEND: Errore generico del server', error.stack);
+            logger.error('Errore generico del Server: ',error.cause);
             return res.status(500).json({
                 message: MESSAGES.SERVER_ERROR,
             });

@@ -1,6 +1,7 @@
 import supabase from '../../config/supabase.mjs';
 import axios from 'axios';
 import dotenv from 'dotenv';
+import logger from '../../config/logger.mjs';
 
 dotenv.config();
 
@@ -19,7 +20,7 @@ export const redditCallback = async (req, res) => {
     const { code, state, error } = req.query;
 
     if (error) {
-        console.error("BACKEND: Errore generico di Reddit", error.stack);
+        logger.error('Errore generico di Reddit: ', error.message);
         return res.status(400).json({
             message: MESSAGE.REDDIT_ERROR,
         });
@@ -58,7 +59,7 @@ export const redditCallback = async (req, res) => {
 
         // Gestisce eventuali errori derivati dall'inserimento dei dati nel DB
         if (error) {
-            console.error('BACKEND: Errore di Supabase durante la fase di salvataggio dei dati nel DB', error.stack);
+            logger.error('Errore generico di Supabase durante la fase di salvataggio dei dati di Reddit nel DB: ', error.cause);
             return res.status(401).json({
                 message: MESSAGE.SUPABASE_ERROR,
             });
@@ -68,7 +69,7 @@ export const redditCallback = async (req, res) => {
         return res.redirect("http://localhost:5173/home"); //DA MODIFICARE
 
     } catch (error) {
-        console.error('BACKEND: Errore generico del server', error.stack);
+        logger.error('Errore generico del Server: ', error.cause);
         return res.status(500).json({
             message: MESSAGE.SERVER_ERROR,
         });

@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import logger from '../../config/logger.mjs';
 
 dotenv.config();
 
@@ -16,7 +17,7 @@ export const verifyToken = (req, res, next) => {
     const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
-        console.error('BACKEND: Token mancante');
+        logger.error('Token mancante');
         return res.status(400).json({
             message: MESSAGES.MISSING_TOKEN,
         });
@@ -25,7 +26,7 @@ export const verifyToken = (req, res, next) => {
     try {
         const decoded = jwt.decode(token);
     } catch (error) {
-        console.error('BACKEND: Errore nella decodifica del token', error.stack);
+        logger.error('Errore nella decodifica del token: ', error.message);
         return res.status(401).json({
             message: MESSAGES.DECODE_ERROR,
         });
@@ -34,7 +35,7 @@ export const verifyToken = (req, res, next) => {
     try {
         jwt.verify(token, process.env.JWT_SECRET, (error, decoded) => {
             if (error) {
-                console.error('BACKEND: Token non valido', error.stack);
+                logger.error('Token non valido: ', error.cause);
                 return res.status(402).json({
                     message: MESSAGES.INVALID_TOKEN,
                 });
@@ -43,7 +44,7 @@ export const verifyToken = (req, res, next) => {
             next();
         });
     } catch (error) {
-        console.error('BACKEND: Errore generico del server', error.stack);
+        logger.error('Errore generico del server: ', error.cause);
         return res.status(500).json({
             message: MESSAGES.SERVER_ERROR,
         });

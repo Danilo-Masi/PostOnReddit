@@ -1,5 +1,6 @@
 import axios from "axios";
 import NodeCache from 'node-cache';
+import logger from '../../config/logger.mjs';
 
 const MESSAGES = {
     INVALID_QUERY: "La query della richiesta non è valida",
@@ -36,6 +37,7 @@ export const searchSubreddits = async (req, res) => {
         });
 
         if (response.status !== 200 || !response.data.data) {
+            logger.error('Errore nel recupero del subreddit da Reddit');
             return res.status(502).json({
                 message: MESSAGES.REDDIT_ERROR,
             });
@@ -55,9 +57,9 @@ export const searchSubreddits = async (req, res) => {
 
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            console.error("BACKEND: Errore axios: ", error.response?.status, error.message);
+            logger.error('Errore nella chiamata axios: ', error.cause);
         } else {
-            console.error("BACKEND: Errore generico del server: ", error.stack);
+            logger.error('Errore generico del Server: ', error.cause);
         }
         return res.status(500).json({
             message: MESSAGES.SERVER_ERROR,

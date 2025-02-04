@@ -1,6 +1,7 @@
 import supabase from '../../config/supabase.mjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import logger from '../../config/logger.mjs';
 
 dotenv.config();
 
@@ -16,7 +17,7 @@ export const loginController = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-        console.error('BACKEND: Credenziali non valide');
+        logger.error('Credenziali non valide');
         return res.status(400).json({
             message: MESSAGES.CREDENTIAL_ERROR,
         });
@@ -29,7 +30,7 @@ export const loginController = async (req, res) => {
         });
 
         if (error) {
-            console.error('BACKEND: Errore di Supabase durante la fase di accesso', error.stack);
+            logger.error('Errore di Supabase durante la fase di Accesso: ', error.cause);
             return res.status(401).json({
                 message: MESSAGES.AUTH_ERROR_MESSAGE,
             });
@@ -47,7 +48,7 @@ export const loginController = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('BACKEND: Errore generico del server', error.stack);
+        logger.error('Errore generico del server: ', error.cause);
         return res.status(500).json({
             message: MESSAGES.SERVER_ERROR,
         });

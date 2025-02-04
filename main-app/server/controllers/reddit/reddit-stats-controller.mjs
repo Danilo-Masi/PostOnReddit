@@ -2,6 +2,7 @@ import axios from "axios";
 import supabase from '../../config/supabase.mjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import logger from '../../config/logger.mjs';
 
 dotenv.config();
 
@@ -27,7 +28,6 @@ const getRedditPosts = async (subreddit, access_token) => {
     const endTimestamp = Math.floor(today.getTime() / 1000);
     const startTimestamp = endTimestamp - 7 * 24 * 60 * 60;
 
-
     while (!reachedEnd) {
         try {
             const response = await axios.get(`https://oauth.reddit.com/r/${subreddit}/search`, {
@@ -49,7 +49,7 @@ const getRedditPosts = async (subreddit, access_token) => {
             const { data } = response.data;
 
             if (data.children.length === 0) {
-                console.log(`BACKEND: Nessun post trovato per r/${subreddit} negli ultimi 7 giorni.`);
+                logger.info(`Nessun post trovato per r/${subreddit} nell'ultima settimana`);
                 reachedEnd = true;
                 break;
             }
@@ -68,12 +68,11 @@ const getRedditPosts = async (subreddit, access_token) => {
                 reachedEnd = true;
             }
         } catch (error) {
-            console.error("BACKEND: Errore nella chiamata all'API Reddit: ", error.message);
+            logger.error('Errore nella chiamata al endpoint di Reddit: ', error.message);
             reachedEnd = true;
         }
     }
 
-    console.log(`Totale post trovati: ${posts.length}`);
     return posts;
 };
 
@@ -144,7 +143,7 @@ const decodeToken = (token) => {
     try {
         return jwt.verify(token, process.env.JWT_SECRET);
     } catch (error) {
-        console.error('BACKEND: Token non valido', error.stack);
+        logger.error('Token non valido: ', error.message);
         return;
     }
 }
@@ -156,7 +155,7 @@ export const redditStats = async (req, res) => {
     const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
-        console.error('BACKEND: Token mancante');
+        logger.error('Token mancante');
         return res.status(401).json({
             message: MESSAGES.MISSING_TOKEN,
         });
@@ -189,7 +188,7 @@ export const redditStats = async (req, res) => {
             .single();
 
         if (error || !data) {
-            console.error("BACKEND: Errore di Supabase durante il caricamento del reddit_token: ", error.stack);
+            logger.error('Errore generico di Supabase durante il caricamento del access_token di Reddit: ', error.cause);
             return res.status(401).json({
                 message: MESSAGES.SUPABASE_ERROR,
             })
@@ -201,7 +200,7 @@ export const redditStats = async (req, res) => {
         const posts = await getRedditPosts(subreddit, access_token);
 
         if (posts.length === 0) {
-            console.warn("BACKEND: Nessun post trovato per questo specifico subreddit negli ultimi 7 giorni");
+            logger.info('Nessun post trovato per questo specifico subreddit nell\'ultima settimana');
             return res.status(200).json([]);
         }
 
@@ -216,7 +215,7 @@ export const redditStats = async (req, res) => {
                 chartData: [],
             });
         } else {
-            console.error('BACKEND: Errore generico del server', error.stack);
+            logger.error('Errore generico del Server: ', error.cause);
             return res.status(500).json({
                 message: MESSAGES.SERVER_ERROR,
             });

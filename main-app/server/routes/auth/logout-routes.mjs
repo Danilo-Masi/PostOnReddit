@@ -5,5 +5,4 @@ const router = express.Router();
 
 router.post('/logout', logoutController);
 
-
 export default router;

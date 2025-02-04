@@ -1,4 +1,5 @@
 import supabase from "../../config/supabase.mjs"
+import logger from '../../config/logger.mjs';
 
 const MESSAGE = {
     INVALID_ID: 'Id non presente o non valido',
@@ -11,7 +12,7 @@ export const deletePost = async (req, res) => {
     const { post_id } = req.body;
 
     if (!post_id) {
-        console.error("BACKEND: ID non presente o non valido");
+        logger.error('Id del post non presente o non valido');
         return res.status(400).json({
             message: MESSAGE.INVALID_ID,
         });
@@ -24,7 +25,7 @@ export const deletePost = async (req, res) => {
             .eq('id', post_id);
 
         if (error) {
-            console.error("SERVER: Errore di Supabase durante la cancellazione del post: ", error.stack);
+            logger.error('Errore generico di Supabase durante la cancellazione del post dal DB: ', error.cause);
             return res.status(401).json({
                 message: MESSAGE.SUPABASE_ERROR,
             });
@@ -35,7 +36,7 @@ export const deletePost = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("BACKEND: Errore generico del server: ", error.stack);
+        logger.error('Errore generico del Server: ', error.cause);
         return res.status(500).json({
             message: MESSAGE.SERVER_ERROR,
         });

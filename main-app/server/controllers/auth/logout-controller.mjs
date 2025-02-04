@@ -1,6 +1,7 @@
 import supabase from '../../config/supabase.mjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import logger from '../../config/logger.mjs';
 
 dotenv.config();
 
@@ -16,7 +17,7 @@ const decodeToken = (token) => {
     try {
         return jwt.verify(token, process.env.JWT_SECRET);
     } catch (error) {
-        console.error('BACKEND: Token non valido', error.message);
+        logger.error('Tokne non valido: ', error.message);
         return;
     }
 }
@@ -27,7 +28,7 @@ export const logoutController = async (req, res) => {
     const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
-        console.error('BACKEND: Token mancante');
+        logger.error('Token mancante');
         return res.status(400).json({
             message: MESSAGES.MISSING_TOKEN,
         });
@@ -35,6 +36,7 @@ export const logoutController = async (req, res) => {
 
     const decoded = decodeToken(token);
     if (!decoded) {
+        logger.error('Token invalido');
         return res.status(400).json({
             message: MESSAGES.INVALID_TOKEN,
         });
@@ -44,7 +46,7 @@ export const logoutController = async (req, res) => {
         let { error } = await supabase.auth.signOut(token);
 
         if (error) {
-            console.error('BACKEND: Errore generico di Supabase', error.stack);
+            logger.error('Errore generico di Supabase durante la fase di Logout: ', error.cause);
             return res.status(401).json({
                 message: MESSAGES.SUPABASE_ERROR,
             });
@@ -55,7 +57,7 @@ export const logoutController = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('BACKEND: Errore generico del server', error.stack);
+        logger.error('Errore generico del Server: ',error.cause);
         return res.status(500).json({
             message: MESSAGES.SERVER_ERROR,
         });

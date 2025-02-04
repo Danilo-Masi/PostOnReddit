@@ -37,7 +37,9 @@ export function AppSidebar() {
     }, []);
 
     return (
-        <Sidebar className="md:py-2 bg-zinc-100 dark:bg-zinc-800 border-zinc-100 dark:border-zinc-800">
+
+        <Sidebar
+            className={`md:py-2 bg-zinc-100 dark:bg-zinc-800 border-zinc-100 dark:border-zinc-800 z-50`}>
             {/* HEADER */}
             <SidebarHeader>
                 <Logo />

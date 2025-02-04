@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import Joi from 'joi';
 import axios from "axios";
+import logger from '../../config/logger.mjs';
 
 dotenv.config();
 
@@ -49,13 +50,13 @@ const checkSubredditPostRequirements = async (subreddit, access_token) => {
 
     } catch (error) {
         if (error.response) {
-            console.error("BACKEND: Errore nel recupero dei requisiti della subreddit:", error.response.data);
+            logger.error('Errore nel recupero dei requisiti della subreddit: ', error.message);
             return res.status(400).json({
                 message: MESSAGES.SUBREDDIT_REQUIREMENTS_ERROR,
                 details: error.response.data,
             });
         } else {
-            console.error("BACKEND: Errore di rete:", error.message);
+            logger.error('Errore di rete durante il recupero dei requisiti dalla subreddit: ', error.message);
             return res.status(500).json({
                 message: MESSAGES.SERVER_ERROR,
             });
@@ -68,7 +69,7 @@ const decodeToken = (token) => {
     try {
         return jwt.verify(token, process.env.JWT_SECRET);
     } catch (error) {
-        console.error('BACKEND: Token non valido', error.stack);
+        logger.error('Token non valido: ', error.message);
         return;
     }
 }
@@ -79,7 +80,7 @@ export const createPost = async (req, res) => {
     const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
-        console.error('BACKEND: Token mancante');
+        logger.error('Token mancante');
         return res.status(401).json({
             message: MESSAGES.MISSING_TOKEN,
         });
@@ -98,6 +99,7 @@ export const createPost = async (req, res) => {
 
     // Controlla se la data è valida
     if (isNaN(new Date(date_time).getTime())) {
+        logger.error('La data inserita non è valida');
         return res.status(400).json({
             message: MESSAGES.INVALID_DATE,
         });
@@ -113,7 +115,7 @@ export const createPost = async (req, res) => {
     // Validazione dei dati in ingresso
     const { error } = validatePostData({ title, content, community, flair, date_time });
     if (error) {
-        console.error('BACKEND: I dati per la creazione del post non sono validi: ', error.stack);
+        logger.error('I dati per la creazione del post non sono validi: ', error.cause);
         return res.status(400).json({
             message: MESSAGES.INVALID_DATA,
             details: error.details[0].message,
@@ -130,7 +132,7 @@ export const createPost = async (req, res) => {
             .single();
 
         if (error || !data) {
-            console.error("BACKEND: Errore di Supabase durante il caricamento del reddit_token: ", error.stack);
+            logger.error('Errore generico di Supabase durante il caricamento del access_token di Reddit: ',error.cause);
             return res.status(401).json({
                 message: MESSAGES.SUPABASE_ERROR,
             })
@@ -139,7 +141,7 @@ export const createPost = async (req, res) => {
         access_token = data.access_token;
 
     } catch (error) {
-        console.error("BACKEDN: Errore nel recupero dell'access_token di Reddit");
+        logger.error('Errore generico di Supabase durante il caricamento del access_token di Reddit: ',error.cause);
         return res.status(500).json({
             message: MESSAGES.REDDIT_ERROR,
         });
@@ -148,7 +150,7 @@ export const createPost = async (req, res) => {
     // Verifica i requisiti della subreddit prima di procedere
     const requirements = await checkSubredditPostRequirements(community, access_token);
     if (!requirements) {
-        console.error("BACKEND: Errore nel recupero dei requisiti della subreddit");
+        logger.error('Errore nel recupero dei requisiti della subreddit');
         return res.status(500).json({
             message: MESSAGES.SUBREDDIT_REQUIREMENTS_ERROR,
         });
@@ -214,7 +216,7 @@ export const createPost = async (req, res) => {
             .select();
 
         if (error) {
-            console.error("BACKEND: Errore generico di Supabase durante il caricamento dei dati sul DB", error.stack);
+            logger.error('Errore generico di Supabase durante il caricamento del post sul DB: ', error.cause);
             return res.status(500).json({
                 message: MESSAGES.SUPABASE_ERROR,
             });
@@ -225,7 +227,7 @@ export const createPost = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("BACKEDN: Errore generico del server", error.stack);
+        logger.error('Errore generico del Server: ', error.cause);
         return res.status(500).json({
             message: MESSAGES.SERVER_ERROR,
         });

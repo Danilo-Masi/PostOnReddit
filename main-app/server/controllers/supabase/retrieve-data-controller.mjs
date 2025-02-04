@@ -1,6 +1,7 @@
 import supabase from '../../config/supabase.mjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import logger from '../../config/logger.mjs';
 
 dotenv.config();
 
@@ -17,7 +18,7 @@ const decodeToken = (token) => {
     try {
         return jwt.verify(token, process.env.JWT_SECRET);
     } catch (error) {
-        console.error('BACKEND: Token non valido', error.message);
+        logger.error('Token non valido');
         return;
     }
 }
@@ -28,7 +29,7 @@ export const retrieveData = async (req, res) => {
     const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
-        console.error('BACKEND: Token mancante');
+        logger.error('Token mancante');
         return res.status(400).json({
             message: MESSAGES.MISSING_TOKEN,
         });
@@ -50,14 +51,14 @@ export const retrieveData = async (req, res) => {
             .eq('id', user_id);
 
         if (error) {
-            console.error('BACKEND: Errore nel recupero dei dati dal DB', error.stack);
+            logger.error('Errore generico di Supabase durante il recupero dei dati del utente dal DB: ', error.cause);
             return res.status(401).json({
                 message: MESSAGES.SUPABASE_ERROR,
             });
         }
 
         if (!data || data.length === 0) {
-            console.error('BACKEND: Nessun utente trovato con questo ID');
+            logger.error('Nessun utente trovato con questo ID');
             return res.status(401).json({
                 message: MESSAGES.INVALID_ID
             });
@@ -69,7 +70,7 @@ export const retrieveData = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('BACKEND: Errore generico del server', error.stack);
+        logger.error('Errore generico del Server: ', error.cause);
         return res.status(500).json({
             message: MESSAGES.SERVER_ERROR,
         });
