@@ -1,5 +1,3 @@
-// React
-import { useState } from "react";
 // Components
 import CustomHeader from "../custom/CustomHeader";
 import MainContainer from "../custom/MainContainer";
