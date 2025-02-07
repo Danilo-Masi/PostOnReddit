@@ -94,12 +94,21 @@ export default function Chart({ subreddit, chartData, setChartData, setDataLoadi
     const renderTooltip = ({ active, payload }: any) => {
         if (active && payload && payload.length > 0) {
             const { day, peakHour, activity } = payload[0].payload;
+            // Converti peakHour (HH:mm) nel formato 12 ore con AM/PM
+            const [hours, minutes] = peakHour.split(':');
+            const date = new Date();
+            date.setHours(Number(hours), Number(minutes));
+            const formattedTime = date.toLocaleString('en-US', {
+                hour: 'numeric',
+                minute: 'numeric',
+                hour12: true,
+            });
             return (
                 <Tooltip>
                     <TooltipTrigger className="flex flex-col items-start p-4 rounded-xl shadow-md bg-zinc-100">
                         <h1 className="font-semibold text-zinc-900 text-sm">{day}</h1>
-                        <p className="font-normal text-zinc-500 text-xs">Peack hour: {peakHour}</p>
-                        <p className="font-normal text-zinc-500 text-xs">Activity: {activity}</p>
+                        <p className="font-normal text-zinc-500 text-xs">Peack hour: <b>{formattedTime}</b></p>
+                        <p className="font-normal text-zinc-500 text-xs">Activity: <b>{activity}</b></p>
                     </TooltipTrigger>
                 </Tooltip>
             );

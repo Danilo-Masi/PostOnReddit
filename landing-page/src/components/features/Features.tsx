@@ -8,7 +8,7 @@ export default function Features({ id }: { id: string }) {
         <MainContainer yAlign="justify-start" id={id}>
             <CustomHeader
                 badgeTitle="HOW DOES IT WORK?"
-                titleHeader="How the platform works"
+                titleHeader="3 steps to skyrocket your views!!"
                 descriptionHeader="Learn how our platform helps you post at the perfect time, boost engagement, and grow your presence effortlessly" />
             <FeaturesCarousel />
         </MainContainer>

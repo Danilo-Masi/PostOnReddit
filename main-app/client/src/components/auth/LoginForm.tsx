@@ -98,35 +98,40 @@ export default function LoginForm() {
     }
 
     return (
-        <Card className="flex flex-col gap-y-1 bg-background shadow-elevation3 shadow-md w-[90%] md:w-1/2">
+        <Card className="flex flex-col gap-y-1 bg-background shadow-elevation3 shadow-md w-[90%] md:w-1/2 bg-zinc-200 dark:bg-zinc-700">
             <CardHeader className="flex justify-center items-center w-full">
                 <CardTitle><Logo /></CardTitle>
-                <CardDescription>Welcome back to postonreddit!</CardDescription>
+                <CardDescription className="text-zinc-400 dark:text-zinc-300">Welcome back to postonreddit!</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-y-2">
                 <Label aria-label="emailInputId">Email Address</Label>
                 <Input
+                    aria-label="input-email-login"
                     id="emailInputId"
                     type="email"
                     placeholder="Enter your email"
                     required
                     value={email}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} />
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                    className="bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-700 dark:placeholder:text-zinc-500" />
             </CardContent>
             <CardContent className="flex flex-col gap-y-2">
                 <Label>Password</Label>
                 <Input
+                    aria-label="input-password-login"
                     id="passwordInputId"
                     type="password"
                     placeholder="••••••••"
                     required
                     value={password}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} />
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+                    className="bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-700 dark:placeholder:text-zinc-500" />
             </CardContent>
             <CardFooter className="flex flex-col gap-y-2">
                 <Button
+                    aria-label="button-login"
                     type="submit"
-                    className="bg-buttonColor hover:bg-buttonHoverColor w-full"
+                    className="w-full bg-orange-500 dark:bg-orange-500 hover:bg-orange-600 dark:hover:bg-orange-600 text-zinc-50 dark:text-zinc-50"
                     onClick={handleLogin}>
                     <LogIn /> Log In to Your Account
                 </Button>
