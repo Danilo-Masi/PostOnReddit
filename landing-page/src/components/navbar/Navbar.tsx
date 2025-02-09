@@ -1,9 +1,10 @@
 // React-router
 import { Link } from "react-router";
 // Components
-import WaitlistButton from "../custom/WaitlistButton";
+import StartButton from "../custom/StartButton";
 // Utility
 import { scrollToElement } from "@/utility/use-animation";
+
 
 export default function Navbar() {
     return (
@@ -15,7 +16,7 @@ export default function Navbar() {
                 <li className="hover:text-orange-500"><Link to="/" onClick={() => scrollToElement("#Prices")}>Prices</Link></li>
                 <li className="hover:text-orange-500"><Link to="/" onClick={() => scrollToElement("#Faqs")}>Faqs</Link></li>
             </ul>
-            <WaitlistButton buttonStyle="bg-orange-500 hover:bg-orange-600" />
+            <StartButton buttonStyle="bg-orange-500 hover:bg-orange-600" />
         </div>
     );
 }

@@ -10,7 +10,7 @@ export default function ChangelogSettings() {
             mdWidth="md:w-1/3">
             <div className="w-full flex flex-col gap-y-3 overflow-scroll">
                 <Changelog
-                    day="1"
+                    day="9"
                     date="Feb. 2025"
                     title="Launch Day 🎉"
                     description="The platform is now live and ready for use!" />

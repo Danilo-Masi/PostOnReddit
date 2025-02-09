@@ -66,7 +66,7 @@ export const redditCallback = async (req, res) => {
         }
 
         // Redirect alla pagina principale della piattaforma
-        return res.redirect("http://localhost:5173/home"); //DA MODIFICARE
+        return res.redirect("http://localhost:5173/"); //DA MODIFICARE
 
     } catch (error) {
         logger.error('Errore generico del Server: ', error.cause);

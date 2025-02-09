@@ -100,7 +100,7 @@ export default function Scheduled() {
   const filteredPosts = filterPosts(postList, selectedDate);
 
   return (
-    <div className="w-full h-fit md:h-full flex flex-col gap-10 p-5 mb-10 md:mb-0 rounded-xl bg-zinc-200 dark:bg-zinc-700">
+    <div className="w-full h-svh md:h-full flex flex-col gap-10 p-5 rounded-xl bg-zinc-200 dark:bg-zinc-700">
       <SelectDate
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate} />
@@ -109,7 +109,7 @@ export default function Scheduled() {
           <Loader2 className="w-8 h-8 text-zinc-500 animate-spin" />
         </div>
         : filteredPosts.length <= 0 ? (
-          <div className="w-full h-full flex flex-col justify-center items-center gap-y-3 overflow-scroll">
+          <div className="w-full h-full flex flex-col justify-center items-center text-center gap-y-3 overflow-scroll">
             <h1>You have no posts scheduled for the selected date</h1>
             <Button
               type="button"

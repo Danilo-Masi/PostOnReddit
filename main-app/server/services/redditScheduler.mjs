@@ -18,6 +18,12 @@ const scheduleRedditPosts = async () => {
         return;
     }
 
+    if (data.length === 0) {
+        logger.info(`Post recuperati alle ${nowUtc} : []`);
+    } else {
+        logger.info(`Post recuperati alle ${nowUtc} : ${data}`);
+    }
+
     for (let post of data) {
         const submit = await submitPostToReddit(post);
         if (submit) {

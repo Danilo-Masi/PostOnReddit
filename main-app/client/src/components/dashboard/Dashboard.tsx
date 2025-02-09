@@ -1,9 +1,9 @@
 // React
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 // Axios
 import axios from 'axios';
 // minimal-tiptap
-import { Content, Editor } from '@tiptap/react';
+import { Content } from '@tiptap/react';
 // Components
 import DescriptionEditor from './DescriptionEditor';
 import SelectOption from './SelectOption';
@@ -106,8 +106,10 @@ export default function Dashboard() {
     if (community.length <= 0) {
       errors.push("The community is not selected");
     }
-    if (data.getDate() === null || undefined) {
+    if (!data || isNaN(data.getTime())) {
       errors.push("The date selected is not valid");
+    } else if (data.getTime() < Date.now()) {
+      errors.push("The date can't be in the past");
     }
     return errors;
   }
@@ -123,7 +125,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="w-full h-fit md:h-full flex md:flex-row flex-col gap-10 p-5 mb-10 md:mb-0 rounded-xl bg-zinc-200 dark:bg-zinc-700">
+    <div className="w-full h-fit md:h-full flex md:flex-row flex-col gap-10 p-5 rounded-xl bg-zinc-200 dark:bg-zinc-700">
       {/*** BLOCCO SINISTRA ***/}
       <div className='w-full md:w-1/2 h-full flex flex-col gap-y-6'>
         {/* TITLE EDITOR */}

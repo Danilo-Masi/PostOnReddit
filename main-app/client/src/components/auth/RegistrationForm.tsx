@@ -99,10 +99,10 @@ export default function RegistrationForm() {
     }
 
     return (
-        <Card className="flex flex-col gap-y-1 bg-background shadow-elevation3 shadow-md w-[90%] md:w-1/2 bg-zinc-200 dark:bg-zinc-700">
+        <Card className="flex flex-col gap-y-1 bg-background shadow-elevation3 shadow-md w-[90%] md:w-1/2 bg-zinc-100 dark:bg-zinc-700">
             <CardHeader className="flex justify-center items-center w-full">
                 <CardTitle><Logo /></CardTitle>
-                <CardDescription className="text-zinc-400 dark:text-zinc-300">Welcome to PostOnReddit!</CardDescription>
+                <CardDescription className="text-zinc-500 dark:text-zinc-300">Welcome to PostOnReddit!</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-y-2">
                 <Label htmlFor="registrationNameInput">Full Name</Label>

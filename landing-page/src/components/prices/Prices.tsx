@@ -26,7 +26,7 @@ export default function Prices({ id }: { id: string }) {
                     price="0.0"
                     futurePrice="25.00"
                     details={['Unlimited scheduled posts', 'Optimize timing for maximum reach', 'Priority email support (1-hour response)']}
-                    buttonText="Join the waitlist now"
+                    buttonText="Get started for free"
                     onClick={handleBuyCredit} />
                 <PriceCard
                     title="Lifetime plan"
@@ -35,7 +35,7 @@ export default function Prices({ id }: { id: string }) {
                     futurePrice="45.00"
                     details={['Advanced post analytics', 'Personalized posting recommendations', 'Priority email support (1-hour response)']}
                     cardStyle="border-2 border-orange-500 shadow-2xl"
-                    buttonText="Join the waitlist now"
+                    buttonText="Get started for free"
                     onClick={handleBuyCredit} />
             </div>
         </MainContainer>

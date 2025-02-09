@@ -20,14 +20,18 @@ type SelectOptionProps = {
     setValue: Dispatch<SetStateAction<string>>;
 }
 
+type Options = {
+    id: string,
+    text: string,
+}
+
 export default function SelectOption({ subreddit, isDisabled, placeholder, value, setValue }: SelectOptionProps) {
 
     const navigate: NavigateFunction = useNavigate();
-    const [options, setOptions] = useState<string[]>([]);
+    const [options, setOptions] = useState<Options[]>([]);
 
     // Funzione per ricercare le flair disponibili
     const fetchFlairs = async () => {
-
         const token = localStorage.getItem('authToken');
         if (!token) {
             toast.error("User without permissions");
@@ -82,9 +86,10 @@ export default function SelectOption({ subreddit, isDisabled, placeholder, value
                         )}
                         {options.map((option, index) => (
                             <SelectItem
+                                aria-label="input-flair"
                                 key={index}
-                                value={option}>
-                                {option}
+                                value={option.id}>
+                                {option.text}
                             </SelectItem>
                         ))}
                     </SelectGroup>

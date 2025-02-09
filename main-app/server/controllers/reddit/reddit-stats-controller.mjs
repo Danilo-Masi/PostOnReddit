@@ -48,7 +48,7 @@ const getRedditPosts = async (subreddit, access_token) => {
 
             const { data } = response.data;
 
-            if (data.children.length === 0) {
+            if (!data.children || data.children.length === 0) {
                 logger.info(`Nessun post trovato per r/${subreddit} nell'ultima settimana`);
                 reachedEnd = true;
                 break;
@@ -64,7 +64,7 @@ const getRedditPosts = async (subreddit, access_token) => {
 
             // Controlla se ci sono altri post da caricare
             after = data.after || null;
-            if (!after || posts.length >= 1000) {
+            if (!after || posts.length >= 1000 || data.children.length === 0) {
                 reachedEnd = true;
             }
         } catch (error) {

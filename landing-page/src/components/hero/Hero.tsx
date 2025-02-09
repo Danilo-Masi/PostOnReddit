@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 // Components
 import MainContainer from "../custom/MainContainer";
-import WaitlistButton from "../custom/WaitlistButton";
+import StartButton from "../custom/StartButton";
 import { BackgroundLines } from "../ui/backgound-lines";
 // Icons
 import { Check } from "lucide-react";
@@ -61,7 +61,7 @@ export default function Hero({ id }: { id: string }) {
                     </ul>
                     {/* CTA */}
                     <div className="flex flex-col items-center gap-y-2">
-                        <WaitlistButton buttonStyle="w-fit bg-orange-500 hover:bg-orange-600" />
+                        <StartButton buttonStyle="w-fit bg-orange-500 hover:bg-orange-600" />
                         <p className="font-light text-zinc-600 text-balance">✌️ Join the other <span className="font-extrabold">{waitlistUsers}</span> creators and founder!</p>
                     </div>
                 </div>

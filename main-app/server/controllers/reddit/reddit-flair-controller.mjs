@@ -81,7 +81,7 @@ export const searchFlair = async (req, res) => {
     }
 
     const user_id = decoded.id;
-    
+
     const { q } = req.query;
 
     if (q.trim().length < 2 || q.length > 100) {
@@ -130,7 +130,7 @@ export const searchFlair = async (req, res) => {
         }
 
         const flairs = response.data;
-        const flair = flairs.map((flair) => flair.text);
+        const flair = flairs.map((flair) => ({ id: flair.id, text: flair.text }));
 
         return res.status(200).json({
             flair,
@@ -143,7 +143,7 @@ export const searchFlair = async (req, res) => {
                 flair: [],
             });
         } else {
-            logger.error('Errore generico del Server: ',error.cause);
+            logger.error('Errore generico del Server: ', error.cause);
             return res.status(500).json({
                 message: MESSAGES.SERVER_ERROR,
             });

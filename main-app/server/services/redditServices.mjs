@@ -33,8 +33,13 @@ export const submitPostToReddit = async (post) => {
             title: post.title,
             text: convertHTMLtoMarkdown(post.content) || '',
             kind: 'self',
-            flair_id: post.flair || '',
+            flair_id: post.flair,
             sendreplies: true,
+        }
+
+        // Aggiungi flair_id solo se è definito e non è una stringa vuota
+        if (post.flair && post.flair.trim() !== '') {
+            postData.flair_id = post.flair;
         }
 
         const response = await axios.post('https://oauth.reddit.com/api/submit', postData, {

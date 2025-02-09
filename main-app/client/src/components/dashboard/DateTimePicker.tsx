@@ -51,7 +51,7 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
 
             newDate.setSeconds(0);
             newDate.setMilliseconds(0);
-
+            
             setDate(newDate);
         }
     };
