@@ -2,16 +2,12 @@
 import CustomHeader from "../custom/CustomHeader";
 import MainContainer from "../custom/MainContainer";
 import PriceCard from "./PricesCard";
-// Context
-import { useAppContext } from "@/context/AppContext";
 
 export default function Prices({ id }: { id: string }) {
 
-    const { setWaitlistOpen } = useAppContext();
-
-    const handleBuyCredit = () => {
-        setWaitlistOpen(true);
-    }
+    const handleClick = () => {
+        window.location.href = "https://postonredditclient.vercel.app/login";
+    };
 
     return (
         <MainContainer yAlign="justify-start" id={id}>
@@ -27,7 +23,7 @@ export default function Prices({ id }: { id: string }) {
                     futurePrice="25.00"
                     details={['Unlimited scheduled posts', 'Optimize timing for maximum reach', 'Priority email support (1-hour response)']}
                     buttonText="Get started for free"
-                    onClick={handleBuyCredit} />
+                    onClick={handleClick} />
                 <PriceCard
                     title="Lifetime plan"
                     description="Unlock the full potential of your Reddit posts"
@@ -36,7 +32,7 @@ export default function Prices({ id }: { id: string }) {
                     details={['Advanced post analytics', 'Personalized posting recommendations', 'Priority email support (1-hour response)']}
                     cardStyle="border-2 border-orange-500 shadow-2xl"
                     buttonText="Get started for free"
-                    onClick={handleBuyCredit} />
+                    onClick={handleClick} />
             </div>
         </MainContainer>
     );
