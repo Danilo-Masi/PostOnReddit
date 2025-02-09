@@ -10,7 +10,7 @@ interface StartButtonProps {
 export default function StartButton({ buttonStyle }: StartButtonProps) {
 
     const handleClick = () => {
-        window.location.href = "https://postonredditclient.vercel.app/login"; // Inserisci qui l'URL che vuoi
+        window.location.href = "https://postonredditclient.vercel.app";
     };
 
     return (

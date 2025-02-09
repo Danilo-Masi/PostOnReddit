@@ -6,7 +6,7 @@ import PriceCard from "./PricesCard";
 export default function Prices({ id }: { id: string }) {
 
     const handleClick = () => {
-        window.location.href = "https://postonredditclient.vercel.app/login";
+        window.location.href = "https://postonredditclient.vercel.app";
     };
 
     return (
