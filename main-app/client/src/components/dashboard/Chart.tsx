@@ -1,5 +1,5 @@
 // React
-import { Dispatch, SetStateAction, useEffect, useRef } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 // React-router
 import { NavigateFunction, useNavigate } from "react-router-dom";
 // Axios
@@ -11,8 +11,8 @@ import { ChartConfig, ChartContainer, ChartTooltip } from "@/components/ui/chart
 import { Tooltip, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { toast } from "sonner";
 
-// Url del server di produzione
-const SERVER_URL = 'http://localhost:3000';
+// Url del server
+const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 
 interface ChartData {
     day: string;

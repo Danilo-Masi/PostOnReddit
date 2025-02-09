@@ -10,8 +10,8 @@ import { toast } from "sonner";
 // Icons
 import { LogOut } from "lucide-react";
 
-// Url del server di produzione
-const SERVER_URL = 'http://localhost:3000';
+// Url del server
+const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 
 export default function ExitDialog() {
 

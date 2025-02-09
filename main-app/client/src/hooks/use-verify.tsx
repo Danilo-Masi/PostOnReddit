@@ -1,8 +1,8 @@
 // Axios
 import axios from "axios";
 
-// Url del server di produzione
-const SERVER_URL = 'http://localhost:3000';
+// Url del server
+const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 
 // Funzione che verifica se il token di un utente è valido o meno
 export const checkToken = async () => {

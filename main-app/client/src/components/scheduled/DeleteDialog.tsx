@@ -8,8 +8,8 @@ import axios from "axios";
 // Icons
 import { Trash2 } from "lucide-react";
 
-// Url del server di produzione
-const SERVER_URL = 'http://localhost:3000';
+// Url del server
+const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 
 export default function DeleteDialog() {
 

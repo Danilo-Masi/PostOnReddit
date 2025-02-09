@@ -14,8 +14,8 @@ import { KeySquare } from "lucide-react";
 // Components
 import CardBase from '../custom/CardBase';
 
-// Url del server di produzione
-const SERVER_URL = 'http://localhost:3000';
+// Url del server
+const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 
 export default function ProfileSettings() {
 

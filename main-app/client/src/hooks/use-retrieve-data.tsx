@@ -1,8 +1,8 @@
 // Axios
 import axios from "axios";
 
-// Url del server di produzione
-const SERVER_URL = 'http://localhost:3000';
+// Url del server
+const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 
 // Funzione per caricare i dati di un utente dal DB
 export const checkData = async () => {

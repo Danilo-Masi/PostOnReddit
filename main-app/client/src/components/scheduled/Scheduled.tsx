@@ -13,8 +13,8 @@ import { toast } from "sonner";
 // Icons
 import { Loader2, Pencil } from "lucide-react";
 
-// Url del server di produzione
-const SERVER_URL = 'http://localhost:3000';
+// Url del server
+const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 
 type PostType = {
   title: string;

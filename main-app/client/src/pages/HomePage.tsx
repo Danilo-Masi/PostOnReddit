@@ -13,14 +13,13 @@ import Scheduled from "@/components/scheduled/Scheduled";
 import Settings from "@/components/settings/Settings";
 import ExitDialog from "@/components/sidebar/ExitDialog";
 import SupportDialog from "@/components/sidebar/SupportDialog";
-import CreditsDialog from "@/components/sidebar/CreditsDialog";
 import DeleteDialog from "@/components/scheduled/DeleteDialog";
 
 
 export default function HomePage() {
 
     const navigate: NavigateFunction = useNavigate();
-    const { selectedSection, isExitDialogOpen, isSupportDialogOpen, isCreditsDialogOpen, isDeleteDialogOpen } = useAppContext();
+    const { selectedSection, isExitDialogOpen, isSupportDialogOpen, isDeleteDialogOpen } = useAppContext();
 
     useEffect(() => {
         const checkUser = async () => {
@@ -49,7 +48,6 @@ export default function HomePage() {
             {renderContent()}
             {isExitDialogOpen && <ExitDialog />}
             {isSupportDialogOpen && <SupportDialog />}
-            {isCreditsDialogOpen && <CreditsDialog />}
             {isDeleteDialogOpen && <DeleteDialog />}
         </Layout>
     );
