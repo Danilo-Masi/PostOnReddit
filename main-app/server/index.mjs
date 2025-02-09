@@ -36,6 +36,9 @@ app.use(cors({
 app.use(helmet());
 app.use(compression());
 
+// Configura Express per fidarsi dei proxy
+app.set('trust proxy', 1);
+
 // Rate limiting
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
