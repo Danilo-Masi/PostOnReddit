@@ -53,7 +53,6 @@ export default function SearchInput({ communityValue, setCommunityValue }: Searc
             const response = await axios.get(`${SERVER_URL}/api/search-subreddits`, {
                 params: { q: searchTerm },
                 signal: abortControllerRef.current.signal,
-                timeout: 5000,
                 headers: { 'Content-Type': 'application/json' }
             });
 

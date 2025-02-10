@@ -32,8 +32,10 @@ export const searchSubreddits = async (req, res) => {
     try {
         const response = await axios.get(`https://www.reddit.com/subreddits/search.json`, {
             params: { q: encodeURIComponent(q), limit: 5 },
-            timeout: 5000,
-            headers: { 'User-Agent': 'POR/1.0.0' }
+            headers: {
+                'User-Agent': 'web:postonreddit:v1.0.0 (by /u/WerewolfCapital4616)',
+                'Content-Type': 'application/json',
+            }
         });
 
         if (response.status !== 200 || !response.data.data) {
@@ -57,7 +59,7 @@ export const searchSubreddits = async (req, res) => {
 
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            logger.error('Errore nella chiamata axios: ', error.cause);
+            logger.error('Errore nella chiamata axios: ', error.stack);
         } else {
             logger.error('Errore generico del Server: ', error.cause);
         }
