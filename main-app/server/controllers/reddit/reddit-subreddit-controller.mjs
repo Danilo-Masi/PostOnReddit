@@ -67,8 +67,6 @@ export const searchSubreddits = async (req, res) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
-    logger.info(token);
-
     if (!token) {
         logger.error('Token mancante');
         return res.status(401).json({
