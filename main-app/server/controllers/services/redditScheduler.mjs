@@ -1,5 +1,5 @@
-import supabase from '../config/supabase.mjs';
-import logger from '../config/logger.mjs';
+import supabase from '../../config/supabase.mjs';
+import logger from '../../config/logger.mjs';
 import { submitPostToReddit } from './redditServices.mjs';
 
 export const scheduleRedditPosts = async () => {

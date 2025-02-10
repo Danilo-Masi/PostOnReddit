@@ -1,5 +1,5 @@
-import supabase from '../config/supabase.mjs';
-import logger from '../config/logger.mjs';
+import supabase from '../../config/supabase.mjs';
+import logger from '../../config/logger.mjs';
 
 export const deletePostedPosts = async () => {
     // Data con lo stesso fuso orario del DB

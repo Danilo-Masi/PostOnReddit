@@ -1,8 +1,8 @@
 import axios from "axios";
-import supabase from '../config/supabase.mjs';
+import supabase from '../../config/supabase.mjs';
 import dotenv from 'dotenv';
 import TurndownService from 'turndown';
-import logger from "../config/logger.mjs";
+import logger from '../../config/logger.mjs';
 
 dotenv.config();
 
