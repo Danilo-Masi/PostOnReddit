@@ -9,10 +9,6 @@ import { applyRoutes } from './routes.mjs';
 
 dotenv.config();
 
-// Funzionalità con cron-job
-import './services/redditScheduler.mjs';
-import './services/cleanupPost.mjs';
-
 const HOST = process.env.HOST || 'http://localhost';
 const PORT = process.env.PORT || 3000;
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';

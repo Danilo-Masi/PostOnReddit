@@ -1,8 +1,7 @@
-import cron from 'node-cron';
 import supabase from '../config/supabase.mjs';
 import logger from '../config/logger.mjs';
 
-const deletePostedPosts = async () => {
+export const deletePostedPosts = async () => {
     // Data con lo stesso fuso orario del DB
     const nowUtc = new Date().toISOString().slice(0, 19) + 'Z';
     
@@ -29,6 +28,3 @@ const deletePostedPosts = async () => {
 
     }
 };
-
-// Esegui il controllo ogni giorno a mezzanotte 
-cron.schedule('0 0 * * *', deletePostedPosts); 

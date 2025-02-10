@@ -1,9 +1,8 @@
-import cron from 'node-cron';
 import supabase from '../config/supabase.mjs';
 import logger from '../config/logger.mjs';
 import { submitPostToReddit } from './redditServices.mjs';
 
-const scheduleRedditPosts = async () => {
+export const scheduleRedditPosts = async () => {
 
     const nowUtc = new Date().toISOString().slice(0, 19) + 'Z';
 
@@ -33,5 +32,3 @@ const scheduleRedditPosts = async () => {
         }
     }
 };
-
-cron.schedule('* * * * *', scheduleRedditPosts);
