@@ -66,7 +66,7 @@ export const redditCallback = async (req, res) => {
         }
 
         // Redirect alla pagina principale della piattaforma
-        return res.redirect("https://postonredditclient.vercel.app/"); //DA MODIFICARE
+        return res.redirect("https://postonredditclient.vercel.app"); //DA MODIFICARE
 
     } catch (error) {
         logger.error('Errore generico del Server: ', error.cause);
