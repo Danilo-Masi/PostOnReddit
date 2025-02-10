@@ -31,13 +31,12 @@ export const searchSubreddits = async (req, res) => {
     try {
         const url = `https://www.reddit.com/subreddits/search.json`;
 
-        const response = await axios.get(url, {
-            params: { q: q, limit: 5 },
+        const response = await axios.get("https://www.reddit.com/subreddits/search.json", {
+            params: { q: "SaaS", limit: 5 },
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                'Accept': 'application/json'
-            },
-            timeout: 5000  // Timeout per evitare che Axios resti bloccato
+                "User-Agent": "MyRedditApp/1.0 (by /u/WerewolfCapital4616)",
+                "Accept": "application/json"
+            }
         });
 
         if (response.status !== 200 || !response.data?.data) {
