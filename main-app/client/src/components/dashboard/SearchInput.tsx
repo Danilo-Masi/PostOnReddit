@@ -38,10 +38,6 @@ export default function SearchInput({ communityValue, setCommunityValue }: Searc
     const handleSearch = async (searchTerm: string) => {
         const token = localStorage.getItem('authToken');
 
-        console.log("Token: ", token);
-        console.log("Server URL: ", SERVER_URL);
-        console.log("Request URL: ", `${SERVER_URL}/api/search-subreddits?q=${searchTerm}`);
-
         if (!token) {
             toast.error("User without permissions");
             navigate('/login');
