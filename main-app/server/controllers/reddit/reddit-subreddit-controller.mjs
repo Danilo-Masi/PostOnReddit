@@ -29,35 +29,34 @@ export const searchSubreddits = async (req, res) => {
     }
 
     try {
-        const response = await axios.get(`https://www.reddit.com/subreddits/search.json`, {
+        const url = `https://www.reddit.com/subreddits/search.json`;
+
+        const response = await axios.get(url, {
             params: { q: q, limit: 5 },
             headers: {
-                'User-Agent': 'web:postonreddit:v1.0.1 (by /u/WerewolfCapital4616)',
-                'Content-Type': 'application/json',
-            }
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'application/json'
+            },
+            timeout: 5000  // Timeout per evitare che Axios resti bloccato
         });
 
-        if (response.status !== 200 || !response.data.data) {
-            logger.error('Errore nel recupero dei subreddit da Reddit', response.data);
+        if (response.status !== 200 || !response.data?.data) {
+            logger.error('Errore nel recupero dei subreddit da Reddit');
             return res.status(502).json({ message: MESSAGES.REDDIT_ERROR });
         }
 
         const subreddits = response.data.data.children.map((child) => child.data.display_name_prefixed);
-        cache.set(q, subreddits); // Cache dei risultati
+        cache.set(q, subreddits);
 
         return res.status(200).json({ subreddits });
 
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response) {
-                logger.error('Errore Axios:', error.response.data, 'Status:', error.response.status);
-            } else if (error.request) {
-                logger.error('Errore nella richiesta:', error.request);
-            } else {
-                logger.error('Errore generale:', error.message);
-            }
+            logger.error(`Errore Axios: ${error.message}`);
+            logger.error(`Status: ${error.response?.status}`);
+            logger.error(`Response: ${JSON.stringify(error.response?.data)}`);
         } else {
-            logger.error('Errore sconosciuto:', error);
+            logger.error(`Errore generico: ${error}`);
         }
         return res.status(500).json({ message: MESSAGES.SERVER_ERROR });
     }
