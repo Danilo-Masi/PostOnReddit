@@ -41,7 +41,7 @@ const refreshAccessToken = async (refresh_token, user_id) => {
                 password: process.env.REDDIT_CLIENT_SECRET,
             },
             headers: {
-                'User-Agent': 'web:postonreddit:v1.0.0 (by /u/yourusername)', // Cambia con il tuo User-Agent
+                'User-Agent': 'web:postonreddit:v1.0.0 (by /u/WerewolfCapital4616)',
             }
         });
 
@@ -67,6 +67,8 @@ export const searchSubreddits = async (req, res) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
+    logger.info(token);
+
     if (!token) {
         logger.error('Token mancante');
         return res.status(401).json({
@@ -82,8 +84,8 @@ export const searchSubreddits = async (req, res) => {
     }
 
     const user_id = decoded.id;
-    const { q } = req.query;
 
+    const { q } = req.query;
     if (!q || q.trim().length < 2 || q.length > 100) {
         return res.status(400).json({
             message: MESSAGES.INVALID_QUERY,
@@ -135,7 +137,7 @@ export const searchSubreddits = async (req, res) => {
         }
 
         const subreddits = response.data.data.children.map((child) => child.data.display_name_prefixed);
-        
+
         // Memorizza i risultati nella cache
         cache.set(q, subreddits);
 
