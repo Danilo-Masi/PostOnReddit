@@ -15,14 +15,16 @@ import './services/cleanupPost.mjs';
 
 const HOST = process.env.HOST || 'http://localhost';
 const PORT = process.env.PORT || 3000;
-const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173'; 
+const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
 
 const app = express();
+
+const allowedOrigins = [CLIENT_URL, 'http://localhost:5173'];
 
 // CORS
 app.use(cors({
     origin: (origin, callback) => {
-        if (!origin || origin === CLIENT_URL) {
+        if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
