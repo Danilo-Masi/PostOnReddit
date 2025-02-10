@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { Label } from "../ui/label";
 // Icons
 import { ChevronsUpDown } from "lucide-react";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 
 // Url del server
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
@@ -29,40 +30,51 @@ export default function SearchInput({ communityValue, setCommunityValue }: Searc
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
 
+    const navigate: NavigateFunction = useNavigate();
     // AbortController per annullare richieste obsolete
     const abortControllerRef = useRef<AbortController | null>(null);
 
     // Funzione per ricercare i subreddit
     const handleSearch = async (searchTerm: string) => {
-
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            toast.error("User without permissions");
+            navigate('/login');
+            return;
+        }
+    
         setQuery(searchTerm);
+    
         if (searchTerm.trim().length < 2 || searchTerm.length > 100) {
             setResults([]);
             return;
         }
-
+    
         if (abortControllerRef.current) {
             abortControllerRef.current.abort();
         }
-
+    
         abortControllerRef.current = new AbortController();
-
+    
         try {
             setLoading(true);
-
+    
             const response = await axios.get(`${SERVER_URL}/api/search-subreddits`, {
                 params: { q: searchTerm },
                 signal: abortControllerRef.current.signal,
-                headers: { 'Content-Type': 'application/json' }
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                }
             });
-
-            const subredditNames = response.data.subreddits || [];
+    
+            const subredditNames = response?.data?.subreddits || [];
             setResults(subredditNames);
-
+    
             if (subredditNames.length === 0) {
                 toast.info("No subreddit found");
             }
-
+    
         } catch (error: any) {
             if (axios.isCancel(error)) {
                 console.warn("CLIENT: Richiesta annullata");
@@ -74,10 +86,10 @@ export default function SearchInput({ communityValue, setCommunityValue }: Searc
                 } else {
                     toast.error("An error occurred. Please try again later");
                 }
-                console.error("CLIENT: Errore di Axios: ", error.stack);
+                console.error("CLIENT: Errore di Axios: ", error);
             } else {
-                console.error("CLIENT: Errore sconosciuto: ", error.stack);
-                toast.error("An unexpected error occured. Please try again later");
+                console.error("CLIENT: Errore sconosciuto: ", error);
+                toast.error("An unexpected error occurred. Please try again later");
             }
         } finally {
             setLoading(false);

@@ -1,17 +1,87 @@
 import axios from "axios";
 import NodeCache from 'node-cache';
 import logger from '../../config/logger.mjs';
+import supabase from '../../config/supabase.mjs';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const MESSAGES = {
     INVALID_QUERY: "La query della richiesta non è valida",
+    MISSING_TOKEN: 'Token mancante',
+    INVALID_TOKEN: 'Token non valido',
+    REFRESH_ERROR: 'Errore durante il refresh del token',
     REDDIT_ERROR: "Errore nel recupero dei subreddit",
     SERVER_ERROR: "Errore generico del server",
 }
 
-// Cache con scadenza di 5 minuti
 const cache = new NodeCache({ stdTTL: 300 });
 
+// Decodifica del token JWT
+const decodeToken = (token) => {
+    try {
+        return jwt.verify(token, process.env.JWT_SECRET);
+    } catch (error) {
+        logger.error('Token non valido: ', error.message);
+        return null;
+    }
+};
+
+// Funzione per aggiornare l'access token tramite il refresh token
+const refreshAccessToken = async (refresh_token, user_id) => {
+    try {
+        const response = await axios.post('https://www.reddit.com/api/v1/access_token', null, {
+            params: {
+                grant_type: 'refresh_token',
+                refresh_token: refresh_token,
+            },
+            auth: {
+                username: process.env.REDDIT_CLIENT_ID,
+                password: process.env.REDDIT_CLIENT_SECRET,
+            },
+            headers: {
+                'User-Agent': 'web:postonreddit:v1.0.0 (by /u/yourusername)', // Cambia con il tuo User-Agent
+            }
+        });
+
+        const newAccessToken = response.data.access_token;
+        const newExpiry = new Date();
+        newExpiry.setSeconds(newExpiry.getSeconds() + response.data.expires_in);
+
+        await supabase
+            .from('reddit_tokens')
+            .update({ access_token: newAccessToken, token_expiry: newExpiry })
+            .eq('user_id', user_id);
+
+        logger.info('access_token di Reddit aggiornato');
+        return newAccessToken;
+
+    } catch (error) {
+        logger.error('Errore durante il refresh dell\'access_token di Reddit: ', error.message);
+        throw new Error(MESSAGES.REFRESH_ERROR);
+    }
+};
+
 export const searchSubreddits = async (req, res) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) {
+        logger.error('Token mancante');
+        return res.status(401).json({
+            message: MESSAGES.MISSING_TOKEN,
+        });
+    }
+
+    const decoded = decodeToken(token);
+    if (!decoded) {
+        return res.status(401).json({
+            message: MESSAGES.INVALID_TOKEN,
+        });
+    }
+
+    const user_id = decoded.id;
     const { q } = req.query;
 
     if (!q || q.trim().length < 2 || q.length > 100) {
@@ -20,8 +90,6 @@ export const searchSubreddits = async (req, res) => {
         });
     }
 
-    console.log("Query ricevuta:", q); // Debug query
-
     // Controlla se i risultati sono già in cache
     const cachedSubreddits = cache.get(q);
     if (cachedSubreddits) {
@@ -29,12 +97,34 @@ export const searchSubreddits = async (req, res) => {
     }
 
     try {
-        const url = `https://www.reddit.com/subreddits/search.json`;
+        // Recupera il token di accesso Reddit
+        let { data, error } = await supabase
+            .from('reddit_tokens')
+            .select('access_token, refresh_token, token_expiry')
+            .eq('user_id', user_id)
+            .single();
 
-        const response = await axios.get("https://www.reddit.com/subreddits/search.json", {
-            params: { q: "SaaS", limit: 5 },
+        if (error || !data) {
+            logger.error('Errore durante il caricamento del token Reddit');
+            return res.status(401).json({
+                message: MESSAGES.MISSING_TOKEN,
+            });
+        }
+
+        let { access_token, refresh_token, token_expiry } = data;
+
+        // Se il token è scaduto, fai il refresh
+        if (new Date(token_expiry) <= new Date()) {
+            logger.info('access_token di Reddit scaduto, procedo con il refresh');
+            access_token = await refreshAccessToken(refresh_token, user_id);
+        }
+
+        // Chiamata all'API Reddit per cercare i subreddit
+        const response = await axios.get("https://oauth.reddit.com/subreddits/search.json", {
+            params: { q, limit: 5 },
             headers: {
-                "User-Agent": "MyRedditApp/1.0 (by /u/WerewolfCapital4616)",
+                "Authorization": `Bearer ${access_token}`,
+                'User-Agent': 'web:postonreddit:v1.0.0 (by /u/WerewolfCapital4616)',
                 "Accept": "application/json"
             }
         });
@@ -45,6 +135,8 @@ export const searchSubreddits = async (req, res) => {
         }
 
         const subreddits = response.data.data.children.map((child) => child.data.display_name_prefixed);
+        
+        // Memorizza i risultati nella cache
         cache.set(q, subreddits);
 
         return res.status(200).json({ subreddits });
