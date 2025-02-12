@@ -5,17 +5,7 @@ import moment from 'moment-timezone';
 
 export const scheduleRedditPosts = async () => {
 
-    const receivedTimeInItalianTimeZone = moment().tz('Europe/Rome'); 
-
-    const nowUtc = receivedTimeInItalianTimeZone.utc().format('YYYY-MM-DD HH:mm:ss+00'); 
-    
-    logger.info(`Orario corrente in Europe/Rome: ${nowUtc}`);
-    logger.info(`Orario corrente in UTC: ${nowUtc}`);
-
-    // Crea un timestamp UTC nel formato 'YYYY-MM-DD HH:MI:SS+00'
-    /*const nowUtc = new Date();
-    nowUtc.setSeconds(0, 0);
-    const nowUtcFormatted = nowUtc.toISOString().replace('T', ' ').slice(0, 19) + '+00';*/
+    const nowUtc = moment().utc().format('YYYY-MM-DD HH:mm:00+00');
 
     let { data, error } = await supabase
         .from('posts')
