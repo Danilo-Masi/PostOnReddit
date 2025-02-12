@@ -8,8 +8,6 @@ export const scheduleRedditPosts = async () => {
     const receivedTimeInItalianTimeZone = moment().tz('Europe/Rome'); 
 
     const nowUtc = receivedTimeInItalianTimeZone.utc().format('YYYY-MM-DD HH:mm:ss+00'); 
-
-    nowUtc.setSeconds(0, 0);
     
     logger.info(`Orario corrente in Europe/Rome: ${nowUtc}`);
     logger.info(`Orario corrente in UTC: ${nowUtc}`);
