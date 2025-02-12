@@ -9,7 +9,7 @@ const MESSAGES = {
     MISSING_TOKEN: 'Token mancante',
     INVALID_TOKEN: 'Token non valido',
     SUPABASE_ERROR: 'Errore nel recupero dei dati dal DB',
-    INVALID_ID: 'Nessun utente trovato con questo ID',
+    INVALID_ID: 'Nessun utente trovato con questo ID In retrive-data-controller',
     SUCCESS_MESSAGE: 'Dati recuperati correttamente',
     SERVER_ERROR: 'Errore generico del server',
 }
@@ -44,10 +44,12 @@ export const retrieveData = async (req, res) => {
 
     const user_id = decoded.id;
 
+    logger.info("USER_ID PASSATO: " + user_id);
+
     try {
         let { data, error } = await supabase
             .from('profiles')
-            .select('credits, email')
+            .select('email')
             .eq('id', user_id);
 
         if (error) {
@@ -58,7 +60,7 @@ export const retrieveData = async (req, res) => {
         }
 
         if (!data || data.length === 0) {
-            logger.error('Nessun utente trovato con questo ID');
+            logger.error('Nessun utente trovato con questo ID in retrive-data-controller');
             return res.status(401).json({
                 message: MESSAGES.INVALID_ID
             });

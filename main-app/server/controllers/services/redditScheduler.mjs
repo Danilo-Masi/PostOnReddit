@@ -19,7 +19,7 @@ export const scheduleRedditPosts = async () => {
     }
 
     if (data.length === 0) {
-        logger.info(`Post recuperati alle ${nowUtc}}: []`);
+        logger.info(`Post recuperati alle ${nowUtc}: []`);
     }
 
     for (let post of data) {

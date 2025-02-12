@@ -1,10 +1,7 @@
 import supabase from '../../config/supabase.mjs';
 import logger from '../../config/logger.mjs';
 
-export const deletePostedPosts = async () => {
-    // Data con lo stesso fuso orario del DB
-    const nowUtc = new Date().toISOString().slice(0, 19) + 'Z';
-    
+export const deletePostedPosts = async () => {    
     try {
         let { data, error } = await supabase
             .from('posts')
