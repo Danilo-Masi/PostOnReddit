@@ -5,7 +5,7 @@ import moment from 'moment-timezone';
 
 export const scheduleRedditPosts = async () => {
 
-    const nowUtc = moment().utc().format('YYYY-MM-DD HH:mm:00+00');
+    const nowUtc = moment().utc().format('YYYY-MM-DD HH:mm:00');
 
     let { data, error } = await supabase
         .from('posts')
