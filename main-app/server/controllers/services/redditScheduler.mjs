@@ -3,14 +3,18 @@ import logger from '../../config/logger.mjs';
 import { submitPostToReddit } from './redditServices.mjs';
 
 export const scheduleRedditPosts = async () => {
+    const nowUtc = new Date();
+    const oneMinuteLater = new Date(nowUtc.getTime() + 60000);
 
-    const nowUtc = new Date().toISOString().slice(0, 19) + 'Z';
+    const nowUtcISO = nowUtc.toISOString().slice(0, 19) + 'Z';
+    const oneMinuteLaterISO = oneMinuteLater.toISOString().slice(0, 19) + 'Z';
 
     let { data, error } = await supabase
         .from('posts')
         .select('*')
         .eq('status', 'pending')
-        .eq('date_time', nowUtc);
+        .gte('date_time', nowUtcISO)
+        .lt('date_time', oneMinuteLaterISO);
 
     if (error) {
         logger.error('Errore nel recupero dei post da caricare dal DB', error.message);
@@ -18,9 +22,9 @@ export const scheduleRedditPosts = async () => {
     }
 
     if (data.length === 0) {
-        logger.info(`Post recuperati alle ${nowUtc} : []`);
+        logger.info(`Post recuperati tra ${nowUtcISO} e ${oneMinuteLaterISO}: []`);
     } else {
-        logger.info(`Post recuperati alle ${nowUtc} : ${data}`);
+        logger.info(`Post recuperati tra ${nowUtcISO} e ${oneMinuteLaterISO}: ${JSON.stringify(data)}`);
     }
 
     for (let post of data) {
