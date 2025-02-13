@@ -15,7 +15,7 @@ const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
 
 const app = express();
 
-const allowedOrigins = [CLIENT_URL, 'http://localhost:5173'];
+const allowedOrigins = [CLIENT_URL, 'https://postonredditclient-dmasiiis-projects.vercel.app', 'http://localhost:5173'];
 
 // CORS
 app.use(cors({
