@@ -1,7 +1,7 @@
 import supabase from '../../config/supabase.mjs';
-import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
 import logger from '../../config/logger.mjs';
+import {decodeToken} from '../../controllers/services/decodeToken.mjs';
+import dotenv from 'dotenv';
 
 dotenv.config();
 
@@ -13,16 +13,6 @@ const MESSAGES = {
     SERVER_ERROR: 'Errore generico del server',
 }
 
-const decodeToken = (token) => {
-    try {
-        return jwt.verify(token, process.env.JWT_SECRET);
-    } catch (error) {
-        logger.error('Token non valido');
-        console.error('BACKEND: Token non valido', error.message);
-        return;
-    }
-}
-
 export const retrievePosts = async (req, res) => {
 
     const authHeader = req.headers['authorization'];
@@ -32,18 +22,18 @@ export const retrievePosts = async (req, res) => {
         logger.error('Token mancante');
         console.error('BACKEND: Token mancante');
         return res.status(400).json({
-            message: MESSAGE.MISSING_TOKEN,
+            message: MESSAGES.MISSING_TOKEN,
         });
     }
 
-    const decoded = decodeToken(token);
-    if (!decoded) {
+    const user = await decodeToken(token);
+    if (!user) {
         return res.status(400).json({
-            message: MESSAGE.INVALID_TOKEN,
+            message: MESSAGES.INVALID_TOKEN,
         });
     }
 
-    const user_id = decoded.id;
+    const user_id = user.user.id;
 
     try {
         let { data, error } = await supabase

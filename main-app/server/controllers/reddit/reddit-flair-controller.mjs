@@ -1,6 +1,6 @@
 import axios from "axios";
 import supabase from '../../config/supabase.mjs';
-import jwt from 'jsonwebtoken';
+import { decodeToken } from '../../controllers/services/decodeToken.mjs';
 import dotenv from 'dotenv';
 import logger from '../../config/logger.mjs';
 
@@ -16,15 +16,6 @@ const MESSAGES = {
     EMPTY_FLAIR: "Non c'è nessuna flair per questa subreddit",
     RESPONSE_ERROR: 'La struttura della risposta ottenuta non è valida',
     SERVER_ERROR: "Errore generico del server",
-}
-
-const decodeToken = (token) => {
-    try {
-        return jwt.verify(token, process.env.JWT_SECRET);
-    } catch (error) {
-        logger.error('Token non valido: ', error.message);
-        return;
-    }
 }
 
 const refreshAccessToken = async (refresh_token, user_id) => {
@@ -73,14 +64,14 @@ export const searchFlair = async (req, res) => {
         });
     }
 
-    const decoded = decodeToken(token);
-    if (!decoded) {
-        return res.status(401).json({
+    const user = await decodeToken(token);
+    if (!user) {
+        return res.status(400).json({
             message: MESSAGES.INVALID_TOKEN,
         });
     }
 
-    const user_id = decoded.id;
+    const user_id = user.user.id;
 
     const { q } = req.query;
 

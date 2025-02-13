@@ -26,13 +26,14 @@ export function AppSidebar() {
 
     useEffect(() => {
         const fetchInfo = async () => {
-            const data = await checkData();
-            if (data === null) {
+            const email = await checkData();
+            if (!email) {
                 setUserEmail('user@email.com');
             } else {
-                setUserEmail(data.email);
+                setUserEmail(email);
             }
-        }
+        };
+
         fetchInfo();
     }, []);
 

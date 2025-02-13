@@ -1,5 +1,5 @@
 import supabase from '../../config/supabase.mjs';
-import jwt from 'jsonwebtoken';
+import { decodeToken } from '../../controllers/services/decodeToken.mjs';
 import dotenv from 'dotenv';
 import logger from '../../config/logger.mjs';
 
@@ -9,23 +9,13 @@ const CLIENT_ID = process.env.REDDIT_CLIENT_ID;
 const REDIRECT_URI = process.env.REDDIT_REDIRECT_URI;
 const SCOPES = 'identity flair modflair read submit';
 
-const MESSAGE = {
+const MESSAGES = {
   NO_TOKEN: 'Token mancante',
   TOKEN_INVALID: 'Token non valido',
   SUPABASE_ERROR: 'Errore durante la verifica del token di Reddit nel DB',
   TOKEN_ALREADY_EXISTS: 'I permessi sono già stati concessi',
   SERVER_ERROR: 'Errore generico del server',
 };
-
-// Funzione per decodificare il token
-const decodeToken = (token) => {
-  try {
-    return jwt.verify(token, process.env.JWT_SECRET);
-  } catch (error) {
-    logger.error('Token non valido: ', error.message);
-    return;
-  }
-}
 
 export const redditRedirect = async (req, res) => {
 
@@ -35,18 +25,19 @@ export const redditRedirect = async (req, res) => {
   if (!token) {
     logger.error('Token mancante');
     return res.status(401).json({
-      message: MESSAGE.NO_TOKEN,
+      message: MESSAGES.NO_TOKEN,
     });
   }
 
-  const decoded = decodeToken(token);
-  if (!decoded) {
-    return res.status(401).json({
-      message: MESSAGE.TOKEN_INVALID,
+  const user = await decodeToken(token);
+
+  if (!user) {
+    return res.status(400).json({
+      message: MESSAGES.INVALID_TOKEN,
     });
   }
 
-  const user_id = decoded.id;
+  const user_id = user.user.id;
 
   try {
     let { data, error } = await supabase
@@ -57,7 +48,7 @@ export const redditRedirect = async (req, res) => {
     if (error) {
       logger.error('Errore generico di Supabase durante la verifica del\'access_token di Reddit nel DB: ', error.cause);
       return res.status(500).json({
-        message: MESSAGE.SUPABASE_ERROR,
+        message: MESSAGES.SUPABASE_ERROR,
       });
     }
 
@@ -65,7 +56,7 @@ export const redditRedirect = async (req, res) => {
     if (data && data.length > 0) {
       logger.info('Permessi di Reddit già concessi');
       return res.status(400).json({
-        message: MESSAGE.TOKEN_ALREADY_EXISTS,
+        message: MESSAGES.TOKEN_ALREADY_EXISTS,
       });
     }
 
@@ -81,7 +72,7 @@ export const redditRedirect = async (req, res) => {
   } catch (error) {
     logger.error('Errore generico del Server: ', error.cause);
     return res.status(500).json({
-      message: MESSAGE.SERVER_ERROR,
+      message: MESSAGES.SERVER_ERROR,
     });
   }
 };

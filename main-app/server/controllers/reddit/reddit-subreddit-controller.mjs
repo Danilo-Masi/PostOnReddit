@@ -2,7 +2,7 @@ import axios from "axios";
 import NodeCache from 'node-cache';
 import logger from '../../config/logger.mjs';
 import supabase from '../../config/supabase.mjs';
-import jwt from 'jsonwebtoken';
+import { decodeToken } from '../../controllers/services/decodeToken.mjs';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -17,16 +17,6 @@ const MESSAGES = {
 }
 
 const cache = new NodeCache({ stdTTL: 300 });
-
-// Decodifica del token JWT
-const decodeToken = (token) => {
-    try {
-        return jwt.verify(token, process.env.JWT_SECRET);
-    } catch (error) {
-        logger.error('Token non valido: ', error.message);
-        return null;
-    }
-};
 
 // Funzione per aggiornare l'access token tramite il refresh token
 const refreshAccessToken = async (refresh_token, user_id) => {
@@ -74,14 +64,14 @@ export const searchSubreddits = async (req, res) => {
         });
     }
 
-    const decoded = decodeToken(token);
-    if (!decoded) {
-        return res.status(401).json({
+    const user = await decodeToken(token);
+    if (!user) {
+        return res.status(400).json({
             message: MESSAGES.INVALID_TOKEN,
         });
     }
 
-    const user_id = decoded.id;
+    const user_id = user.user.id;
 
     const { q } = req.query;
     if (!q || q.trim().length < 2 || q.length > 100) {

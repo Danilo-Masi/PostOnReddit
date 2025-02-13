@@ -1,6 +1,6 @@
 import supabase from '../../config/supabase.mjs';
-import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import { decodeToken } from '../../controllers/services/decodeToken.mjs';
 import Joi from 'joi';
 import axios from "axios";
 import logger from '../../config/logger.mjs';
@@ -64,16 +64,6 @@ const checkSubredditPostRequirements = async (subreddit, access_token) => {
     }
 };
 
-// Funzione di utilità per decodificare il token
-const decodeToken = (token) => {
-    try {
-        return jwt.verify(token, process.env.JWT_SECRET);
-    } catch (error) {
-        logger.error('Token non valido: ', error.message);
-        return;
-    }
-}
-
 export const createPost = async (req, res) => {
 
     const authHeader = req.headers['authorization'];
@@ -86,14 +76,15 @@ export const createPost = async (req, res) => {
         });
     }
 
-    const decoded = decodeToken(token);
-    if (!decoded) {
-        return res.status(401).json({
-            message: MESSAGES.TOKEN_INVALID,
+    const user = await decodeToken(token);
+    if (!user) {
+        return res.status(400).json({
+            message: MESSAGES.INVALID_TOKEN,
         });
     }
 
-    const user_id = decoded.id;
+    const user_id = user.user.id;
+
     const { title, content, community, flair } = req.body;
     let date_time = req.body.date_time;
 
@@ -132,7 +123,7 @@ export const createPost = async (req, res) => {
             .single();
 
         if (error || !data) {
-            logger.error('Errore generico di Supabase durante il caricamento del access_token di Reddit: ',error.cause);
+            logger.error('Errore generico di Supabase durante il caricamento del access_token di Reddit: ', error.cause);
             return res.status(401).json({
                 message: MESSAGES.SUPABASE_ERROR,
             })
@@ -141,7 +132,7 @@ export const createPost = async (req, res) => {
         access_token = data.access_token;
 
     } catch (error) {
-        logger.error('Errore generico di Supabase durante il caricamento del access_token di Reddit: ',error.cause);
+        logger.error('Errore generico di Supabase durante il caricamento del access_token di Reddit: ', error.cause);
         return res.status(500).json({
             message: MESSAGES.REDDIT_ERROR,
         });

@@ -1,7 +1,7 @@
 import supabase from '../../config/supabase.mjs';
-import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
 import logger from '../../config/logger.mjs';
+import { decodeToken } from '../../controllers/services/decodeToken.mjs';
+import dotenv from 'dotenv';
 
 dotenv.config();
 
@@ -14,17 +14,7 @@ const MESSAGES = {
     SERVER_ERROR: 'Errore generico del server',
 }
 
-const decodeToken = (token) => {
-    try {
-        return jwt.verify(token, process.env.JWT_SECRET);
-    } catch (error) {
-        logger.error('Token non valido');
-        return;
-    }
-}
-
 export const retrieveData = async (req, res) => {
-
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
@@ -35,46 +25,14 @@ export const retrieveData = async (req, res) => {
         });
     }
 
-    const decoded = decodeToken(token);
-    if (!decoded) {
+    const user = await decodeToken(token);
+    if (!user) {
         return res.status(400).json({
             message: MESSAGES.INVALID_TOKEN,
         });
     }
 
-    const user_id = decoded.id;
+    const email = user.user.email;
 
-    logger.info("USER_ID PASSATO: " + user_id);
-
-    try {
-        let { data, error } = await supabase
-            .from('profiles')
-            .select('email')
-            .eq('id', user_id);
-
-        if (error) {
-            logger.error('Errore generico di Supabase durante il recupero dei dati del utente dal DB: ', error.cause);
-            return res.status(401).json({
-                message: MESSAGES.SUPABASE_ERROR,
-            });
-        }
-
-        if (!data || data.length === 0) {
-            logger.error('Nessun utente trovato con questo ID in retrive-data-controller');
-            return res.status(401).json({
-                message: MESSAGES.INVALID_ID
-            });
-        }
-
-        return res.status(200).json({
-            message: MESSAGES.SUCCESS_MESSAGE,
-            data: data[0],
-        });
-
-    } catch (error) {
-        logger.error('Errore generico del Server: ', error.cause);
-        return res.status(500).json({
-            message: MESSAGES.SERVER_ERROR,
-        });
-    }
-}
+    return res.status(200).json({ email });
+};

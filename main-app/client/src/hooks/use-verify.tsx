@@ -1,11 +1,11 @@
 // Axios
 import axios from "axios";
 
-// Url del server
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 
-// Funzione che verifica se il token di un utente è valido o meno
+// Funzione che verifica se l'access_token dell'utente è valido
 export const checkToken = async () => {
+
     const token = localStorage.getItem('authToken');
     if (!token) {
         return false;
@@ -13,7 +13,7 @@ export const checkToken = async () => {
 
     try {
         const response = await axios.get(`${SERVER_URL}/supabase/verify-token`, {
-            headers: { Authorization: `Barer ${token}` }
+            headers: { Authorization: `Bearer ${token}` }
         });
 
         if (response.status == 200) {

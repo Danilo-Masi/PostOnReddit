@@ -36,15 +36,11 @@ export const loginController = async (req, res) => {
             });
         }
 
-        const token = jwt.sign(
-            { id: data.user.id, email: data.user.email },
-            process.env.JWT_SECRET,
-            { expiresIn: '7d' }
-        );
+        const {access_token} = data.session;
 
         return res.status(200).json({
             message: MESSAGES.SUCCESS_MESSAGE,
-            token,
+            token: access_token,
         });
 
     } catch (error) {

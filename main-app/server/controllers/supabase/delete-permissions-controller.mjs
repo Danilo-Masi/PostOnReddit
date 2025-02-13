@@ -1,26 +1,16 @@
 import supabase from '../../config/supabase.mjs';
-import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
 import logger from '../../config/logger.mjs';
+import { decodeToken } from '../../controllers/services/decodeToken.mjs';
+import dotenv from 'dotenv';
 
 dotenv.config();
 
-const MESSAGE = {
+const MESSAGES = {
     MISSING_TOKEN: 'Token mancante',
     INVALID_TOKEN: 'Token non valido',
     SUPABASE_ERROR: 'Errore generico di Supabase durante il cancellamento dei permessi',
     SUCCESS_MESSAGE: 'Permessi annullati correttamente',
     SERVER_ERROR: 'Errore generico del server',
-}
-
-const decodeToken = (token) => {
-    try {
-        return jwt.verify(token, process.env.JWT_SECRET);
-    } catch (error) {
-        logger.error('Token non valido');
-        console.error('BACKEND: Token non valido', error.message);
-        return;
-    }
 }
 
 export const deletePermissions = async (req, res) => {
@@ -31,18 +21,18 @@ export const deletePermissions = async (req, res) => {
     if (!token) {
         logger.error('Token mancante');
         return res.status(400).json({
-            message: MESSAGE.MISSING_TOKEN,
+            message: MESSAGES.MISSING_TOKEN,
         });
     }
 
-    const decoded = decodeToken(token);
-    if (!decoded) {
+    const user = await decodeToken(token);
+    if (!user) {
         return res.status(400).json({
-            message: MESSAGE.INVALID_TOKEN,
+            message: MESSAGES.INVALID_TOKEN,
         });
     }
 
-    const user_id = decoded.id;
+    const user_id = user.user.id;
 
     try {
         let { error } = await supabase
@@ -53,18 +43,18 @@ export const deletePermissions = async (req, res) => {
         if (error) {
             logger.error('Errore generico di Supabase durante il cancellamento del access_token dal DB: ', error.cause);
             return res.status(401).json({
-                message: MESSAGE.SUPABASE_ERROR,
+                message: MESSAGES.SUPABASE_ERROR,
             });
         }
 
         return res.status(200).json({
-            message: MESSAGE.SUCCESS_MESSAGE,
+            message: MESSAGES.SUCCESS_MESSAGE,
         });
 
     } catch (error) {
         logger.error('Errore generico del Server: ', error.cause);
         return res.status(500).json({
-            message: MESSAGE.SERVER_ERROR,
+            message: MESSAGES.SERVER_ERROR,
         });
     }
 }

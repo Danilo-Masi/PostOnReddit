@@ -9,7 +9,7 @@ export const checkData = async () => {
     try {
         const token = localStorage.getItem('authToken');
         if (!token) {
-            console.error('CLIENT: Token mancante');
+            console.error('Token mancante');
             localStorage.removeItem('authToken');
             return null;
         }
@@ -21,14 +21,14 @@ export const checkData = async () => {
         });
 
         if (response.status === 200) {
-            return response.data.data;
+            return response.data.email;
         } else {
-            console.error('CLIENT: Errore nel recupero dei dati dal DB', response.data);
+            console.error('Errore nel recupero dei dati dal DB: ', response.data);
             return null;
         }
 
     } catch (error: any) {
-        console.error('CLIENT: Errore generico del server', error.stack);
+        console.error('Errore generico del Server: ', error.stack);
         return null;
     }
 }

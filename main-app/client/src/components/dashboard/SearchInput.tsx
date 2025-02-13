@@ -85,7 +85,7 @@ export default function SearchInput({ communityValue, setCommunityValue }: Searc
                 } else if (error.response?.status === 502) {
                     toast.error("Error to get subreddit. Please try again later");
                 } else {
-                    toast.error("An error occurred. Please try again later");
+                    toast.warning("You need to grant permission to access Reddit before proceeding.");
                 }
                 console.error("Errore di Axios: ", error.stack);
             } else {

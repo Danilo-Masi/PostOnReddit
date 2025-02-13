@@ -1,17 +1,17 @@
-import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
 import logger from '../../config/logger.mjs';
+import supabase from '../../config/supabase.mjs';
+import dotenv from 'dotenv';
 
 dotenv.config();
 
 const MESSAGES = {
     MISSING_TOKEN: 'Token mancante',
     DECODE_ERROR: 'Errore nella decodifica del token',
-    INVALID_TOKEN: 'Token non valido',
-    SERVER_ERROR: 'Errore generico del server',
+    INVALID_TOKEN: 'access_token non valido',
+    SERVER_ERROR: 'Errore generico del Server',
 };
 
-export const verifyToken = (req, res, next) => {
+export const verifyToken = async (req, res, next) => {
 
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -24,27 +24,27 @@ export const verifyToken = (req, res, next) => {
     }
 
     try {
-        const decoded = jwt.decode(token);
-    } catch (error) {
-        logger.error('Errore nella decodifica del token: ', error.message);
-        return res.status(401).json({
-            message: MESSAGES.DECODE_ERROR,
-        });
-    }
+        const { data: user, error } = await supabase.auth.getUser(token);
 
-    try {
-        jwt.verify(token, process.env.JWT_SECRET, (error, decoded) => {
-            if (error) {
-                logger.error('Token non valido: ', error.cause);
-                return res.status(402).json({
-                    message: MESSAGES.INVALID_TOKEN,
-                });
-            }
-            req.user = decoded;
-            next();
-        });
+        if (error) {
+            logger.error('Errore nella decodifica del token: ', error.message);
+            return res.status(401).json({
+                message: MESSAGES.DECODE_ERROR,
+            });
+        }
+
+        if (!user) {
+            logger.error('Tokne non valido');
+            return res.status(402).json({
+                message: MESSAGES.INVALID_TOKEN,
+            });
+        }
+
+        req.user = user;
+        next();
+
     } catch (error) {
-        logger.error('Errore generico del server: ', error.cause);
+        logger.error('Errore generico del Server: ', error.message);
         return res.status(500).json({
             message: MESSAGES.SERVER_ERROR,
         });
