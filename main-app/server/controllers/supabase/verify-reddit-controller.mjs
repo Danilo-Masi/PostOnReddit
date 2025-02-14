@@ -1,4 +1,4 @@
-import {supabaseUser} from '../../config/supabase.mjs';
+import {supabaseAdmin} from '../../config/supabase.mjs';
 import logger from '../../config/logger.mjs';
 import { decodeToken } from '../../controllers/services/decodeToken.mjs';
 import dotenv from 'dotenv';
@@ -34,7 +34,7 @@ export const checkRedditAuthorization = async (req, res) => {
     const user_id = user.user.id;
 
     try {
-        let { data, error } = await supabaseUser
+        let { data, error } = await supabaseAdmin
             .from('reddit_tokens')
             .select('access_token')
             .eq('user_id', user_id);
