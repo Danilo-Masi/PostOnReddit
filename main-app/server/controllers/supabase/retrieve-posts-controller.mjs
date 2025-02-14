@@ -1,4 +1,4 @@
-import supabase from '../../config/supabase.mjs';
+import {supabaseUser} from '../../config/supabase.mjs';
 import logger from '../../config/logger.mjs';
 import {decodeToken} from '../../controllers/services/decodeToken.mjs';
 import dotenv from 'dotenv';
@@ -36,7 +36,7 @@ export const retrievePosts = async (req, res) => {
     const user_id = user.user.id;
 
     try {
-        let { data, error } = await supabase
+        let { data, error } = await supabaseUser
             .from('posts')
             .select('*')
             .eq('user_id', user_id);

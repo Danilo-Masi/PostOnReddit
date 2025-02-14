@@ -4,7 +4,9 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+const anonKey = process.env.SUPABASE_ANON_KEY;
+const serviceKey = process.env.SUPABASE_SERVICE_KEY;
 
-export default supabase;
+export const supabaseUser = createClient(supabaseUrl, anonKey);
+
+export const supabaseAdmin = createClient(supabaseUrl, serviceKey);

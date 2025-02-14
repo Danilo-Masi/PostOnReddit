@@ -17,7 +17,7 @@ export default function SupportDialog() {
                     <AlertDialogTitle id="alert-dialog-title" className="text-balance">Need Assistance or Have Feedback?</AlertDialogTitle>
                     <AlertDialogDescription id="alert-dialog-description" className="text-balance">
                         If you encounter any issues or have any suggestions, feel free to reach out by emailing us at
-                        <span className="text-orange-500 hover:underline"> danilomasi999@gmail.com</span>
+                        <span className="text-orange-500 hover:underline"> support@postonreddit.com</span>
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

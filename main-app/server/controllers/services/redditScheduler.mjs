@@ -1,4 +1,4 @@
-import supabase from '../../config/supabase.mjs';
+import {supabaseAdmin} from '../../config/supabase.mjs';
 import logger from '../../config/logger.mjs';
 import { submitPostToReddit } from './redditServices.mjs';
 import moment from 'moment-timezone';
@@ -7,7 +7,7 @@ export const scheduleRedditPosts = async () => {
 
     const nowUtc = moment().utc().format('YYYY-MM-DD HH:mm:00');
 
-    let { data, error } = await supabase
+    let { data, error } = await supabaseAdmin
         .from('posts')
         .select('*')
         .eq('status', 'pending')

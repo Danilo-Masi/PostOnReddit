@@ -1,7 +1,7 @@
 import axios from "axios";
 import NodeCache from 'node-cache';
 import logger from '../../config/logger.mjs';
-import supabase from '../../config/supabase.mjs';
+import {supabaseUser} from '../../config/supabase.mjs';
 import { decodeToken } from '../../controllers/services/decodeToken.mjs';
 import dotenv from 'dotenv';
 
@@ -39,7 +39,7 @@ const refreshAccessToken = async (refresh_token, user_id) => {
         const newExpiry = new Date();
         newExpiry.setSeconds(newExpiry.getSeconds() + response.data.expires_in);
 
-        await supabase
+        await supabaseUser
             .from('reddit_tokens')
             .update({ access_token: newAccessToken, token_expiry: newExpiry })
             .eq('user_id', user_id);
@@ -88,7 +88,7 @@ export const searchSubreddits = async (req, res) => {
 
     try {
         // Recupera il token di accesso Reddit
-        let { data, error } = await supabase
+        let { data, error } = await supabaseUser
             .from('reddit_tokens')
             .select('access_token, refresh_token, token_expiry')
             .eq('user_id', user_id)

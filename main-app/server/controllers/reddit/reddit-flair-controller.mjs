@@ -1,5 +1,5 @@
 import axios from "axios";
-import supabase from '../../config/supabase.mjs';
+import {supabaseUser} from '../../config/supabase.mjs';
 import { decodeToken } from '../../controllers/services/decodeToken.mjs';
 import dotenv from 'dotenv';
 import logger from '../../config/logger.mjs';
@@ -38,7 +38,7 @@ const refreshAccessToken = async (refresh_token, user_id) => {
         const newExpiry = new Date();
         newExpiry.setSeconds(newExpiry.getSeconds() + response.data.expires_in);
 
-        await supabase
+        await supabaseUser
             .from('reddit_tokens')
             .update({ access_token: newAccessToken, token_expiry: newExpiry })
             .eq('user_id', user_id);
@@ -85,7 +85,7 @@ export const searchFlair = async (req, res) => {
     const subreddit = q.startsWith('r/') ? q.substring(2) : q;
 
     try {
-        let { data, error } = await supabase
+        let { data, error } = await supabaseUser
             .from('reddit_tokens')
             .select('access_token, refresh_token, token_expiry')
             .eq('user_id', user_id)

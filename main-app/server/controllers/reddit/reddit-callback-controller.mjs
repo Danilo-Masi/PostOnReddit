@@ -1,4 +1,4 @@
-import supabase from '../../config/supabase.mjs';
+import {supabaseAdmin} from '../../config/supabase.mjs';
 import axios from 'axios';
 import dotenv from 'dotenv';
 import logger from '../../config/logger.mjs';
@@ -48,7 +48,7 @@ export const redditCallback = async (req, res) => {
         const userId = state.split(':')[1];
 
         // Salvataggio dei dati nella tabella 'reddit_tokens' del DB
-        const { data, error } = await supabase
+        const { data, error } = await supabaseAdmin
             .from('reddit_tokens')
             .upsert({
                 user_id: userId,

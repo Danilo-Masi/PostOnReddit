@@ -1,4 +1,4 @@
-import supabase from '../../config/supabase.mjs';
+import {supabaseAdmin} from '../../config/supabase.mjs';
 import logger from '../../config/logger.mjs';
 import { decodeToken } from '../../controllers/services/decodeToken.mjs';
 import dotenv from 'dotenv';
@@ -35,7 +35,7 @@ export const deletePermissions = async (req, res) => {
     const user_id = user.user.id;
 
     try {
-        let { error } = await supabase
+        let { error } = await supabaseAdmin
             .from('reddit_tokens')
             .delete()
             .eq('user_id', user_id);

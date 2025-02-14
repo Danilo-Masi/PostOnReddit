@@ -1,4 +1,4 @@
-import supabase from '../../config/supabase.mjs';
+import {supabaseUser} from '../../config/supabase.mjs';
 import logger from '../../config/logger.mjs';
 
 const MESSAGES = {
@@ -20,7 +20,7 @@ export const logoutController = async (req, res) => {
     }
 
     try {
-        let { error } = await supabase.auth.signOut(token);
+        let { error } = await supabaseUser.auth.signOut(token);
 
         if (error) {
             logger.error('Errore generico di Supabase durante la fase di Logout: ', error.cause);

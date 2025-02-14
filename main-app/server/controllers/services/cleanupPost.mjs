@@ -1,9 +1,9 @@
-import supabase from '../../config/supabase.mjs';
+import {supabaseAdmin} from '../../config/supabase.mjs';
 import logger from '../../config/logger.mjs';
 
 export const deletePostedPosts = async () => {    
     try {
-        let { data, error } = await supabase
+        let { data, error } = await supabaseAdmin
             .from('posts')
             .delete()
             .eq('status', 'posted')

@@ -1,5 +1,5 @@
 import logger from '../../config/logger.mjs';
-import supabase from '../../config/supabase.mjs';
+import {supabaseUser} from '../../config/supabase.mjs';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -24,7 +24,7 @@ export const verifyToken = async (req, res, next) => {
     }
 
     try {
-        const { data: user, error } = await supabase.auth.getUser(token);
+        const { data: user, error } = await supabaseUser.auth.getUser(token);
 
         if (error) {
             logger.error('Errore nella decodifica del token: ', error.message);

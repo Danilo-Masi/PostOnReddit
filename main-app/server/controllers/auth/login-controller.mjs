@@ -1,5 +1,4 @@
-import supabase from '../../config/supabase.mjs';
-import jwt from 'jsonwebtoken';
+import {supabaseUser} from '../../config/supabase.mjs';
 import dotenv from 'dotenv';
 import logger from '../../config/logger.mjs';
 
@@ -24,7 +23,7 @@ export const loginController = async (req, res) => {
     }
 
     try {
-        let { data, error } = await supabase.auth.signInWithPassword({
+        let { data, error } = await supabaseUser.auth.signInWithPassword({
             email: email,
             password: password,
         });
@@ -36,7 +35,7 @@ export const loginController = async (req, res) => {
             });
         }
 
-        const {access_token} = data.session;
+        const { access_token } = data.session;
 
         return res.status(200).json({
             message: MESSAGES.SUCCESS_MESSAGE,

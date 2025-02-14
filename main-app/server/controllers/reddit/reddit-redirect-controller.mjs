@@ -1,4 +1,4 @@
-import supabase from '../../config/supabase.mjs';
+import {supabaseAdmin} from '../../config/supabase.mjs';
 import { decodeToken } from '../../controllers/services/decodeToken.mjs';
 import dotenv from 'dotenv';
 import logger from '../../config/logger.mjs';
@@ -40,7 +40,7 @@ export const redditRedirect = async (req, res) => {
   const user_id = user.user.id;
 
   try {
-    let { data, error } = await supabase
+    let { data, error } = await supabaseAdmin
       .from('reddit_tokens')
       .select('access_token')
       .eq('user_id', user_id);

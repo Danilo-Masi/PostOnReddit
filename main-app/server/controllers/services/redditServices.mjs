@@ -1,5 +1,5 @@
 import axios from "axios";
-import supabase from '../../config/supabase.mjs';
+import {supabaseAdmin} from '../../config/supabase.mjs';
 import dotenv from 'dotenv';
 import TurndownService from 'turndown';
 import logger from '../../config/logger.mjs';
@@ -14,7 +14,7 @@ const convertHTMLtoMarkdown = (html) => {
 
 export const submitPostToReddit = async (post) => {
     try {
-        let { data, error } = await supabase
+        let { data, error } = await supabaseAdmin
             .from('reddit_tokens')
             .select('access_token')
             .eq('user_id', post.user_id)

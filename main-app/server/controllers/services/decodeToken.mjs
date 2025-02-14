@@ -1,9 +1,9 @@
-import supabase from '../../config/supabase.mjs';
+import {supabaseUser} from '../../config/supabase.mjs';
 import logger from '../../config/logger.mjs';
 
 export const decodeToken = async (token) => {
     try {
-        const { data: user, error } = await supabase.auth.getUser(token);
+        const { data: user, error } = await supabaseUser.auth.getUser(token);
         if (error) {
             logger.error('Errore durante la decodifica del token Supabase: ', error.message);
             return null;

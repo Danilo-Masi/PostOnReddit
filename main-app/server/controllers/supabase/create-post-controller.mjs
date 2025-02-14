@@ -1,4 +1,4 @@
-import supabase from '../../config/supabase.mjs';
+import {supabaseUser} from '../../config/supabase.mjs';
 import dotenv from 'dotenv';
 import { decodeToken } from '../../controllers/services/decodeToken.mjs';
 import Joi from 'joi';
@@ -116,7 +116,7 @@ export const createPost = async (req, res) => {
     // Recupero access_token di Reddit
     let access_token = "";
     try {
-        let { data, error } = await supabase
+        let { data, error } = await supabaseUser
             .from('reddit_tokens')
             .select('access_token')
             .eq('user_id', user_id)
@@ -191,7 +191,7 @@ export const createPost = async (req, res) => {
     }
 
     try {
-        let { data, error } = await supabase
+        let { data, error } = await supabaseUser
             .from('posts')
             .insert([
                 {

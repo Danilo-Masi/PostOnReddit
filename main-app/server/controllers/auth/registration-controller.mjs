@@ -1,5 +1,4 @@
-import supabase from '../../config/supabase.mjs';
-import jwt from 'jsonwebtoken';
+import {supabaseUser} from '../../config/supabase.mjs';
 import dotenv from 'dotenv';
 import logger from '../../config/logger.mjs';
 
@@ -24,7 +23,7 @@ export const registrationController = async (req, res) => {
     }
 
     try {
-        let { data, error } = await supabase.auth.signUp({
+        let { data, error } = await supabaseUser.auth.signUp({
             email: email,
             password: password,
             options: {

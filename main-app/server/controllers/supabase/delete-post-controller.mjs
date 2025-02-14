@@ -1,4 +1,4 @@
-import supabase from "../../config/supabase.mjs"
+import {supabaseUser} from '../../config/supabase.mjs';
 import logger from '../../config/logger.mjs';
 
 const MESSAGE = {
@@ -19,7 +19,7 @@ export const deletePost = async (req, res) => {
     }
 
     try {
-        let { error } = await supabase
+        let { error } = await supabaseUser
             .from('posts')
             .delete()
             .eq('id', post_id);

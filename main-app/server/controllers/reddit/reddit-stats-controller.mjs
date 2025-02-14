@@ -1,5 +1,5 @@
 import axios from "axios";
-import supabase from '../../config/supabase.mjs';
+import {supabaseUser} from '../../config/supabase.mjs';
 import { decodeToken } from '../../controllers/services/decodeToken.mjs';
 import dotenv from 'dotenv';
 import logger from '../../config/logger.mjs';
@@ -171,7 +171,7 @@ export const redditStats = async (req, res) => {
     const subreddit = q.startsWith('r/') ? q.substring(2) : q;
 
     try {
-        let { data, error } = await supabase
+        let { data, error } = await supabaseUser
             .from('reddit_tokens')
             .select('access_token')
             .eq('user_id', user_id)
