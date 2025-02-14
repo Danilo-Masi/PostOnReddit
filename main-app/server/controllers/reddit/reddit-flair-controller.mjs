@@ -1,5 +1,5 @@
 import axios from "axios";
-import {supabaseUser} from '../../config/supabase.mjs';
+import {supabaseAdmin} from '../../config/supabase.mjs';
 import { decodeToken } from '../../controllers/services/decodeToken.mjs';
 import dotenv from 'dotenv';
 import logger from '../../config/logger.mjs';
@@ -38,7 +38,7 @@ const refreshAccessToken = async (refresh_token, user_id) => {
         const newExpiry = new Date();
         newExpiry.setSeconds(newExpiry.getSeconds() + response.data.expires_in);
 
-        await supabaseUser
+        await supabaseAdmin
             .from('reddit_tokens')
             .update({ access_token: newAccessToken, token_expiry: newExpiry })
             .eq('user_id', user_id);
