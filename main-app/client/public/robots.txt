@@ -1,4 +1,10 @@
 User-agent: *
 Allow: /
 
+# Blocca pagine che non devono essere indicizzate
+Disallow: /404
+Disallow: /login
+Disallow: /registration
+
+# Sitemap
 Sitemap: https://www.postonreddit.com/sitemap.xml

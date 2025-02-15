@@ -18,39 +18,6 @@ const MESSAGES = {
     SERVER_ERROR: "Errore generico del server",
 }
 
-const refreshAccessToken = async (refresh_token, user_id) => {
-    try {
-        const response = await axios.post('https://www.reddit.com/api/v1/access_token', null, {
-            params: {
-                grant_type: 'refresh_token',
-                refresh_token: refresh_token,
-            },
-            auth: {
-                username: process.env.REDDIT_CLIENT_ID,
-                password: process.env.REDDIT_CLIENT_SECRET,
-            },
-            headers: {
-                'User-Agent': 'POR/1.0.0',
-            }
-        });
-
-        const newAccessToken = response.data.access_token;
-        const newExpiry = new Date();
-        newExpiry.setSeconds(newExpiry.getSeconds() + response.data.expires_in);
-
-        await supabaseAdmin
-            .from('reddit_tokens')
-            .update({ access_token: newAccessToken, token_expiry: newExpiry })
-            .eq('user_id', user_id);
-
-        logger.info('access_token di Reddit aggiornato');
-        return newAccessToken;
-
-    } catch (error) {
-        logger.error('Errore durante il refresh dell\'access_token di Reddit: ', error.message);
-        throw new Error(MESSAGES.REFRESH_ERROR);
-    }
-};
 
 export const searchFlair = async (req, res) => {
 
@@ -85,7 +52,7 @@ export const searchFlair = async (req, res) => {
     const subreddit = q.startsWith('r/') ? q.substring(2) : q;
 
     try {
-        let { data, error } = await supabaseUser
+        let { data, error } = await supabaseAdmin
             .from('reddit_tokens')
             .select('access_token, refresh_token, token_expiry')
             .eq('user_id', user_id)
@@ -99,11 +66,6 @@ export const searchFlair = async (req, res) => {
         }
 
         let { access_token, refresh_token, token_expiry } = data;
-
-        if (new Date(token_expiry) <= new Date()) {
-            logger.info('access_token di Reddit scaduto, procedo con il refresh');
-            access_token = await refreshAccessToken(refresh_token, user_id);
-        }
 
         // Invia la richiesta all'API di Reddit
         const response = await axios.get(`https://oauth.reddit.com/r/${subreddit}/api/link_flair`, {
