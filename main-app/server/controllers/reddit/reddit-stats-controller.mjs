@@ -1,5 +1,5 @@
 import axios from "axios";
-import {supabaseAdmin} from '../../config/supabase.mjs';
+import { supabaseAdmin } from '../../config/supabase.mjs';
 import { decodeToken } from '../../controllers/services/decodeToken.mjs';
 import dotenv from 'dotenv';
 import logger from '../../config/logger.mjs';
@@ -68,7 +68,7 @@ const getRedditPosts = async (subreddit, access_token) => {
                 reachedEnd = true;
             }
         } catch (error) {
-            logger.error('Errore nella chiamata al endpoint di Reddit: ', error.message);
+            logger.error('Errore nella chiamata al endpoint di Reddit: ' + error.message);
             reachedEnd = true;
         }
     }
@@ -178,7 +178,7 @@ export const redditStats = async (req, res) => {
             .single();
 
         if (error || !data) {
-            logger.error('Errore generico di Supabase durante il caricamento del access_token di Reddit: ', error.cause);
+            logger.error('Errore generico di Supabase durante il caricamento del access_token di Reddit: ' + error.cause);
             return res.status(401).json({
                 message: MESSAGES.SUPABASE_ERROR,
             })
@@ -205,7 +205,7 @@ export const redditStats = async (req, res) => {
                 chartData: [],
             });
         } else {
-            logger.error('Errore generico del Server: ', error.cause);
+            logger.error('Errore generico del Server: ' + error.cause);
             return res.status(500).json({
                 message: MESSAGES.SERVER_ERROR,
             });

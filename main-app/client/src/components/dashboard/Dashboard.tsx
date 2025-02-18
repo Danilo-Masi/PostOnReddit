@@ -1,5 +1,5 @@
 // React
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 // Axios
 import axios from 'axios';
 // minimal-tiptap
@@ -15,7 +15,11 @@ import { DateTimePicker } from './DateTimePicker';
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
 // Icons
-import { Ban, Clock4, Loader2 } from 'lucide-react';
+import { Ban, Clock4, Loader2, Settings } from 'lucide-react';
+// Hooks
+import { checkRedditAuthorization } from '@/hooks/use-retrieve-data';
+// Context
+import { useAppContext } from '../context/AppContext';
 
 // Url del server
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
@@ -50,6 +54,9 @@ export default function Dashboard() {
   // Stati che gestiscono i valori del chart
   const [chartData, setChartData] = useState<ChartData[]>([]);
   const [isDataLoading, setDataLoading] = useState<boolean>(false);
+  // Stato che gestisce se il l'access_token di Reddit è concesso
+  const [isAccessToken, setAccessToken] = useState<boolean>(false);
+  const { setSelectedSection, } = useAppContext();
 
   // Funzione per la creazione e caricamento del post nel DB
   const handlePostCreation = async () => {
@@ -72,7 +79,7 @@ export default function Dashboard() {
         }
 
       } catch (error: any) {
-        console.error("CLIENT: Errore durante il salvataggio del post su DB", error.message);
+        console.error("Errore durante il salvataggio del post su DB", error.message);
 
         // Se l'errore contiene un messaggio di errore personalizzato, mostralo
         if (error.response && error.response.data && error.response.data.details) {
@@ -124,65 +131,92 @@ export default function Dashboard() {
     setDateTime(utcDate);
   }
 
+  useEffect(() => {
+    const fetchInfo = async () => {
+      const verifiedToken = await checkRedditAuthorization();
+      setAccessToken(verifiedToken || false);
+    };
+
+    fetchInfo();
+  }, [isAccessToken]);
+
   return (
-    <div className="w-full h-fit md:h-full flex md:flex-row flex-col gap-10 p-5 rounded-xl bg-zinc-200 dark:bg-zinc-700">
-      {/*** BLOCCO SINISTRA ***/}
-      <div className='w-full md:w-1/2 h-full flex flex-col gap-y-6'>
-        {/* TITLE EDITOR */}
-        <TitleEditor
-          titleValue={titleValue}
-          setTitleValue={setTitleValue} />
-        {/* DESCRIPTION EDITOR */}
-        <DescriptionEditor
-          descriptionValue={descriptionValue}
-          setDescriptionValue={setDescriptionValue} />
-      </div>
-      {/*** BLOCCO DESTRA ***/}
-      <div className='w-full md:w-1/2 h-full flex flex-col p-5 gap-y-10 md:gap-y-0 bg-zinc-100 dark:bg-zinc-800 border border-border rounded-lg'>
-        {/* Input subreddit, flair, date */}
-        <div className='w-full flex flex-col md:flex-row md:flex-wrap gap-4'>
-          <SearchInput
-            communityValue={communityValue}
-            setCommunityValue={setCommunityValue} />
-          <SelectOption
-            subreddit={communityValue}
-            isDisabled={communityValue === "" ? true : false}
-            placeholder='Select a flair'
-            value={flairValue}
-            setValue={setFlairValue} />
-          <DateTimePicker
-            date={dateTime}
-            setDate={setDateTime} />
+    <div className="w-full h-fit md:h-full flex md:flex-row flex-col justify-center items-center gap-10 p-5 rounded-xl bg-zinc-200 dark:bg-zinc-700">
+      {isAccessToken ? (
+        <>
+          {/*** BLOCCO SINISTRA ***/}
+          <div className='w-full md:w-1/2 h-full flex flex-col gap-y-6'>
+            {/* TITLE EDITOR */}
+            <TitleEditor
+              titleValue={titleValue}
+              setTitleValue={setTitleValue} />
+            {/* DESCRIPTION EDITOR */}
+            <DescriptionEditor
+              descriptionValue={descriptionValue}
+              setDescriptionValue={setDescriptionValue} />
+          </div>
+          {/*** BLOCCO DESTRA ***/}
+          <div className='w-full md:w-1/2 h-full flex flex-col p-5 gap-y-10 md:gap-y-0 bg-zinc-100 dark:bg-zinc-800 border border-border rounded-lg'>
+            {/* Input subreddit, flair, date */}
+            <div className='w-full flex flex-col md:flex-row md:flex-wrap gap-4'>
+              <SearchInput
+                communityValue={communityValue}
+                setCommunityValue={setCommunityValue} />
+              <SelectOption
+                subreddit={communityValue}
+                isDisabled={communityValue === "" ? true : false}
+                placeholder='Select a flair'
+                value={flairValue}
+                setValue={setFlairValue} />
+              <DateTimePicker
+                date={dateTime}
+                setDate={setDateTime} />
+            </div>
+            {/* Chart o invalida data */}
+            {isDataLoading === true && chartData.length === 0 ? (
+              <div className='w-full h-full min-h-[40svh] md:min-h-0 flex items-center justify-center'>
+                <Loader2 className='animate-spin' />
+              </div>
+            ) : communityValue.length === 0 && chartData.length === 0 ? (
+              <div className='w-full h-full min-h-[40svh] md:min-h-0 flex items-center justify-center'>
+                <Ban className='mr-2' size={18} />
+                <p>No data found</p>
+              </div>
+            ) : (
+              <div className='w-full h-full min-h-[40svh] md:min-h-0 flex items-center justify-center'>
+                <Chart
+                  subreddit={communityValue}
+                  chartData={chartData}
+                  setChartData={setChartData}
+                  isDataLoading={isDataLoading}
+                  setDataLoading={setDataLoading}
+                />
+              </div>
+            )}
+            {/* Button */}
+            <Button
+              className='w-full py-5 bg-orange-500 dark:bg-orange-500 hover:bg-orange-500 dark:hover:bg-orange-600 text-zinc-50 dark:text-zinc-50'
+              onClick={handlePostCreation}>
+              <Clock4 />
+              Schedule your post
+            </Button>
+          </div>
+        </>
+      ) : (
+        <div className="w-full h-full flex flex-col justify-center items-center text-center gap-y-6 overflow-scroll">
+          <div>
+            <h1 className='text-xl font-semibold text-zinc-900 dark:text-zinc-50'>Grant Reddit permissions to start creating your post</h1>
+            <p className='text-sm font-medium text-zinc-500 dark:text-zinc-300'>You need to authorize access before you can schedule posts</p>
+          </div>
+          <Button
+            type="button"
+            className="bg-orange-500 dark:bg-orange-500 hover:bg-orange-600 dark:hover:bg-orange-600 dark:text-zinc-50"
+            onClick={() => setSelectedSection("settings")}>
+            <Settings />
+            Go to Settings
+          </Button>
         </div>
-        {/* Chart o invalida data */}
-        {isDataLoading === true && chartData.length === 0 ? (
-          <div className='w-full h-full min-h-[40svh] md:min-h-0 flex items-center justify-center'>
-            <Loader2 className='animate-spin' />
-          </div>
-        ) : communityValue.length === 0 && chartData.length === 0 ? (
-          <div className='w-full h-full min-h-[40svh] md:min-h-0 flex items-center justify-center'>
-            <Ban className='mr-2' size={18} />
-            <p>No data found</p>
-          </div>
-        ) : (
-          <div className='w-full h-full min-h-[40svh] md:min-h-0 flex items-center justify-center'>
-            <Chart
-              subreddit={communityValue}
-              chartData={chartData}
-              setChartData={setChartData}
-              isDataLoading={isDataLoading}
-              setDataLoading={setDataLoading}
-            />
-          </div>
-        )}
-        {/* Button */}
-        <Button
-          className='w-full py-5 bg-orange-500 dark:bg-orange-500 hover:bg-orange-500 dark:hover:bg-orange-600 text-zinc-50 dark:text-zinc-50'
-          onClick={handlePostCreation}>
-          <Clock4 />
-          Schedule your post
-        </Button>
-      </div>
+      )}
     </div >
   );
 }

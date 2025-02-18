@@ -5,7 +5,7 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupConte
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Button } from "../ui/button"
 // Icons
-import { Command, CalendarCheck2, Settings, ChevronUp, CircleHelp, LogOut } from "lucide-react"
+import { Command, CalendarCheck2, Settings, ChevronUp, CircleHelp, LogOut, MessageSquareText } from "lucide-react"
 // Context
 import { useAppContext } from "../context/AppContext"
 // Components
@@ -16,6 +16,7 @@ import { checkData } from "@/hooks/use-retrieve-data"
 const links = [
     { title: "Dashboard", key: "dashboard", icon: Command },
     { title: "Scheduled post", key: "scheduled-post", icon: CalendarCheck2 },
+    { title: "Feedback", key: "feedback", icon: MessageSquareText },
     { title: "Settings", key: "settings", icon: Settings }
 ]
 
@@ -36,6 +37,14 @@ export function AppSidebar() {
 
         fetchInfo();
     }, []);
+
+    const handleSelection = (linkKey: string) => {
+        if (linkKey !== "feedback") {
+            setSelectedSection(linkKey);
+        } else {
+            window.open("https://insigh.to/b/postonreddit", "_blank");
+        }
+    }
 
     return (
 
@@ -59,7 +68,8 @@ export function AppSidebar() {
                                         <Button
                                             className={`flex items-center justify-start text-zinc-700 dark:text-zinc-50`}
                                             variant="ghost"
-                                            onClick={() => setSelectedSection(link.key)}>
+                                            //onClick={() => setSelectedSection(link.key)}
+                                            onClick={() => handleSelection(link.key)}>
                                             <link.icon />
                                             <span>{link.title}</span>
                                         </Button>
