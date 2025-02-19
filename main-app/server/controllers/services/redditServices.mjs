@@ -1,5 +1,5 @@
 import axios from "axios";
-import {supabaseAdmin} from '../../config/supabase.mjs';
+import { supabaseAdmin } from '../../config/supabase.mjs';
 import dotenv from 'dotenv';
 import TurndownService from 'turndown';
 import logger from '../../config/logger.mjs';
@@ -21,7 +21,7 @@ export const submitPostToReddit = async (post) => {
             .single();
 
         if (error || !data) {
-            logger.error(`Errore nel recupero del token di accesso di Reddit`, error.message);
+            logger.error(`Errore nel recupero del token di accesso di Reddit: ` + error.message);
             return;
         }
 
@@ -51,14 +51,14 @@ export const submitPostToReddit = async (post) => {
         });
 
         if (response.data.json.errors.length === 0) {
-            await supabase
+            await supabaseAdmin
                 .from('posts')
                 .update({ status: 'posted' })
                 .eq('id', post.id);
             return true;
         } else {
-            logger.error("Errore nella pubblicazione del post: ", response.data.json.errors);
-            await supabase
+            logger.error("Errore nella pubblicazione del post: " + response.data.json.errors);
+            await supabaseAdmin
                 .from('posts')
                 .update({ status: 'failed' })
                 .eq('id', post.id);
@@ -66,8 +66,7 @@ export const submitPostToReddit = async (post) => {
         }
 
     } catch (error) {
-        logger.error("Errore generale nella pubblicazione del post su Reddit: ", error.message);
+        logger.error("Errore generale nella pubblicazione del post su Reddit: " + error.message);
         return false;
     }
-
 }

@@ -1,8 +1,5 @@
-import {supabaseUser} from '../../config/supabase.mjs';
-import dotenv from 'dotenv';
+import { supabaseUser } from '../../config/supabase.mjs';
 import logger from '../../config/logger.mjs';
-
-dotenv.config();
 
 const MESSAGES = {
     CREDENTIAL_ERROR: "Credenziali non valide",
@@ -32,7 +29,7 @@ export const registrationController = async (req, res) => {
         });
 
         if (error) {
-            logger.error('Errore generico di Supabase durante la fase di Registrazione: ', error.cause);
+            logger.error('Errore generico di Supabase durante la fase di Registrazione: ' + error.message);
             return res.status(401).json({
                 message: MESSAGES.SUPABASE_ERROR,
             });
@@ -46,7 +43,7 @@ export const registrationController = async (req, res) => {
         });
 
     } catch (error) {
-        logger.error('Errore generico del Server: ', error.cause);
+        logger.error('Errore generico del Server: ' + error.message);
         return res.status(500).json({
             message: MESSAGES.SERVER_ERROR,
         });

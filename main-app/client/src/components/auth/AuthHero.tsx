@@ -35,7 +35,6 @@ export default function AuthHero() {
                 <p className="text-white text-sm">Join 500+ founders and creators</p>
                 <GroupAvatar />
             </div>
-
         </div>
     );
 }

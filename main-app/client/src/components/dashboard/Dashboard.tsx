@@ -20,6 +20,9 @@ import { Ban, Clock4, Loader2, Settings } from 'lucide-react';
 import { checkRedditAuthorization } from '@/hooks/use-retrieve-data';
 // Context
 import { useAppContext } from '../context/AppContext';
+import DailyTime from './DailyTime';
+import WeekTime from './WeekTime';
+
 
 // Url del server
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
@@ -172,7 +175,13 @@ export default function Dashboard() {
                 date={dateTime}
                 setDate={setDateTime} />
             </div>
-            {/* Chart o invalida data */}
+            <div className='w-full h-auto min-h-[50svh] max-h-svh flex flex-col gap-3 my-3 md:my-5 overflow-scroll'>
+              <h1 className='font-bold text-xl md:text-lg text-zinc-900 dark:text-zinc-50'>Best time for the day</h1>
+              <DailyTime />
+              <h1 className='font-bold text-xl md:text-lg text-zinc-900 dark:text-zinc-50'>Best time for the week</h1>
+              <WeekTime />
+            </div>
+            {/* 
             {isDataLoading === true && chartData.length === 0 ? (
               <div className='w-full h-full min-h-[40svh] md:min-h-0 flex items-center justify-center'>
                 <Loader2 className='animate-spin' />
@@ -193,6 +202,7 @@ export default function Dashboard() {
                 />
               </div>
             )}
+            */}
             {/* Button */}
             <Button
               className='w-full py-5 bg-orange-500 dark:bg-orange-500 hover:bg-orange-500 dark:hover:bg-orange-600 text-zinc-50 dark:text-zinc-50'

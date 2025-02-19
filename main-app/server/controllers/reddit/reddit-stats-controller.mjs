@@ -178,7 +178,7 @@ export const redditStats = async (req, res) => {
             .single();
 
         if (error || !data) {
-            logger.error('Errore generico di Supabase durante il caricamento del access_token di Reddit: ' + error.cause);
+            logger.error('Errore generico di Supabase durante il caricamento del access_token di Reddit: ' + error.message);
             return res.status(401).json({
                 message: MESSAGES.SUPABASE_ERROR,
             })
@@ -205,7 +205,7 @@ export const redditStats = async (req, res) => {
                 chartData: [],
             });
         } else {
-            logger.error('Errore generico del Server: ' + error.cause);
+            logger.error('Errore generico del Server: ' + error.message);
             return res.status(500).json({
                 message: MESSAGES.SERVER_ERROR,
             });

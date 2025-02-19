@@ -1,7 +1,7 @@
-import {supabaseAdmin} from '../../config/supabase.mjs';
+import { supabaseAdmin } from '../../config/supabase.mjs';
 import logger from '../../config/logger.mjs';
 
-export const deletePostedPosts = async () => {    
+export const deletePostedPosts = async () => {
     try {
         let { data, error } = await supabaseAdmin
             .from('posts')
@@ -21,7 +21,7 @@ export const deletePostedPosts = async () => {
         logger.info(`Eliminati ${data.length} post con successo`);
 
     } catch (error) {
-        logger.error("Errore nell'eliminazione dei post: ", error.message);
-
+        logger.error("Errore nell'eliminazione dei post: " + error.message);
+        return;
     }
 };

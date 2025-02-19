@@ -1,5 +1,5 @@
 import logger from '../../config/logger.mjs';
-import {supabaseUser} from '../../config/supabase.mjs';
+import { supabaseUser } from '../../config/supabase.mjs';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -27,14 +27,14 @@ export const verifyToken = async (req, res, next) => {
         const { data: user, error } = await supabaseUser.auth.getUser(token);
 
         if (error) {
-            logger.error('Errore nella decodifica del token: ', error.message);
+            logger.error('Errore nella decodifica del token: ' + error.message);
             return res.status(401).json({
                 message: MESSAGES.DECODE_ERROR,
             });
         }
 
         if (!user) {
-            logger.error('Tokne non valido');
+            logger.error('Token non valido');
             return res.status(402).json({
                 message: MESSAGES.INVALID_TOKEN,
             });
@@ -44,7 +44,7 @@ export const verifyToken = async (req, res, next) => {
         next();
 
     } catch (error) {
-        logger.error('Errore generico del Server: ', error.message);
+        logger.error('Errore generico del Server: ' + error.message);
         return res.status(500).json({
             message: MESSAGES.SERVER_ERROR,
         });

@@ -1,6 +1,6 @@
-import {supabaseUser} from '../../config/supabase.mjs';
+import { supabaseAdmin } from '../../config/supabase.mjs';
 import logger from '../../config/logger.mjs';
-import {decodeToken} from '../../controllers/services/decodeToken.mjs';
+import { decodeToken } from '../../controllers/services/decodeToken.mjs';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -20,7 +20,6 @@ export const retrievePosts = async (req, res) => {
 
     if (!token) {
         logger.error('Token mancante');
-        console.error('BACKEND: Token mancante');
         return res.status(400).json({
             message: MESSAGES.MISSING_TOKEN,
         });
@@ -36,13 +35,13 @@ export const retrievePosts = async (req, res) => {
     const user_id = user.user.id;
 
     try {
-        let { data, error } = await supabaseUser
+        let { data, error } = await supabaseAdmin
             .from('posts')
             .select('*')
             .eq('user_id', user_id);
 
         if (error) {
-            logger.error('Errore generico di Supabase durante il recupero dei post dal DB: ', error.cause);
+            logger.error('Errore generico di Supabase durante il recupero dei post dal DB: ' + error.message);
             return res.status(401).json({
                 message: MESSAGES.SUPABASE_ERROR,
             });
@@ -54,7 +53,7 @@ export const retrievePosts = async (req, res) => {
         });
 
     } catch (error) {
-        logger.error('Errore generico del Server: ', error.cause);
+        logger.error('Errore generico del Server: ' + error.message);
         return res.status(500).json({
             message: MESSAGES.SERVER_ERROR,
         });

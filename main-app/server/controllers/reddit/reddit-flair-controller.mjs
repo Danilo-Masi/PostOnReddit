@@ -1,5 +1,5 @@
 import axios from "axios";
-import {supabaseAdmin} from '../../config/supabase.mjs';
+import { supabaseAdmin } from '../../config/supabase.mjs';
 import { decodeToken } from '../../controllers/services/decodeToken.mjs';
 import dotenv from 'dotenv';
 import logger from '../../config/logger.mjs';
@@ -54,18 +54,18 @@ export const searchFlair = async (req, res) => {
     try {
         let { data, error } = await supabaseAdmin
             .from('reddit_tokens')
-            .select('access_token, refresh_token, token_expiry')
+            .select('access_token')
             .eq('user_id', user_id)
             .single();
 
         if (error || !data) {
-            logger.error('Errore generico di Supabsee durante la fase di caricamento del\'access_token di Reddit: ', error.cause);
+            logger.error('Errore generico di Supabsee durante la fase di caricamento del\'access_token di Reddit: ' + error.message);
             return res.status(401).json({
                 message: MESSAGES.SUPABASE_ERROR,
             })
         }
 
-        let { access_token, refresh_token, token_expiry } = data;
+        let { access_token } = data;
 
         // Invia la richiesta all'API di Reddit
         const response = await axios.get(`https://oauth.reddit.com/r/${subreddit}/api/link_flair`, {
@@ -96,7 +96,7 @@ export const searchFlair = async (req, res) => {
                 flair: [],
             });
         } else {
-            logger.error('Errore generico del Server: ', error.cause);
+            logger.error('Errore generico del Server: ' + error.message);
             return res.status(500).json({
                 message: MESSAGES.SERVER_ERROR,
             });

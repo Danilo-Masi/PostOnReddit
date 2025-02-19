@@ -13,7 +13,7 @@ export default function ChangelogSettings() {
                     day="18"
                     date="Feb. 2025"
                     title="Bug Fixes 👾"
-                    description="Fixed some bugs on the dashboard and added a new support page" />
+                    description="Fixed some bugs on the dashboard and added a new feedback page" />
                 <Changelog
                     day="17"
                     date="Feb. 2025"

@@ -1,4 +1,4 @@
-import {supabaseAdmin} from '../../config/supabase.mjs';
+import { supabaseAdmin } from '../../config/supabase.mjs';
 import logger from '../../config/logger.mjs';
 import { submitPostToReddit } from './redditServices.mjs';
 import moment from 'moment-timezone';
@@ -14,7 +14,7 @@ export const scheduleRedditPosts = async () => {
         .eq('date_time', nowUtc)
 
     if (error) {
-        logger.error('Errore nel recupero dei post da caricare dal DB', error.message);
+        logger.error('Errore nel recupero dei post da caricare dal DB: ' + error.message);
         return;
     }
 

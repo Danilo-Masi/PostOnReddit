@@ -1,4 +1,4 @@
-import {supabaseAdmin} from '../../config/supabase.mjs';
+import { supabaseAdmin } from '../../config/supabase.mjs';
 import { decodeToken } from '../../controllers/services/decodeToken.mjs';
 import dotenv from 'dotenv';
 import logger from '../../config/logger.mjs';
@@ -46,7 +46,7 @@ export const redditRedirect = async (req, res) => {
       .eq('user_id', user_id);
 
     if (error) {
-      logger.error('Errore generico di Supabase durante la verifica del\'access_token di Reddit nel DB: ', error.cause);
+      logger.error('Errore generico di Supabase durante la verifica del\'access_token di Reddit nel DB: ' + error.message);
       return res.status(500).json({
         message: MESSAGES.SUPABASE_ERROR,
       });
@@ -70,7 +70,7 @@ export const redditRedirect = async (req, res) => {
     res.json({ redirectUrl: redditAuthUrl });
 
   } catch (error) {
-    logger.error('Errore generico del Server: ', error.cause);
+    logger.error('Errore generico del Server: ' + error.message);
     return res.status(500).json({
       message: MESSAGES.SERVER_ERROR,
     });

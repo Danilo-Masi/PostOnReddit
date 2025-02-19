@@ -1,4 +1,4 @@
-import {supabaseAdmin} from '../../config/supabase.mjs';
+import { supabaseAdmin } from '../../config/supabase.mjs';
 import logger from '../../config/logger.mjs';
 import { decodeToken } from '../../controllers/services/decodeToken.mjs';
 import dotenv from 'dotenv';
@@ -41,7 +41,7 @@ export const deletePermissions = async (req, res) => {
             .eq('user_id', user_id);
 
         if (error) {
-            logger.error('Errore generico di Supabase durante il cancellamento del access_token dal DB: ', error.cause);
+            logger.error('Errore generico di Supabase durante il cancellamento del access_token dal DB: ' + error.message);
             return res.status(401).json({
                 message: MESSAGES.SUPABASE_ERROR,
             });
@@ -52,7 +52,7 @@ export const deletePermissions = async (req, res) => {
         });
 
     } catch (error) {
-        logger.error('Errore generico del Server: ', error.cause);
+        logger.error('Errore generico del Server: ' + error.message);
         return res.status(500).json({
             message: MESSAGES.SERVER_ERROR,
         });

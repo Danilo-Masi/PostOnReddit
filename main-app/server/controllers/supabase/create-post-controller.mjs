@@ -1,4 +1,4 @@
-import {supabaseUser} from '../../config/supabase.mjs';
+import { supabaseAdmin } from '../../config/supabase.mjs';
 import dotenv from 'dotenv';
 import { decodeToken } from '../../controllers/services/decodeToken.mjs';
 import Joi from 'joi';
@@ -50,13 +50,13 @@ const checkSubredditPostRequirements = async (subreddit, access_token) => {
 
     } catch (error) {
         if (error.response) {
-            logger.error('Errore nel recupero dei requisiti della subreddit: ', error.message);
+            logger.error('Errore nel recupero dei requisiti della subreddit: ' + error.message);
             return res.status(400).json({
                 message: MESSAGES.SUBREDDIT_REQUIREMENTS_ERROR,
                 details: error.response.data,
             });
         } else {
-            logger.error('Errore di rete durante il recupero dei requisiti dalla subreddit: ', error.message);
+            logger.error('Errore di rete durante il recupero dei requisiti dalla subreddit: ' + error.message);
             return res.status(500).json({
                 message: MESSAGES.SERVER_ERROR,
             });
@@ -106,7 +106,7 @@ export const createPost = async (req, res) => {
     // Validazione dei dati in ingresso
     const { error } = validatePostData({ title, content, community, flair, date_time });
     if (error) {
-        logger.error('I dati per la creazione del post non sono validi: ', error.cause);
+        logger.error('I dati per la creazione del post non sono validi: ' + error.message);
         return res.status(400).json({
             message: MESSAGES.INVALID_DATA,
             details: error.details[0].message,
@@ -116,14 +116,14 @@ export const createPost = async (req, res) => {
     // Recupero access_token di Reddit
     let access_token = "";
     try {
-        let { data, error } = await supabaseUser
+        let { data, error } = await supabaseAdmin
             .from('reddit_tokens')
             .select('access_token')
             .eq('user_id', user_id)
             .single();
 
         if (error || !data) {
-            logger.error('Errore generico di Supabase durante il caricamento del access_token di Reddit: ', error.cause);
+            logger.error('Errore generico di Supabase durante il caricamento del access_token di Reddit: ' + error.message);
             return res.status(401).json({
                 message: MESSAGES.SUPABASE_ERROR,
             })
@@ -132,7 +132,7 @@ export const createPost = async (req, res) => {
         access_token = data.access_token;
 
     } catch (error) {
-        logger.error('Errore generico di Supabase durante il caricamento del access_token di Reddit: ', error.cause);
+        logger.error('Errore generico di Supabase durante il caricamento del access_token di Reddit: ' + error.message);
         return res.status(500).json({
             message: MESSAGES.REDDIT_ERROR,
         });
@@ -191,7 +191,7 @@ export const createPost = async (req, res) => {
     }
 
     try {
-        let { data, error } = await supabaseUser
+        let { data, error } = await supabaseAdmin
             .from('posts')
             .insert([
                 {
@@ -207,7 +207,7 @@ export const createPost = async (req, res) => {
             .select();
 
         if (error) {
-            logger.error('Errore generico di Supabase durante il caricamento del post sul DB: ', error.cause);
+            logger.error('Errore generico di Supabase durante il caricamento del post sul DB: ' + error.message);
             return res.status(500).json({
                 message: MESSAGES.SUPABASE_ERROR,
             });
@@ -218,7 +218,7 @@ export const createPost = async (req, res) => {
         });
 
     } catch (error) {
-        logger.error('Errore generico del Server: ', error.cause);
+        logger.error('Errore generico del Server: ' + error.message);
         return res.status(500).json({
             message: MESSAGES.SERVER_ERROR,
         });

@@ -1,4 +1,4 @@
-import {supabaseAdmin} from '../../config/supabase.mjs';
+import { supabaseAdmin } from '../../config/supabase.mjs';
 import axios from 'axios';
 import dotenv from 'dotenv';
 import logger from '../../config/logger.mjs';
@@ -20,7 +20,7 @@ export const redditCallback = async (req, res) => {
     const { code, state, error } = req.query;
 
     if (error) {
-        logger.error('Errore generico di Reddit: ', error.message);
+        logger.error('Errore generico di Reddit: ' + error.message);
         return res.status(400).json({
             message: MESSAGE.REDDIT_ERROR,
         });
@@ -43,7 +43,7 @@ export const redditCallback = async (req, res) => {
         );
 
         // Dati restituiti dall'API di Reddit
-        const { access_token, refresh_token, expires_in, scope } = response.data;
+        const { access_token, refresh_token, expires_in } = response.data;
         const token_expiry = new Date(Date.now() + expires_in * 1000);
         const userId = state.split(':')[1];
 
@@ -59,17 +59,17 @@ export const redditCallback = async (req, res) => {
 
         // Gestisce eventuali errori derivati dall'inserimento dei dati nel DB
         if (error) {
-            logger.error('Errore generico di Supabase durante la fase di salvataggio dei dati di Reddit nel DB: ', error.cause);
+            logger.error('Errore generico di Supabase durante la fase di salvataggio dei dati di Reddit nel DB: ' + error.message);
             return res.status(401).json({
                 message: MESSAGE.SUPABASE_ERROR,
             });
         }
 
         // Redirect alla pagina principale della piattaforma
-        return res.redirect("https://postonredditclient.vercel.app"); //DA MODIFICARE
+        return res.redirect("https://postonredditclient.vercel.app");
 
     } catch (error) {
-        logger.error('Errore generico del Server: ', error.cause);
+        logger.error('Errore generico del Server: ' + error.message);
         return res.status(500).json({
             message: MESSAGE.SERVER_ERROR,
         });

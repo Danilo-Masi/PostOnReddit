@@ -1,7 +1,7 @@
 import axios from "axios";
 import NodeCache from 'node-cache';
 import logger from '../../config/logger.mjs';
-import {supabaseAdmin} from '../../config/supabase.mjs';
+import { supabaseAdmin } from '../../config/supabase.mjs';
 import { decodeToken } from '../../controllers/services/decodeToken.mjs';
 import dotenv from 'dotenv';
 
@@ -48,7 +48,7 @@ const refreshAccessToken = async (refresh_token, user_id) => {
         return newAccessToken;
 
     } catch (error) {
-        logger.error('Errore durante il refresh dell\'access_token di Reddit: ', error.message);
+        logger.error('Errore durante il refresh dell\'access_token di Reddit: ' + error.message);
         throw new Error(MESSAGES.REFRESH_ERROR);
     }
 };
