@@ -1,46 +1,9 @@
-// React
-import { useEffect, useState } from "react";
-// Components
 import MainContainer from "../custom/MainContainer";
 import StartButton from "../custom/StartButton";
 import { BackgroundLines } from "../ui/backgound-lines";
-// Icons
 import { Check } from "lucide-react";
-// Axios
-import axios from 'axios';
-
-const WAITLIST_ID = import.meta.env.VITE_WAITLIST_ID;
-
-const getLeadboard = async () => {
-    try {
-        const response = await axios.get(`https://api.getwaitlist.com/api/v1/waitlist?waitlist_id=${WAITLIST_ID}`, {
-            headers: { "Content-Type": "application/json" },
-        });
-
-        if (response.status === 200) {
-            return response.data.statistics.total_signups;
-        } else {
-            console.error("CLIENT: Errore nel recupero dei dati dalla waitlist");
-            return 0;
-        }
-    } catch (error: any) {
-        console.error("CLIENT: Waitlist API error:", error.message);
-        return 0;
-    }
-};
 
 export default function Hero({ id }: { id: string }) {
-
-    const [waitlistUsers, setWaitlistUsers] = useState<number | null>(null);
-
-    useEffect(() => {
-        const fetchWaitlistUsers = async () => {
-            const totalSignups = await getLeadboard();
-            setWaitlistUsers(totalSignups)
-        }
-        fetchWaitlistUsers();
-    }, []);
-
     return (
         <MainContainer marginTop="mt-0" minHeigth="min-h-svh" id={id}>
             <BackgroundLines className="flex flex-col items-center justify-center gap-y-12">
@@ -62,7 +25,7 @@ export default function Hero({ id }: { id: string }) {
                     {/* CTA */}
                     <div className="flex flex-col items-center gap-y-2">
                         <StartButton buttonStyle="w-fit bg-orange-500 hover:bg-orange-600" />
-                        <p className="font-light text-zinc-600 text-balance">✌️ Join the other <span className="font-extrabold">{waitlistUsers}</span> creators and founder!</p>
+                        <p className="font-light text-zinc-600 text-balance">✌️ Join the other <span className="font-extrabold">+20</span> creators and founder!</p>
                     </div>
                 </div>
             </BackgroundLines>

@@ -1,4 +1,3 @@
-// Components
 import CustomBadge from "./CustomBadge";
 
 interface CustomHeaderProps {

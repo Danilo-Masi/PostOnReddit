@@ -10,6 +10,11 @@ export default function ChangelogSettings() {
             mdWidth="md:w-1/3">
             <div className="w-full flex flex-col gap-y-3 overflow-scroll">
                 <Changelog
+                    day="20"
+                    date="Feb. 2025"
+                    title="Best Posting Time 🕒"
+                    description="Now you can see the best time to post on subreddits!"/>
+                <Changelog
                     day="18"
                     date="Feb. 2025"
                     title="Bug Fixes 👾"

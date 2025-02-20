@@ -1,8 +1,5 @@
-// React-router
 import { Link } from "react-router"
-// Components
 import FooterContainer from "./FooterContainer"
-// Utility
 import { scrollToElement } from "@/utility/use-animation";
 
 export default function Footer() {

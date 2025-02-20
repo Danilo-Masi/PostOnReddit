@@ -1,10 +1,6 @@
-// React-router
 import { Link } from "react-router";
-// Components
 import StartButton from "../custom/StartButton";
-// Utility
 import { scrollToElement } from "@/utility/use-animation";
-
 
 export default function Navbar() {
     return (

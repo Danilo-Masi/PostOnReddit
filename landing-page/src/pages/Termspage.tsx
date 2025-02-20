@@ -1,4 +1,3 @@
-// Components
 import AppContainer from "@/components/custom/AppContainer";
 import Navbar from "@/components/navbar/Navbar";
 import Footer from "@/components/footer/Footer";

@@ -15,7 +15,8 @@ import redditRedirectRoute from './routes/reddit/reddit-redirect-route.mjs';
 import redditCallbackRoute from './routes/reddit/reddit-callback-route.mjs';
 import redditSubredditRoute from './routes/reddit/reddit-subreddit-route.mjs';
 import redditFlairRoute from './routes/reddit/reddit-flair-route.mjs';
-import redditStats from './routes/reddit/reddit-stats-route.mjs';
+import redditBestDayTime from './routes/reddit/reddit-bestDayTime-route.mjs';
+import redditBestWeekTime from './routes/reddit/reddit-bestWeekTime-routes.mjs';
 // Services
 import cronCleanup from './routes/services/cleanup-post-route.mjs';
 import cronSchedule from './routes/services/reddit-scheduler-route.mjs';
@@ -38,7 +39,8 @@ export const applyRoutes = (app) => {
     app.use('/api', redditCallbackRoute);
     app.use('/api', redditSubredditRoute);
     app.use('/api', redditFlairRoute);
-    app.use('/api', redditStats);
+    app.use('/api', redditBestDayTime);
+    app.use('/api', redditBestWeekTime);
     // Services 
     app.use('/services', cronCleanup);
     app.use('/services', cronSchedule);

@@ -1,10 +1,7 @@
-// Context
 import { useAppContext } from "@/context/AppContext";
-// Shadcnui
 import { AlertDialogCancel } from "@radix-ui/react-alert-dialog";
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
 import { Button } from "../ui/button";
-// Icons
 import { X } from "lucide-react";
 
 export default function CookiesDialog() {

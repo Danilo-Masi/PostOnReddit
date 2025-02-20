@@ -1,8 +1,5 @@
-// Components
 import AppContainer from "@/components/custom/AppContainer";
-// Shadcnui
 import { Button } from "@/components/ui/button";
-// Icons
 import { Rocket } from "lucide-react";
 
 export default function ErrorPage() {

@@ -1,4 +1,3 @@
-// Components
 import CustomHeader from "../custom/CustomHeader";
 import MainContainer from "../custom/MainContainer";
 import Accordition from "./Accordition";

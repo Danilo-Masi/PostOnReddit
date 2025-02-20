@@ -1,6 +1,4 @@
-// Components
 import MainContainer from '../custom/MainContainer'
-// Images
 import me from '../../assets/images/me.webp';
 
 export default function About() {

@@ -1,6 +1,4 @@
-// Shacnui
 import { Button } from "../ui/button";
-// Icons
 import { Sparkles } from "lucide-react";
 
 interface StartButtonProps {

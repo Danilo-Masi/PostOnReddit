@@ -1,4 +1,3 @@
-// React
 import { ReactNode } from "react";
 
 interface MainContainerProps {

@@ -1,4 +1,3 @@
-// Components
 import { Check, X } from 'lucide-react'
 import MainContainer from '../custom/MainContainer'
 

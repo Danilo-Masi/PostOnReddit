@@ -1,6 +1,4 @@
-// Components
 import MainContainer from "../custom/MainContainer";
-// Shadcnui
 import { Card } from "../ui/card";
 
 const SocialProofBanner = ({ mdWidth }: { mdWidth: string }) => {

@@ -9,29 +9,21 @@ import DescriptionEditor from './DescriptionEditor';
 import SelectOption from './SelectOption';
 import TitleEditor from './TitleEditor';
 import SearchInput from './SearchInput';
-import Chart from './Chart';
 import { DateTimePicker } from './DateTimePicker';
+import DailyTime from './DailyTime';
+import WeekTime from './WeekTime';
 // Shadcnui
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
 // Icons
-import { Ban, Clock4, Loader2, Settings } from 'lucide-react';
+import { Clock4, Settings } from 'lucide-react';
 // Hooks
 import { checkRedditAuthorization } from '@/hooks/use-retrieve-data';
 // Context
 import { useAppContext } from '../context/AppContext';
-import DailyTime from './DailyTime';
-import WeekTime from './WeekTime';
-
 
 // Url del server
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
-
-interface ChartData {
-  day: string;
-  peakHour: string;
-  activity: number;
-}
 
 export default function Dashboard() {
 
@@ -54,9 +46,6 @@ export default function Dashboard() {
   const [communityValue, setCommunityValue] = useState<string>("");
   const [flairValue, setFlairValue] = useState<string>("");
   const [dateTime, setDateTime] = useState<Date>(utcDate);
-  // Stati che gestiscono i valori del chart
-  const [chartData, setChartData] = useState<ChartData[]>([]);
-  const [isDataLoading, setDataLoading] = useState<boolean>(false);
   // Stato che gestisce se il l'access_token di Reddit è concesso
   const [isAccessToken, setAccessToken] = useState<boolean>(false);
   const { setSelectedSection, } = useAppContext();
@@ -175,34 +164,13 @@ export default function Dashboard() {
                 date={dateTime}
                 setDate={setDateTime} />
             </div>
-            <div className='w-full h-auto min-h-[50svh] max-h-svh flex flex-col gap-3 my-3 md:my-5 overflow-scroll'>
-              <h1 className='font-bold text-xl md:text-lg text-zinc-900 dark:text-zinc-50'>Best time for the day</h1>
-              <DailyTime />
+            {/* Statistiche giorno e orari */}
+            <div className='w-full h-auto min-h-[50svh] max-h-[50svh] md:max-h-full flex flex-col gap-3 my-3 md:my-5 overflow-scroll'>
+              <h1 className='font-bold text-xl md:text-lg text-zinc-900 dark:text-zinc-50'>Best time for today</h1>
+              <DailyTime subreddit={communityValue} />
               <h1 className='font-bold text-xl md:text-lg text-zinc-900 dark:text-zinc-50'>Best time for the week</h1>
-              <WeekTime />
+              <WeekTime subreddit={communityValue} />
             </div>
-            {/* 
-            {isDataLoading === true && chartData.length === 0 ? (
-              <div className='w-full h-full min-h-[40svh] md:min-h-0 flex items-center justify-center'>
-                <Loader2 className='animate-spin' />
-              </div>
-            ) : communityValue.length === 0 && chartData.length === 0 ? (
-              <div className='w-full h-full min-h-[40svh] md:min-h-0 flex items-center justify-center'>
-                <Ban className='mr-2' size={18} />
-                <p>No data found</p>
-              </div>
-            ) : (
-              <div className='w-full h-full min-h-[40svh] md:min-h-0 flex items-center justify-center'>
-                <Chart
-                  subreddit={communityValue}
-                  chartData={chartData}
-                  setChartData={setChartData}
-                  isDataLoading={isDataLoading}
-                  setDataLoading={setDataLoading}
-                />
-              </div>
-            )}
-            */}
             {/* Button */}
             <Button
               className='w-full py-5 bg-orange-500 dark:bg-orange-500 hover:bg-orange-500 dark:hover:bg-orange-600 text-zinc-50 dark:text-zinc-50'

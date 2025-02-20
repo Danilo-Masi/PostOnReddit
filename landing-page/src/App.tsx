@@ -1,22 +1,16 @@
-// React
 import { useEffect } from "react";
-// React-router
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-// Context
 import { useAppContext } from "../src/context/AppContext";
-// Pages
 import Homepage from "./pages/Homepage";
 import Termspage from "./pages/Termspage";
 import Privacypage from "./pages/Privacypage";
 import Cookiepage from "./pages/Cookiepage";
-// Components
-import WailtistDialog from "./components/custom/WailtistDialog";
 import CookiesDialog from "./components/custom/CookiesDialog";
 import Errorpage from "./pages/Errorpage";
 
 function App() {
 
-  const { isWaitlistOpen, isCookiesBannerOpened, setCookiesBannerOpened } = useAppContext();
+  const { isCookiesBannerOpened, setCookiesBannerOpened } = useAppContext();
 
   useEffect(() => {
     if (localStorage.getItem('cookieBanner')) {
@@ -48,7 +42,6 @@ function App() {
           <Route path="*" element={<Errorpage />} />
         </Routes>
       </BrowserRouter>
-      {isWaitlistOpen && <WailtistDialog />}
       {isCookiesBannerOpened && <CookiesDialog />}
     </>
   );

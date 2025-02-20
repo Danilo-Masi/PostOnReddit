@@ -1,4 +1,3 @@
-// Components
 import MainContainer from "../custom/MainContainer";
 import CustomHeader from "../custom/CustomHeader";
 import FeaturesCarousel from "./FeaturesCarousel";
