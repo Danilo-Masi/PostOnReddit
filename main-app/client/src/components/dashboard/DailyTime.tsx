@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
@@ -9,12 +9,14 @@ const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 
 interface DailyTimeProps {
     subreddit: string;
+    setDateTime: Dispatch<SetStateAction<Date>>;
 }
 
-export default function DailyTime({ subreddit }: DailyTimeProps) {
+export default function DailyTime({ subreddit, setDateTime }: DailyTimeProps) {
     const navigate: NavigateFunction = useNavigate();
     const [bestTimes, setBestTimes] = useState<{ hour: string, score: number }[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
+    const [selectedHour, setSelectedHour] = useState<string | null>(null);
 
     const handleFetchData = async () => {
         if (!subreddit || subreddit.trim() === "") return;
@@ -64,6 +66,14 @@ export default function DailyTime({ subreddit }: DailyTimeProps) {
         return `${formattedHour}:00 ${period}`;
     }
 
+    const handleSetTime = (hour: string) => {
+        const now = new Date();
+        now.setHours(parseInt(hour, 10), 0, 0, 0);
+        setDateTime(now);
+        // Salva l'ora selezionata
+        setSelectedHour(hour);
+    }
+
     return (
         <div className="w-full h-auto flex flex-col md:flex-row md:flex-wrap gap-4">
             {loading ? (
@@ -79,7 +89,9 @@ export default function DailyTime({ subreddit }: DailyTimeProps) {
                         key={index}
                         place={`${index + 1}th place`}
                         time={formatTime(time.hour)}
-                        score={time.score.toFixed(0)} />
+                        score={time.score.toFixed(0)}
+                        onClick={() => handleSetTime(time.hour)}
+                        isCardSelected={selectedHour === time.hour} />
                 ))
             )}
         </div>

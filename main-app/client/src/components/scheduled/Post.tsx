@@ -85,7 +85,7 @@ export default function Post({ title, content, date, community, status, postId }
                 <Button
                     onClick={handleOpenDeleteDialog}
                     variant="outline"
-                    className="shadow-none border-zinc-600 text-zinc-600 hover:text-zinc-50 bg-zinc-100 hover:bg-zinc-600 dark:bg-zinc-600 dark:hover:bg-zinc-500">
+                    className="shadow-none border-none text-zinc-50 hover:text-zinc-50 bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-500">
                     <Trash2 />
                     Delete
                 </Button>

@@ -167,7 +167,9 @@ export default function Dashboard() {
             {/* Statistiche giorno e orari */}
             <div className='w-full h-auto min-h-[50svh] max-h-[50svh] md:max-h-full flex flex-col gap-3 my-3 md:my-5 overflow-scroll'>
               <h1 className='font-bold text-xl md:text-lg text-zinc-900 dark:text-zinc-50'>Best time for today</h1>
-              <DailyTime subreddit={communityValue} />
+              <DailyTime
+                subreddit={communityValue}
+                setDateTime={setDateTime} />
               <h1 className='font-bold text-xl md:text-lg text-zinc-900 dark:text-zinc-50'>Best time for the week</h1>
               <WeekTime subreddit={communityValue} />
             </div>
