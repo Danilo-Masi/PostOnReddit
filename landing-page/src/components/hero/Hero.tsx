@@ -3,13 +3,22 @@ import StartButton from "../custom/StartButton";
 import { BackgroundLines } from "../ui/backgound-lines";
 import { Check } from "lucide-react";
 import BadgeSimpleListner from "./BadgeSimpleListner";
+import BadgeStartupFame from "./BadgeStartupFame";
+import { useIsMobile } from "@/utility/useMobile";
 
 export default function Hero({ id }: { id: string }) {
+
+    const isMobile = useIsMobile();
+
     return (
         <MainContainer marginTop="mt-0" minHeigth="min-h-svh" id={id}>
             <BackgroundLines className="flex flex-col items-center justify-center gap-y-12">
                 <div className="max-w-full md:max-w-1/2 flex flex-col items-center justify-center gap-y-4 md:gap-y-8 z-40">
-                    <BadgeSimpleListner />
+                    {/* Badge */}
+                    <div className="flex flex-col md:flex-row items-center justify-center gap-3">
+                        <BadgeStartupFame />
+                        {!isMobile && <BadgeSimpleListner />}
+                    </div>
                     {/* Headline */}
                     <h1 className="text-5xl md:text-6xl md:max-w-3xl text-balance font-extrabold text-zinc-900">
                         Grow your SaaS with perfect Reddit <span className="text-zinc-50 bg-orange-500 px-4 pb-1 rounded-xl">timing</span>
