@@ -4,7 +4,7 @@ import { scrollToElement } from "@/utility/use-animation";
 
 export default function Footer() {
     return (
-        <div className="w-full h-auto flex flex-col md:flex-row items-start gap-6 my-24 md:mb-12 text-center md:text-left">
+        <div className="w-full h-auto flex flex-col md:flex-row items-start gap-6 mt-32 mb-20 md:mt-48 md:mb-10 text-center md:text-left">
             <FooterContainer width="md:w-2/5">
                 <h1 className='text-xl md:text-3xl font-bold text-zinc-900'>poston<span className='text-orange-500'>reddit</span></h1>
                 <h3 className="text-base font-light text-zinc-500 max-w-sm md:text-left text-center">

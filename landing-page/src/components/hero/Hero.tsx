@@ -8,7 +8,7 @@ export default function Hero({ id }: { id: string }) {
     return (
         <MainContainer marginTop="mt-0" minHeigth="min-h-svh" id={id}>
             <BackgroundLines className="flex flex-col items-center justify-center gap-y-12">
-                <div className="max-w-full md:max-w-1/2 flex flex-col items-center justify-center gap-y-8 md:gap-y-8 z-40">
+                <div className="max-w-full md:max-w-1/2 flex flex-col items-center justify-center gap-y-4 md:gap-y-8 z-40">
                     <BadgeSimpleListner />
                     {/* Headline */}
                     <h1 className="text-5xl md:text-6xl md:max-w-3xl text-balance font-extrabold text-zinc-900">

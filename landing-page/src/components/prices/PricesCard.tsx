@@ -18,7 +18,7 @@ export default function PriceCard({ cardStyle, title, description, futurePrice, 
     return (
         <Card className={`w-full md:w-1/3 h-full bg-background text-left ${cardStyle && cardStyle} ${isPriceDisabled && 'bg-zinc-200 text-zinc-500 shadow-none'}`}>
             <CardHeader>
-                <CardTitle className={"text-3xl font-semibold text-zinc-900"}>{title}</CardTitle>
+                <CardTitle className="text-2xl font-semibold text-zinc-900"><span className="text-zinc-500 mr-2 line-through">{title}</span>free</CardTitle>
                 <CardDescription className="text-md font-light text-zinc-500">{description}</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-3">

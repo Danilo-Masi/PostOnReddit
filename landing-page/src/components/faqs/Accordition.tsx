@@ -24,7 +24,7 @@ export default function Accordition() {
             <AccordionItem value="item-4">
                 <AccordionTrigger className="text-md text-zinc-900">How can I start using postonreddit?</AccordionTrigger>
                 <AccordionContent className="text-sm text-zinc-500">
-                    Simply join our waitlist! Once the platform launches on February 1st, you’ll receive an invitation via email to start posting right away.
+                    Just click the “Begin posting button, and you’ll be taken to the registration page. From there, you can create an account and start using postonreddit right away completely free!
                 </AccordionContent>
             </AccordionItem>
         </Accordion>
