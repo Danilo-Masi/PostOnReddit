@@ -2,12 +2,14 @@ import MainContainer from "../custom/MainContainer";
 import StartButton from "../custom/StartButton";
 import { BackgroundLines } from "../ui/backgound-lines";
 import { Check } from "lucide-react";
+import BadgeSimpleListner from "./BadgeSimpleListner";
 
 export default function Hero({ id }: { id: string }) {
     return (
         <MainContainer marginTop="mt-0" minHeigth="min-h-svh" id={id}>
             <BackgroundLines className="flex flex-col items-center justify-center gap-y-12">
                 <div className="max-w-full md:max-w-1/2 flex flex-col items-center justify-center gap-y-8 md:gap-y-8 z-40">
+                    <BadgeSimpleListner />
                     {/* Headline */}
                     <h1 className="text-5xl md:text-6xl md:max-w-3xl text-balance font-extrabold text-zinc-900">
                         Grow your SaaS with perfect Reddit <span className="text-zinc-50 bg-orange-500 px-4 pb-1 rounded-xl">timing</span>
