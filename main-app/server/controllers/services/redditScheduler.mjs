@@ -10,7 +10,7 @@ const MESSAGES = {
     SUCCESS: 'Post pubblicati con successo',
 };
 
-export const scheduleRedditPosts = async (req, res) => {
+export const scheduleRedditPosts = async () => {
     const nowUtc = moment().utc().format('YYYY-MM-DD HH:mm:00');
 
     try {
@@ -22,12 +22,12 @@ export const scheduleRedditPosts = async (req, res) => {
 
         if (error) {
             logger.error(`Errore nel recupero dei post da caricare dal DB: ${error.message}`);
-            return res.status(500).json({ message: MESSAGES.SUPABASE_ERROR });
+            return;
         }
 
         if (!data || data.length === 0) {
             logger.info('Nessun post da pubblicare in questo momento.');
-            return res.status(200).json({ message: MESSAGES.SUCCESS_VOID });
+            return;
         }
 
         for (const post of data) {
@@ -39,10 +39,8 @@ export const scheduleRedditPosts = async (req, res) => {
             }
         }
 
-        return res.status(200).json({ message: MESSAGES.SUCCESS });
-
     } catch (error) {
         logger.error('Errore generale del server durante la richiesta dei post con stato pending:', error);
-        return res.status(500).json({ message: MESSAGES.SERVER_ERROR });
+        return;
     }
 };
