@@ -13,10 +13,6 @@ const convertHTMLtoMarkdown = (html) => {
 }
 
 const updatePostStatus = async (post_id, status) => {
-
-    logger.info(post_id);
-    logger.info(status);
-
     try {
         let { error } = await supabaseAdmin
             .from('posts')
