@@ -59,7 +59,7 @@ export const submitPostToReddit = async (post) => {
         }
 
         if (post.flair?.trim()) {
-            postData.append('flair_id', post.flair);
+            postData.flair_id = post.flair;
         }
 
         const response = await axios.post('https://oauth.reddit.com/api/submit', postData, {
