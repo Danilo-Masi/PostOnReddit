@@ -12,6 +12,24 @@ const convertHTMLtoMarkdown = (html) => {
     return turndowService.turndown(html);
 }
 
+const updatePostStatus = async (post_id, status) => {
+    try {
+        let { error } = await supabaseAdmin
+            .from('posts')
+            .update({ status })
+            .eq('id', post_id);
+
+        if (error) {
+            logger.info(`Errore durante l'aggiornamento dello stato del post ${post_id}: ` + error);
+            return false;
+        }
+        return true;
+    } catch (error) {
+        logger.info(`Errore imprevisto nella modifica dello stato del post ${post_id}: ` + error);
+        return false;
+    }
+}
+
 export const submitPostToReddit = async (post) => {
     try {
         let { data, error } = await supabaseAdmin
@@ -20,9 +38,9 @@ export const submitPostToReddit = async (post) => {
             .eq('user_id', post.user_id)
             .single();
 
-        if (error || !data) {
-            logger.error(`Errore nel recupero del token di accesso di Reddit: ` + error.message);
-            return;
+        if (error || !data.access_token) {
+            logger.error(`Errore nel recuper dell'access_token per user_id: ${post.user_id}: ` + error);
+            return false;
         }
 
         const access_token = data.access_token;
@@ -33,13 +51,11 @@ export const submitPostToReddit = async (post) => {
             title: post.title,
             text: convertHTMLtoMarkdown(post.content) || '',
             kind: 'self',
-            flair_id: post.flair,
             sendreplies: true,
         }
 
-        // Aggiungi flair_id solo se è definito e non è una stringa vuota
-        if (post.flair && post.flair.trim() !== '') {
-            postData.flair_id = post.flair;
+        if (post.flair?.trim()) {
+            postData.append('flair_id', post.flair);
         }
 
         const response = await axios.post('https://oauth.reddit.com/api/submit', postData, {
@@ -50,23 +66,10 @@ export const submitPostToReddit = async (post) => {
             }
         });
 
-        if (response.data.json.errors.length === 0) {
-            await supabaseAdmin
-                .from('posts')
-                .update({ status: 'posted' })
-                .eq('id', post.id);
-            return true;
-        } else {
-            logger.error("Errore nella pubblicazione del post: " + response.data.json.errors);
-            await supabaseAdmin
-                .from('posts')
-                .update({ status: 'failed' })
-                .eq('id', post.id);
-            return false;
-        }
+        return await updatePostStatus(post.id, response.status === 200 ? 'posted' : 'failed');
 
     } catch (error) {
-        logger.error("Errore generale nella pubblicazione del post su Reddit: " + error.message);
+        logger.error(`Errore generico nella pubblicazione del post con id: ${post.id}: ` + error);
         return false;
     }
 }
