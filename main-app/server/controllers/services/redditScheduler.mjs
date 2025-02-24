@@ -18,7 +18,7 @@ export const scheduleRedditPosts = async (req, res) => {
             .from('posts')
             .select('*')
             .eq('status', 'pending')
-            .eq('date_time', new Date(nowUtc));
+            .eq('date_time', nowUtc);
 
         if (error) {
             logger.error(`Errore nel recupero dei post da caricare dal DB: ${error.message}`);
