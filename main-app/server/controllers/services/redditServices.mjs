@@ -13,10 +13,14 @@ const convertHTMLtoMarkdown = (html) => {
 }
 
 const updatePostStatus = async (post_id, status) => {
+
+    logger.info(post_id);
+    logger.info(status);
+
     try {
         let { error } = await supabaseAdmin
             .from('posts')
-            .update({ status })
+            .update({ status: status })
             .eq('id', post_id);
 
         if (error) {
@@ -66,7 +70,11 @@ export const submitPostToReddit = async (post) => {
             }
         });
 
-        return await updatePostStatus(post.id, response.status === 200 ? 'posted' : 'failed');
+        if (response.status !== 200) {
+            return await updatePostStatus(post.id, 'failed');
+        } else {
+            return await updatePostStatus(post.id, 'posted');
+        }
 
     } catch (error) {
         logger.error(`Errore generico nella pubblicazione del post con id: ${post.id}: ` + error);
