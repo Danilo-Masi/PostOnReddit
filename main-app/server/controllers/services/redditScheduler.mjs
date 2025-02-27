@@ -1,14 +1,7 @@
 import { supabaseAdmin } from '../../config/supabase.mjs';
-import logger from '../../config/logger.mjs';
 import { submitPostToReddit } from './redditServices.mjs';
+import logger from '../../config/logger.mjs';
 import moment from 'moment-timezone';
-
-const MESSAGES = {
-    SUPABASE_ERROR: 'Errore durante il recupero dei post da Supabase',
-    SERVER_ERROR: 'Errore generico del server durante la richiesta dei post con stato pending',
-    SUCCESS_VOID: 'Nessun post da pubblicare',
-    SUCCESS: 'Post pubblicati con successo',
-};
 
 export const scheduleRedditPosts = async () => {
     const nowUtc = moment().utc().format('YYYY-MM-DD HH:mm:00');

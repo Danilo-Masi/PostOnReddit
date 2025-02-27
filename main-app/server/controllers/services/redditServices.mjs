@@ -3,47 +3,40 @@ import { supabaseAdmin } from '../../config/supabase.mjs';
 import dotenv from 'dotenv';
 import TurndownService from 'turndown';
 import logger from '../../config/logger.mjs';
+import { getRedditAccessToken } from "./redditToken.mjs";
 
 dotenv.config();
 
 // Funzione per convertire HMTL in Markdown
-const turndowService = new TurndownService();
+const turndownService = new TurndownService();
 const convertHTMLtoMarkdown = (html) => {
-    return turndowService.turndown(html);
+    return turndownService.turndown(html);
 }
 
+// Funzione per aggiornare lo stato del post nel database
 const updatePostStatus = async (post_id, status) => {
     try {
-        let { error } = await supabaseAdmin
+        const { error } = await supabaseAdmin
             .from('posts')
             .update({ status: status })
             .eq('id', post_id);
 
         if (error) {
-            logger.info(`Errore durante l'aggiornamento dello stato del post ${post_id}: ` + error);
+            logger.info(`Errore durante l'aggiornamento dello stato del post ${post_id}: ${error.message}`);
             return false;
         }
         return true;
     } catch (error) {
-        logger.info(`Errore imprevisto nella modifica dello stato del post ${post_id}: ` + error);
+        logger.info(`Errore imprevisto nella modifica dello stato del post ${post_id}: ${error.message || error}`);
         return false;
     }
 }
 
+// Funzione per pubblicare un post su Reddit
 export const submitPostToReddit = async (post) => {
     try {
-        let { data, error } = await supabaseAdmin
-            .from('reddit_tokens')
-            .select('access_token')
-            .eq('user_id', post.user_id)
-            .single();
-
-        if (error || !data.access_token) {
-            logger.error(`Errore nel recuper dell'access_token per user_id: ${post.user_id}: ` + error);
-            return false;
-        }
-
-        const access_token = data.access_token;
+        const access_token = await getRedditAccessToken(post.user_id);
+        if (!access_token) return updatePostStatus(post.id, 'failed');
 
         const postData = {
             api_type: 'json',
@@ -66,14 +59,10 @@ export const submitPostToReddit = async (post) => {
             }
         });
 
-        if (response.status !== 200) {
-            return await updatePostStatus(post.id, 'failed');
-        } else {
-            return await updatePostStatus(post.id, 'posted');
-        }
+        return updatePostStatus(post.id, response.status === 200 ? 'posted' : 'failed');
 
     } catch (error) {
-        logger.error(`Errore generico nella pubblicazione del post con id: ${post.id}: ` + error);
-        return false;
+        logger.error(`Errore pubblicando il post ${post.id}: ${error.message || error}`);
+        return updatePostStatus(post.id, 'failed');
     }
 }
