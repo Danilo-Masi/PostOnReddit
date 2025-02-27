@@ -2,6 +2,9 @@ import { supabaseAdmin } from '../../config/supabase.mjs';
 import logger from '../../config/logger.mjs';
 
 export const getRedditAccessToken = async (user_id) => {
+
+    logger.info(`User ID: ${user_id}`);
+
     try {
         const { data, error } = await supabaseAdmin
             .from('reddit_tokens')
