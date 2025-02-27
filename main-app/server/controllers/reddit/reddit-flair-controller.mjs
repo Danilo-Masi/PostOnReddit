@@ -1,8 +1,8 @@
 import axios from "axios";
-import { supabaseAdmin } from '../../config/supabase.mjs';
 import { decodeToken } from '../../controllers/services/decodeToken.mjs';
 import dotenv from 'dotenv';
 import logger from '../../config/logger.mjs';
+import { getRedditAccessToken } from '../services/redditToken.mjs';
 
 dotenv.config();
 
@@ -52,20 +52,11 @@ export const searchFlair = async (req, res) => {
     const subreddit = q.startsWith('r/') ? q.substring(2) : q;
 
     try {
-        let { data, error } = await supabaseAdmin
-            .from('reddit_tokens')
-            .select('access_token')
-            .eq('user_id', user_id)
-            .single();
-
-        if (error || !data) {
-            logger.error('Errore generico di Supabsee durante la fase di caricamento del\'access_token di Reddit: ' + error.message);
-            return res.status(401).json({
-                message: MESSAGES.SUPABASE_ERROR,
-            })
+        const access_token = await getRedditAccessToken(user_id);
+        if (!access_token) {
+            logger.error(`Errore nel recuper dell'access_token dal DB`);
+            return res.status(500).json({ message: MESSAGES.SUPABASE_ERROR });
         }
-
-        let { access_token } = data;
 
         // Invia la richiesta all'API di Reddit
         const response = await axios.get(`https://oauth.reddit.com/r/${subreddit}/api/link_flair`, {

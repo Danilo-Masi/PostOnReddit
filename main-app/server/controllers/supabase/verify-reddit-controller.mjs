@@ -1,7 +1,7 @@
-import { supabaseAdmin } from '../../config/supabase.mjs';
 import logger from '../../config/logger.mjs';
 import { decodeToken } from '../../controllers/services/decodeToken.mjs';
 import dotenv from 'dotenv';
+import { getRedditAccessToken } from '../services/redditToken.mjs';
 
 dotenv.config();
 
@@ -34,19 +34,13 @@ export const checkRedditAuthorization = async (req, res) => {
     const user_id = user.user.id;
 
     try {
-        let { data, error } = await supabaseAdmin
-            .from('reddit_tokens')
-            .select('access_token')
-            .eq('user_id', user_id);
-
-        if (error) {
-            logger.error('Errore generico di Supabase durante la verifica del access_token di Reddit: ' + error.message);
-            return res.status(401).json({
-                message: MESSAGES.SUPABASE_ERROR,
-            });
+        const access_token = await getRedditAccessToken(user_id);
+        if (!access_token) {
+            logger.error(`Errore nel recuper dell'access_token dal DB`);
+            return res.status(500).json({ message: MESSAGES.SUPABASE_ERROR });
         }
 
-        if (data && data.length > 0) {
+        if (access_token) {
             return res.status(200).json({
                 isAuthorized: true
             });

@@ -4,6 +4,7 @@ import { decodeToken } from '../../controllers/services/decodeToken.mjs';
 import Joi from 'joi';
 import axios from "axios";
 import logger from '../../config/logger.mjs';
+import { getRedditAccessToken } from '../services/redditToken.mjs';
 
 dotenv.config();
 
@@ -57,9 +58,7 @@ const checkSubredditPostRequirements = async (subreddit, access_token) => {
             });
         } else {
             logger.error('Errore di rete durante il recupero dei requisiti dalla subreddit: ' + error.message);
-            return res.status(500).json({
-                message: MESSAGES.SERVER_ERROR,
-            });
+            return res.status(500).json({ message: MESSAGES.SERVER_ERROR });
         }
     }
 };
@@ -71,16 +70,12 @@ export const createPost = async (req, res) => {
 
     if (!token) {
         logger.error('Token mancante');
-        return res.status(401).json({
-            message: MESSAGES.MISSING_TOKEN,
-        });
+        return res.status(401).json({ message: MESSAGES.MISSING_TOKEN });
     }
 
     const user = await decodeToken(token);
     if (!user) {
-        return res.status(400).json({
-            message: MESSAGES.INVALID_TOKEN,
-        });
+        return res.status(400).json({ message: MESSAGES.INVALID_TOKEN });
     }
 
     const user_id = user.user.id;
@@ -91,9 +86,7 @@ export const createPost = async (req, res) => {
     // Controlla se la data è valida
     if (isNaN(new Date(date_time).getTime())) {
         logger.error('La data inserita non è valida');
-        return res.status(400).json({
-            message: MESSAGES.INVALID_DATE,
-        });
+        return res.status(400).json({ message: MESSAGES.INVALID_DATE });
     }
 
     // Crea l'oggetto data e imposta i millisecondi a 0
@@ -114,37 +107,17 @@ export const createPost = async (req, res) => {
     }
 
     // Recupero access_token di Reddit
-    let access_token = "";
-    try {
-        let { data, error } = await supabaseAdmin
-            .from('reddit_tokens')
-            .select('access_token')
-            .eq('user_id', user_id)
-            .single();
-
-        if (error || !data) {
-            logger.error('Errore generico di Supabase durante il caricamento del access_token di Reddit: ' + error.message);
-            return res.status(401).json({
-                message: MESSAGES.SUPABASE_ERROR,
-            })
-        }
-
-        access_token = data.access_token;
-
-    } catch (error) {
-        logger.error('Errore generico di Supabase durante il caricamento del access_token di Reddit: ' + error.message);
-        return res.status(500).json({
-            message: MESSAGES.REDDIT_ERROR,
-        });
+    const access_token = await getRedditAccessToken(user_id);
+    if (!access_token) {
+        logger.error(`Errore nel recuper dell'access_token dal DB`);
+        return res.status(500).json({ message: MESSAGES.REDDIT_ERROR });
     }
 
     // Verifica i requisiti della subreddit prima di procedere
     const requirements = await checkSubredditPostRequirements(community, access_token);
     if (!requirements) {
         logger.error('Errore nel recupero dei requisiti della subreddit');
-        return res.status(500).json({
-            message: MESSAGES.SUBREDDIT_REQUIREMENTS_ERROR,
-        });
+        return res.status(500).json({ message: MESSAGES.SUBREDDIT_REQUIREMENTS_ERROR });
     }
 
     const errors = [];
@@ -208,19 +181,13 @@ export const createPost = async (req, res) => {
 
         if (error) {
             logger.error('Errore generico di Supabase durante il caricamento del post sul DB: ' + error.message);
-            return res.status(500).json({
-                message: MESSAGES.SUPABASE_ERROR,
-            });
+            return res.status(500).json({ message: MESSAGES.SUPABASE_ERROR });
         }
 
-        return res.status(200).json({
-            message: MESSAGES.SUCCESS_MESSAGE,
-        });
+        return res.status(200).json({ message: MESSAGES.SUCCESS_MESSAGE });
 
     } catch (error) {
         logger.error('Errore generico del Server: ' + error.message);
-        return res.status(500).json({
-            message: MESSAGES.SERVER_ERROR,
-        });
+        return res.status(500).json({ message: MESSAGES.SERVER_ERROR });
     }
 }

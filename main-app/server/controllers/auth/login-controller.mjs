@@ -1,22 +1,13 @@
 import { supabaseUser } from '../../config/supabase.mjs';
 import logger from '../../config/logger.mjs';
 
-const MESSAGES = {
-    CREDENTIAL_ERROR: "Credenziali non valide",
-    SUPABASE_ERROR: "Errore di Supabase durante la fase di accesso",
-    SUCCESS_MESSAGE: "Accesso avvenuto con successo",
-    SERVER_ERROR: "Errore generico del server",
-};
-
 export const loginController = async (req, res) => {
-
-    const { email, password } = req.body;
+    const email = req.body.email?.trim();
+    const password = req.body.password?.trim();
 
     if (!email || !password) {
-        logger.error('Credenziali non valide');
-        return res.status(400).json({
-            message: MESSAGES.CREDENTIAL_ERROR,
-        });
+        logger.error('Credenziali non valide - login-controller');
+        return res.status(400).end();
     }
 
     try {
@@ -25,24 +16,15 @@ export const loginController = async (req, res) => {
             password: password,
         });
 
-        if (error) {
-            logger.error('Errore di Supabase durante la fase di Accesso: ' + error.message);
-            return res.status(401).json({
-                message: MESSAGES.AUTH_ERROR_MESSAGE,
-            });
+        if (error || !data?.session?.access_token) {
+            logger.error(`Errore di Supabase - login-controller: ${error.message || error}`);
+            return res.status(401).end();
         }
 
-        const { access_token } = data.session;
-
-        return res.status(200).json({
-            message: MESSAGES.SUCCESS_MESSAGE,
-            token: access_token,
-        });
+        return res.status(200).json({ token: data.session.access_token });
 
     } catch (error) {
-        logger.error('Errore generico del server: ' + error.message);
-        return res.status(500).json({
-            message: MESSAGES.SERVER_ERROR,
-        });
+        logger.error(`Errore generico del Server - login-controller: ${error.message || error}`);
+        return res.status(500).end();
     }
 }

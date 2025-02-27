@@ -25,7 +25,6 @@
     "jsonwebtoken": "^9.0.2",
     "moment-timezone": "^0.5.47",
     "node-cache": "^5.1.2",
-    "node-cron": "^3.0.3",
     "querystring": "^0.2.1",
     "supabase": "^1.223.10",
     "turndown": "^7.2.0",

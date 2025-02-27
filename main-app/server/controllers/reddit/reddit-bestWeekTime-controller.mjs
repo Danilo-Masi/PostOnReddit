@@ -1,8 +1,8 @@
 import axios from "axios";
-import { supabaseAdmin } from '../../config/supabase.mjs';
 import { decodeToken } from '../../controllers/services/decodeToken.mjs';
 import logger from '../../config/logger.mjs';
 import dotenv from 'dotenv';
+import { getRedditAccessToken } from '../services/redditToken.mjs';
 
 dotenv.config();
 
@@ -115,18 +115,11 @@ export const redditBestWeeklyTimes = async (req, res) => {
     const subreddit = q.startsWith('r/') ? q.substring(2) : q;
 
     try {
-        let { data, error } = await supabaseAdmin
-            .from('reddit_tokens')
-            .select('access_token')
-            .eq('user_id', user_id)
-            .single();
-
-        if (!data || !data.access_token) {
-            logger.error('Errore di Supabase durante il caricamento dell\'access_token dal DB');
-            return res.status(401).json({ message: MESSAGES.SUPABASE_ERROR });
+        const access_token = await getRedditAccessToken(user_id);
+        if (!access_token) {
+            logger.error(`Errore nel recuper dell'access_token dal DB`);
+            return res.status(500).json({ message: MESSAGES.SUPABASE_ERROR });
         }
-
-        let { access_token } = data;
 
         let posts = await retrievePosts(subreddit, access_token);
 
