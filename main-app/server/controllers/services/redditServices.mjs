@@ -34,10 +34,6 @@ const updatePostStatus = async (post_id, status) => {
 
 // Funzione per pubblicare un post su Reddit
 export const submitPostToReddit = async (post) => {
-
-    logger.info(`Dati del post: ${post}`);
-    logger.info(`Post user_id: ${post.user_id}`);
-
     try {
         const access_token = await getRedditAccessToken(post.user_id);
         if (!access_token) return updatePostStatus(post.id, 'failed');
