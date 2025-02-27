@@ -9,11 +9,8 @@ export const getRedditAccessToken = async (user_id) => {
             .eq('user_id', user_id)
             .single();
 
-        logger.info(`Data: ${data}`);
-        logger.info(`Access_token: ${data.access_token}`);
-
-        if (error || data?.access_token) {
-            logger.error(`Errore recuperando l'acess_token per user_id ${user_id}: ${error.message || error}`);
+        if (error || !data?.access_token) {
+            logger.error(`Errore recuperando l'acess_token per user_id ${user_id}: ${error?.message || error}`);
             return null;
         }
         return data.access_token;
