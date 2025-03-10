@@ -16,7 +16,7 @@ import WeekTime from './WeekTime';
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
 // Icons
-import { Clock4, Settings } from 'lucide-react';
+import { Clock4, ScanEye, Settings } from 'lucide-react';
 // Hooks
 import { checkRedditAuthorization } from '@/hooks/use-retrieve-data';
 // Context
@@ -27,28 +27,9 @@ const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 
 export default function Dashboard() {
 
-  // Ottiene la data attuale
-  const now = new Date();
-
-  // Crea una nuova data in UTC con secondi e millisecondi impostati a 0
-  const utcDate = new Date(
-    now.getUTCFullYear(),
-    now.getUTCMonth(),
-    now.getUTCDate(),
-    now.getUTCHours(),
-    now.getUTCMinutes(),
-    0,
-    0
-  );
-
-  const [titleValue, setTitleValue] = useState<string>("");
-  const [descriptionValue, setDescriptionValue] = useState<Content>("");
-  const [communityValue, setCommunityValue] = useState<string>("");
-  const [flairValue, setFlairValue] = useState<string>("");
-  const [dateTime, setDateTime] = useState<Date>(utcDate);
   // Stato che gestisce se il l'access_token di Reddit è concesso
   const [isAccessToken, setAccessToken] = useState<boolean>(false);
-  const { setSelectedSection, } = useAppContext();
+  const { setSelectedSection, setPreviewDialogOpen, titleValue, setTitleValue, descriptionValue, setDescriptionValue, communityValue, setCommunityValue, flairValue, setFlairValue, dateTime, setDateTime } = useAppContext();
 
   // Funzione per la creazione e caricamento del post nel DB
   const handlePostCreation = async () => {
@@ -113,6 +94,19 @@ export default function Dashboard() {
     return errors;
   }
 
+  // Ottiene la data attuale
+  const now = new Date();
+  // Crea una nuova data in UTC con secondi e millisecondi impostati a 0
+  const utcDate = new Date(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate(),
+    now.getUTCHours(),
+    now.getUTCMinutes(),
+    0,
+    0
+  );
+
   // Funzione per gestire il successo
   const handleSuccess = () => {
     toast.success("Post scheduled correctly!");
@@ -173,13 +167,22 @@ export default function Dashboard() {
               <h1 className='font-bold text-xl md:text-lg text-zinc-900 dark:text-zinc-50'>Best time for the week</h1>
               <WeekTime subreddit={communityValue} />
             </div>
-            {/* Button */}
-            <Button
-              className='w-full py-5 bg-orange-500 dark:bg-orange-500 hover:bg-orange-500 dark:hover:bg-orange-600 text-zinc-50 dark:text-zinc-50'
-              onClick={handlePostCreation}>
-              <Clock4 />
-              Schedule your post
-            </Button>
+            {/* Buttons */}
+            <div className='w-full h-auto flex flex-col md:flex-row gap-4'>
+              <Button
+                className='w-full md:w-1/3 py-5'
+                onClick={() => setPreviewDialogOpen(true)}>
+                <ScanEye />
+                Preview
+              </Button>
+              <Button
+                className='w-full md:w-2/3 py-5 bg-orange-500 dark:bg-orange-500 hover:bg-orange-500 dark:hover:bg-orange-600 text-zinc-50 dark:text-zinc-50'
+                onClick={handlePostCreation}>
+                <Clock4 />
+                Schedule your post
+              </Button>
+            </div>
+
           </div>
         </>
       ) : (

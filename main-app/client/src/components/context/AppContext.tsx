@@ -1,5 +1,7 @@
 // React
-import { useState, createContext, useContext } from "react";
+import { useState, createContext, useContext, Dispatch, SetStateAction } from "react";
+// minimal-tiptap
+import { Content } from '@tiptap/react';
 
 type PostType = {
     title: string;
@@ -28,10 +30,35 @@ type AppContextType = {
     setPostList: (section: PostType[]) => void;
     postId: any;
     setPostId: (section: any) => void;
+    isPreviewDialogOpen: boolean;
+    setPreviewDialogOpen: (section: boolean) => void;
+    titleValue: string;
+    setTitleValue: Dispatch<SetStateAction<string>>;
+    descriptionValue: Content;
+    setDescriptionValue: Dispatch<SetStateAction<Content>>;
+    communityValue: string;
+    setCommunityValue: Dispatch<SetStateAction<string>>;
+    flairValue: string;
+    setFlairValue: Dispatch<SetStateAction<string>>;
+    dateTime: Date;
+    setDateTime: Dispatch<SetStateAction<Date>>;
 }
 
 // Crea il contesto e fornisci un valore predefinito
 const AppContext = createContext<AppContextType | undefined>(undefined);
+
+// Ottiene la data attuale
+const now = new Date();
+// Crea una nuova data in UTC con secondi e millisecondi impostati a 0
+const utcDate = new Date(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate(),
+    now.getUTCHours(),
+    now.getUTCMinutes(),
+    0,
+    0
+);
 
 // Crea un provider per il contesto
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
@@ -51,10 +78,18 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [postList, setPostList] = useState<PostType[]>([]);
     // Stato per gestire il postId selezionato
     const [postId, setPostId] = useState<any>(null);
+    // Stato per gestire l'apertura della Dialog preview
+    const [isPreviewDialogOpen, setPreviewDialogOpen] = useState<boolean>(false);
+    // Stati per la gestione del post
+    const [titleValue, setTitleValue] = useState<string>("");
+    const [descriptionValue, setDescriptionValue] = useState<Content>("");
+    const [communityValue, setCommunityValue] = useState<string>("");
+    const [flairValue, setFlairValue] = useState<string>("");
+    const [dateTime, setDateTime] = useState<Date>(utcDate);
 
     return (
         <AppContext.Provider
-            value={{ selectedSection, setSelectedSection, isExitDialogOpen, setExitDialogOpen, isSupportDialogOpen, setSupportDialogOpen, isCreditsDialogOpen, setCreditsDialogOpen, isCreditsUpdate, setCreditsUpdate, isDeleteDialogOpen, setDeleteDialogOpen, postList, setPostList, postId, setPostId }}>
+            value={{ selectedSection, setSelectedSection, isExitDialogOpen, setExitDialogOpen, isSupportDialogOpen, setSupportDialogOpen, isCreditsDialogOpen, setCreditsDialogOpen, isCreditsUpdate, setCreditsUpdate, isDeleteDialogOpen, setDeleteDialogOpen, postList, setPostList, postId, setPostId, isPreviewDialogOpen, setPreviewDialogOpen, titleValue, setTitleValue, descriptionValue, setDescriptionValue, communityValue, setCommunityValue, flairValue, setFlairValue, dateTime, setDateTime }}>
             {children}
         </AppContext.Provider>
     );
