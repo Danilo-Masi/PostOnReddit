@@ -1,12 +1,10 @@
 import * as React from 'react'
 import './styles/index.css'
-
 import type { Content, Editor } from '@tiptap/react'
 import type { UseMinimalTiptapEditorProps } from './hooks/use-minimal-tiptap'
 import { EditorContent } from '@tiptap/react'
 import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
-import { SectionOne } from './components/section/one'
 import { SectionTwo } from './components/section/two'
 import { SectionFour } from './components/section/four'
 import { SectionFive } from './components/section/five'
@@ -24,9 +22,6 @@ export interface MinimalTiptapProps extends Omit<UseMinimalTiptapEditorProps, 'o
 const Toolbar = ({ editor }: { editor: Editor }) => (
   <div className="shrink-0 overflow-x-auto border-b border-border p-2">
     <div className="flex w-max items-center gap-px">
-      <SectionOne editor={editor} activeLevels={[1, 2, 3, 4, 5, 6]} />
-
-      <Separator orientation="vertical" className="mx-2 h-7" />
 
       <SectionTwo
         editor={editor}

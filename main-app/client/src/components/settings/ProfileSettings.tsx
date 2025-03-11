@@ -1,71 +1,84 @@
-// React
-import { useEffect, useState } from "react";
-// React-router
-import { NavigateFunction, useNavigate } from "react-router-dom";
-// Axios
+import { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-// Hooks
 import { checkRedditAuthorization } from "@/hooks/use-retrieve-data";
-// Shadncui
 import { Button } from "../ui/button";
 import { toast } from "sonner";
-// Icons
-import { KeySquare } from "lucide-react";
-// Components
-import CardBase from '../custom/CardBase';
+import { KeySquare, Timer } from "lucide-react";
+import CardBase from "../custom/CardBase";
 
 // Url del server
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
+const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
+
+// Componente per il pulsante di autorizzazione Reddit
+interface RedditPermissionButtonProps {
+    isAuthorized: boolean;
+    onRevoke: () => void;
+    onRequest: () => void;
+}
+
+const RedditPermissionButton = ({ isAuthorized, onRevoke, onRequest }: RedditPermissionButtonProps) => {
+    const handleClick = useCallback(() => {
+        isAuthorized ? onRevoke() : onRequest();
+    }, [isAuthorized, onRevoke, onRequest]);
+
+    return (
+        <Button
+            type="button"
+            className={`w-full ${isAuthorized
+                ? "bg-red-500 hover:bg-red-600 dark:bg-red-500 dark:hover:bg-red-600"
+                : "bg-orange-500 hover:bg-orange-600 dark:bg-orange-500 dark:hover:bg-orange-600"
+                } dark:text-zinc-50`}
+            onClick={handleClick} >
+            <KeySquare />
+            {isAuthorized ? "Revoke Reddit Permissions" : "Request Reddit Permissions"}
+        </Button>
+    );
+};
 
 export default function ProfileSettings() {
-
-    const navigate: NavigateFunction = useNavigate();
+    const navigate = useNavigate();
     const [isRedditAuthorized, setRedditAuthorized] = useState<boolean>(false);
 
+    // Controlla lo stato dell'autorizzazione una sola volta
     useEffect(() => {
         const fetchAuthorizationStatus = async () => {
             const isAuthorized = await checkRedditAuthorization();
             setRedditAuthorized(isAuthorized);
-        }
+        };
         fetchAuthorizationStatus();
-    }, [isRedditAuthorized]);
+    }, []);
 
-    // Funzione per richiedre i permessi di Reddit
-    const handleRequestPermits = async () => {
+    // Funzione per richiedere i permessi di Reddit
+    const handleRequestPermits = useCallback(async () => {
         try {
-            const token = localStorage.getItem('authToken');
+            const token = localStorage.getItem("authToken");
             if (!token) {
                 toast.error("User without permissions");
-                navigate('/login');
+                navigate("/login");
                 return;
             }
             const response = await axios.get(`${SERVER_URL}/api/reddit-redirect`, {
                 headers: {
-                    'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
             });
             if (response.status === 200) {
-                const { redirectUrl } = response.data;
-                window.location.href = redirectUrl;
+                window.location.href = response.data.redirectUrl;
             }
         } catch (error: any) {
-            if (error.response && error.response.status === 400) {
-                toast.warning("The user has already granted permissions");
-            } else {
-                console.error('CLIENT: Errore durante la richiesta di login Reddit:', error.stack);
-                toast.warning("An error occurred, please try again later");
-            }
+            const status = error?.response?.status;
+            toast.warning(status === 400 ? "The user has already granted permissions" : "An error occurred, please try again later");
         }
-    };
+    }, [navigate]);
 
     // Funzione per rimuovere i permessi di Reddit
-    const handleRemovePermits = async () => {
+    const handleRemovePermits = useCallback(async () => {
         try {
-            const token = localStorage.getItem('authToken');
+            const token = localStorage.getItem("authToken");
             if (!token) {
                 toast.error("User without permissions");
-                navigate('/login');
+                navigate("/login");
                 return;
             }
             const response = await axios.delete(`${SERVER_URL}/supabase/delete-permissions`, {
@@ -79,37 +92,23 @@ export default function ProfileSettings() {
             } else {
                 toast.warning("Failed to remove permissions");
             }
-        } catch (error: any) {
-            console.error('CLIENT: Errore durante la richiesta eliminazione dei permessi', error.stack);
+        } catch (error) {
             toast.warning("An error occurred, please try again later");
         }
-    }
+    }, [navigate]);
 
     return (
-        <CardBase
-            cardTitle='Profile Settings'
-            cardDescription='Manage your profile preferences'
-            mdWidth="md:w-1/3 h-fit">
-            <div className="w-full min-h-[50svh] flex justify-center items-center mb-3 rounded-xl bg-zinc-300 dark:bg-zinc-800">
-                Coming Soon
+        <CardBase cardTitle="Profile Settings" cardDescription="Manage your profile preferences" mdWidth="md:w-1/3 h-fit">
+            <div className="w-full h-auto flex flex-col gap-y-2 mb-6">
+                <Button className="w-full">
+                    <Timer />
+                    Change time zone
+                </Button>
+                <p className="text-sm text-zinc-500">
+                    *Changing the time zone affects the display of data and not the creation and publication of posts
+                </p>
             </div>
-            {isRedditAuthorized ? (
-                <Button
-                    type="button"
-                    className="w-full bg-red-500 hover:bg-red-600 dark:bg-red-500 dark:hover:bg-red-600 dark:text-zinc-50"
-                    onClick={() => handleRemovePermits()}>
-                    <KeySquare />
-                    Revoke Reddit Permissions
-                </Button>
-            ) : (
-                <Button
-                    type="button"
-                    className="w-full bg-orange-500 hover:bg-orange-600 dark:bg-orange-500 dark:hover:bg-orange-600 dark:text-zinc-50"
-                    onClick={() => handleRequestPermits()}>
-                    <KeySquare />
-                    Request Reddit Permissions
-                </Button>
-            )}
+            <RedditPermissionButton isAuthorized={isRedditAuthorized} onRevoke={handleRemovePermits} onRequest={handleRequestPermits} />
         </CardBase>
     );
 }

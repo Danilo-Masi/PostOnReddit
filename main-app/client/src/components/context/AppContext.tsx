@@ -1,7 +1,5 @@
-// React
 import { useState, createContext, useContext, Dispatch, SetStateAction } from "react";
-// minimal-tiptap
-import { Content } from '@tiptap/react';
+import { Content } from "@tiptap/react";
 
 type PostType = {
     title: string;
@@ -10,28 +8,27 @@ type PostType = {
     community: string;
     status: string;
     id: string;
-}
+};
 
-// Definisci il tipo per il contesto
 type AppContextType = {
     selectedSection: string;
-    setSelectedSection: (section: string) => void;
+    setSelectedSection: Dispatch<SetStateAction<string>>;
     isExitDialogOpen: boolean;
-    setExitDialogOpen: (section: boolean) => void;
+    setExitDialogOpen: Dispatch<SetStateAction<boolean>>;
     isSupportDialogOpen: boolean;
-    setSupportDialogOpen: (section: boolean) => void;
+    setSupportDialogOpen: Dispatch<SetStateAction<boolean>>;
     isCreditsDialogOpen: boolean;
-    setCreditsDialogOpen: (section: boolean) => void;
+    setCreditsDialogOpen: Dispatch<SetStateAction<boolean>>;
     isCreditsUpdate: boolean;
-    setCreditsUpdate: (section: boolean) => void;
+    setCreditsUpdate: Dispatch<SetStateAction<boolean>>;
     isDeleteDialogOpen: boolean;
-    setDeleteDialogOpen: (section: boolean) => void;
-    postList: PostType[]
-    setPostList: (section: PostType[]) => void;
-    postId: any;
-    setPostId: (section: any) => void;
+    setDeleteDialogOpen: Dispatch<SetStateAction<boolean>>;
+    postList: PostType[];
+    setPostList: Dispatch<SetStateAction<PostType[]>>;
+    postId: string | null;
+    setPostId: Dispatch<SetStateAction<string | null>>;
     isPreviewDialogOpen: boolean;
-    setPreviewDialogOpen: (section: boolean) => void;
+    setPreviewDialogOpen: Dispatch<SetStateAction<boolean>>;
     titleValue: string;
     setTitleValue: Dispatch<SetStateAction<string>>;
     descriptionValue: Content;
@@ -42,64 +39,85 @@ type AppContextType = {
     setFlairValue: Dispatch<SetStateAction<string>>;
     dateTime: Date;
     setDateTime: Dispatch<SetStateAction<Date>>;
-}
+};
 
-// Crea il contesto e fornisci un valore predefinito
+// Funzione per ottenere la data UTC
+const getUTCDate = () => {
+    const now = new Date();
+    return new Date(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate(),
+        now.getUTCHours(),
+        now.getUTCMinutes(),
+        0,
+        0
+    );
+};
+
+// Creazione del contesto con valori predefiniti
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
-// Ottiene la data attuale
-const now = new Date();
-// Crea una nuova data in UTC con secondi e millisecondi impostati a 0
-const utcDate = new Date(
-    now.getUTCFullYear(),
-    now.getUTCMonth(),
-    now.getUTCDate(),
-    now.getUTCHours(),
-    now.getUTCMinutes(),
-    0,
-    0
-);
-
-// Crea un provider per il contesto
+// Provider del contesto
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
-    // Stato che gestisce la tab aperta nella sidebar
-    const [selectedSection, setSelectedSection] = useState<string>("dashboard");
-    // Stato che gestisce il modal per il logout
-    const [isExitDialogOpen, setExitDialogOpen] = useState<boolean>(false);
-    // Stato che gestisce il modal per il supporto
-    const [isSupportDialogOpen, setSupportDialogOpen] = useState<boolean>(false);
-    // Stato che gestisce il modal per i crediti
-    const [isCreditsDialogOpen, setCreditsDialogOpen] = useState<boolean>(false);
-    // Stato che gestisce l'aggiornamento dei crediti
-    const [isCreditsUpdate, setCreditsUpdate] = useState<boolean>(false);
-    // Stato che gestisce se la dialog del cancellamento di un post è aperta
-    const [isDeleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
-    // Stato che gestisce la lista di post caricati dal DB
+    const [selectedSection, setSelectedSection] = useState("dashboard");
+    const [isExitDialogOpen, setExitDialogOpen] = useState(false);
+    const [isSupportDialogOpen, setSupportDialogOpen] = useState(false);
+    const [isCreditsDialogOpen, setCreditsDialogOpen] = useState(false);
+    const [isCreditsUpdate, setCreditsUpdate] = useState(false);
+    const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [postList, setPostList] = useState<PostType[]>([]);
-    // Stato per gestire il postId selezionato
-    const [postId, setPostId] = useState<any>(null);
-    // Stato per gestire l'apertura della Dialog preview
-    const [isPreviewDialogOpen, setPreviewDialogOpen] = useState<boolean>(false);
-    // Stati per la gestione del post
-    const [titleValue, setTitleValue] = useState<string>("");
+    const [postId, setPostId] = useState<string | null>(null);
+    const [isPreviewDialogOpen, setPreviewDialogOpen] = useState(false);
+    const [titleValue, setTitleValue] = useState("");
     const [descriptionValue, setDescriptionValue] = useState<Content>("");
-    const [communityValue, setCommunityValue] = useState<string>("");
-    const [flairValue, setFlairValue] = useState<string>("");
-    const [dateTime, setDateTime] = useState<Date>(utcDate);
+    const [communityValue, setCommunityValue] = useState("");
+    const [flairValue, setFlairValue] = useState("");
+    const [dateTime, setDateTime] = useState(getUTCDate);
 
     return (
         <AppContext.Provider
-            value={{ selectedSection, setSelectedSection, isExitDialogOpen, setExitDialogOpen, isSupportDialogOpen, setSupportDialogOpen, isCreditsDialogOpen, setCreditsDialogOpen, isCreditsUpdate, setCreditsUpdate, isDeleteDialogOpen, setDeleteDialogOpen, postList, setPostList, postId, setPostId, isPreviewDialogOpen, setPreviewDialogOpen, titleValue, setTitleValue, descriptionValue, setDescriptionValue, communityValue, setCommunityValue, flairValue, setFlairValue, dateTime, setDateTime }}>
+            value={{
+                selectedSection,
+                setSelectedSection,
+                isExitDialogOpen,
+                setExitDialogOpen,
+                isSupportDialogOpen,
+                setSupportDialogOpen,
+                isCreditsDialogOpen,
+                setCreditsDialogOpen,
+                isCreditsUpdate,
+                setCreditsUpdate,
+                isDeleteDialogOpen,
+                setDeleteDialogOpen,
+                postList,
+                setPostList,
+                postId,
+                setPostId,
+                isPreviewDialogOpen,
+                setPreviewDialogOpen,
+                titleValue,
+                setTitleValue,
+                descriptionValue,
+                setDescriptionValue,
+                communityValue,
+                setCommunityValue,
+                flairValue,
+                setFlairValue,
+                dateTime,
+                setDateTime,
+            }}
+        >
             {children}
         </AppContext.Provider>
     );
 };
 
-// Hook per usare il contesto
+// Hook personalizzato per usare il contesto
 export const useAppContext = () => {
     const context = useContext(AppContext);
     if (!context) {
-        throw new Error("CLIENT: useAppContext must be used within an AppProvider");
+        throw new Error("useAppContext must be used within an AppProvider");
     }
     return context;
-}
+};
