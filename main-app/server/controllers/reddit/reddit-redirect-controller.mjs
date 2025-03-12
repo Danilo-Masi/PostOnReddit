@@ -11,9 +11,7 @@ const SCOPES = 'identity flair modflair read submit';
 
 const MESSAGES = {
   NO_TOKEN: 'Token mancante',
-  TOKEN_INVALID: 'Token non valido',
-  SUPABASE_ERROR: 'Errore durante la verifica del token di Reddit nel DB',
-  TOKEN_ALREADY_EXISTS: 'I permessi sono già stati concessi',
+  INVALID_TOKEN: 'Token non valido',
   SERVER_ERROR: 'Errore generico del server',
 };
 
@@ -40,20 +38,6 @@ export const redditRedirect = async (req, res) => {
   const user_id = user.user.id;
 
   try {
-    const access_token = await getRedditAccessToken(user_id);
-    if (!access_token) {
-      logger.error(`Errore nel recuper dell'access_token dal DB`);
-      return res.status(500).json({ message: MESSAGES.SUPABASE_ERROR });
-    }
-
-    // Gestisce il caso in cui i permessi siano già stati dati
-    if (access_token) {
-      logger.info('Permessi di Reddit già concessi');
-      return res.status(400).json({
-        message: MESSAGES.TOKEN_ALREADY_EXISTS,
-      });
-    }
-
     // Costruisci il parametro `state` includendo l'user_id
     const state = `user_id:${user_id}`;
 
