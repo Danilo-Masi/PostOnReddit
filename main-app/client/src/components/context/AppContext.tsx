@@ -17,10 +17,6 @@ type AppContextType = {
     setExitDialogOpen: Dispatch<SetStateAction<boolean>>;
     isSupportDialogOpen: boolean;
     setSupportDialogOpen: Dispatch<SetStateAction<boolean>>;
-    isCreditsDialogOpen: boolean;
-    setCreditsDialogOpen: Dispatch<SetStateAction<boolean>>;
-    isCreditsUpdate: boolean;
-    setCreditsUpdate: Dispatch<SetStateAction<boolean>>;
     isDeleteDialogOpen: boolean;
     setDeleteDialogOpen: Dispatch<SetStateAction<boolean>>;
     postList: PostType[];
@@ -63,8 +59,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [selectedSection, setSelectedSection] = useState("dashboard");
     const [isExitDialogOpen, setExitDialogOpen] = useState(false);
     const [isSupportDialogOpen, setSupportDialogOpen] = useState(false);
-    const [isCreditsDialogOpen, setCreditsDialogOpen] = useState(false);
-    const [isCreditsUpdate, setCreditsUpdate] = useState(false);
     const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [postList, setPostList] = useState<PostType[]>([]);
     const [postId, setPostId] = useState<string | null>(null);
@@ -75,6 +69,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [flairValue, setFlairValue] = useState("");
     const [dateTime, setDateTime] = useState(getUTCDate);
 
+
     return (
         <AppContext.Provider
             value={{
@@ -84,10 +79,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
                 setExitDialogOpen,
                 isSupportDialogOpen,
                 setSupportDialogOpen,
-                isCreditsDialogOpen,
-                setCreditsDialogOpen,
-                isCreditsUpdate,
-                setCreditsUpdate,
                 isDeleteDialogOpen,
                 setDeleteDialogOpen,
                 postList,
@@ -106,8 +97,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
                 setFlairValue,
                 dateTime,
                 setDateTime,
-            }}
-        >
+            }}>
             {children}
         </AppContext.Provider>
     );

@@ -28,12 +28,14 @@ type PostType = {
 // Funzione per formattare la data visualizzata
 const formatDate = (isoString: any) => {
   const date = new Date(isoString);
+  const is24hFormat = localStorage.getItem("timeFormat") === "24h";
   return new Intl.DateTimeFormat('en-US', {
-    day: '2-digit',
+    day: 'numeric',
     month: 'long',
     year: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
+    hourCycle: is24hFormat ? "h24" : "h12",
   }).format(date);
 }
 

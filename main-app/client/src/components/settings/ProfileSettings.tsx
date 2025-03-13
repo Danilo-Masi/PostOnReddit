@@ -39,6 +39,9 @@ const RedditPermissionButton = ({ isAuthorized, onRevoke, onRequest }: RedditPer
 export default function ProfileSettings() {
     const navigate = useNavigate();
     const [isRedditAuthorized, setRedditAuthorized] = useState<boolean>(false);
+    const [is24HourFormat, set24HourFormat] = useState<boolean>(() => {
+        return localStorage.getItem("timeFormat") === "12h" ? false : true;
+    });
 
     // Controlla lo stato dell'autorizzazione una sola volta
     useEffect(() => {
@@ -97,15 +100,26 @@ export default function ProfileSettings() {
         }
     }, [navigate]);
 
+    // Funzione per modificare il formato di visualizzazione dell'orario
+    const handleSwitchFormat = () => {
+        set24HourFormat(prevFormat => {
+            const newFormat = !prevFormat;
+            localStorage.setItem("timeFormat", newFormat ? "24h" : "12h");
+            return newFormat;
+        })
+    }
+
     return (
         <CardBase cardTitle="Profile Settings" cardDescription="Manage your profile preferences" mdWidth="md:w-1/3 h-fit">
             <div className="w-full h-auto flex flex-col gap-y-2 mb-6">
-                <Button className="w-full">
+                <Button
+                    className="w-full"
+                    onClick={handleSwitchFormat}>
                     <Timer />
-                    Change time zone
+                    {is24HourFormat ? "Switch to AM/PM" : "Switch to 24h Format"}
                 </Button>
                 <p className="text-sm text-zinc-500">
-                    *Changing the time zone affects the display of data and not the creation and publication of posts
+                    *Changing the time format affects only the time display and does not impact the creation or scheduling of posts
                 </p>
             </div>
             <RedditPermissionButton isAuthorized={isRedditAuthorized} onRevoke={handleRemovePermits} onRequest={handleRequestPermits} />

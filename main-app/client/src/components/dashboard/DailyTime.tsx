@@ -74,26 +74,39 @@ export default function DailyTime({ subreddit, setDateTime }: DailyTimeProps) {
         setSelectedHour(hour);
     }
 
+    const getOrdinalSuffix = (n: number) => {
+        if (n % 100 >= 11 && n % 100 <= 13) return `${n}th`;
+        switch (n % 10) {
+            case 1: return `${n}st`;
+            case 2: return `${n}nd`;
+            case 3: return `${n}rd`;
+            default: return `${n}th`;
+        }
+    };
+
+    const is12HourFormat = localStorage.getItem("timeFormat") === "12h";
+
     return (
         <div className="w-full h-auto flex flex-col md:flex-row md:flex-wrap gap-4">
-            {loading ? (
-                <Loader2 className="animate-spin" />
-            ) : bestTimes.length === 0 ? (
+            {loading && <Loader2 className="animate-spin" />}
+
+            {!loading && bestTimes.length === 0 && (
                 <>
-                    <DailyTimeCard place="1th place" time="N/A" score="N/A" />
-                    <DailyTimeCard place="2th place" time="N/A" score="N/A" />
+                    <DailyTimeCard place="1st place" time="N/A" score="N/A" />
+                    <DailyTimeCard place="2nd place" time="N/A" score="N/A" />
                 </>
-            ) : (
-                bestTimes.map((time, index) => (
-                    <DailyTimeCard
-                        key={index}
-                        place={`${index + 1}th place`}
-                        time={formatTime(time.hour)}
-                        score={time.score.toFixed(0)}
-                        onClick={() => handleSetTime(time.hour)}
-                        isCardSelected={selectedHour === time.hour} />
-                ))
             )}
+
+            {!loading && bestTimes.length > 0 && bestTimes.map((time, index) => (
+                <DailyTimeCard
+                    key={index}
+                    place={`${getOrdinalSuffix(index + 1)} place`}
+                    time={is12HourFormat ? formatTime(time.hour) : `${time.hour}:00`}
+                    score={time.score.toFixed(0)}
+                    onClick={() => handleSetTime(time.hour)}
+                    isCardSelected={selectedHour === time.hour}
+                />
+            ))}
         </div>
     );
 }

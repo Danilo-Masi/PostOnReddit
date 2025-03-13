@@ -89,28 +89,27 @@ export default function WeekTime({ subreddit }: WeekTimeProps) {
         return `${formattedHour}:00 ${period}`;
     }
 
+    const is12HourFormat = localStorage.getItem("timeFormat") === "12h";
+
     return (
         <div className="w-full h-auto flex flex-col md:flex-row md:flex-wrap gap-4">
             {loading ? (
                 <Loader2 className="animate-spin" />
-            ) : Object.keys(bestTimes).length === 0 ? (
-                daysOfWeek.map((day) => (
-                    <WeekTimeCard
-                        key={day}
-                        dayOfWeek={day}
-                        time="N/A"
-                        score="N/A"
-                    />
-                ))
             ) : (
-                daysOfWeek.map((day) => (
-                    <WeekTimeCard
-                        key={day}
-                        dayOfWeek={day}
-                        time={formatTime(bestTimes[day]?.hour) || "N/A"}
-                        score={bestTimes[day]?.score.toFixed(0) || "0"}
-                    />
-                ))
+                daysOfWeek.map((day) => {
+                    const hasBestTimes = bestTimes && Object.keys(bestTimes).length > 0;
+                    const time = hasBestTimes && bestTimes[day]
+                        ? is12HourFormat 
+                            ? formatTime(bestTimes[day].hour) 
+                            : `${bestTimes[day].hour}:00`
+                        : "N/A";
+    
+                    const score = hasBestTimes && bestTimes[day] 
+                        ? bestTimes[day].score.toFixed(0) 
+                        : "N/A";
+    
+                    return <WeekTimeCard key={day} dayOfWeek={day} time={time} score={score} />;
+                })
             )}
         </div>
     );
