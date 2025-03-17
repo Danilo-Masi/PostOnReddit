@@ -10,6 +10,8 @@ interface WeekCardProps {
     dayOfWeek: string;
     time: string;
     score: string;
+    onClick?: () => void;
+    isCardSelected?: boolean;
 }
 
 export function DailyTimeCard({ place, time, score, onClick, isCardSelected }: DailyTimeCardProps) {
@@ -23,7 +25,7 @@ export function DailyTimeCard({ place, time, score, onClick, isCardSelected }: D
     return (
         <div
             onClick={onClick}
-            className={`w-full md:w-[calc(50%-0.5rem)] h-fit rounded-xl p-4 cursor-pointer bg-zinc-200 dark:bg-zinc-400 shadow-sm transition-all hover:bg-zinc-300 dark:hover:bg-zinc-700 hover:shadow-lg border ${isCardSelected ? 'border-orange-500 dark:border-orange-500': 'border-zinc-300 dark:border-zinc-800'}`}>
+            className={`w-full md:w-[calc(50%-0.5rem)] h-fit rounded-xl p-4 cursor-pointer bg-zinc-200 dark:bg-zinc-400 shadow-sm transition-all hover:bg-zinc-300 dark:hover:bg-zinc-700 hover:shadow-lg border ${isCardSelected ? 'border-orange-500 dark:border-orange-500' : 'border-zinc-300 dark:border-zinc-800'}`}>
             <h1 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100">{place}</h1>
             <p className="text-sm text-zinc-600 dark:text-zinc-300">{formattedDate} - {time}</p>
             <p className="text-sm font-medium text-blue-600 dark:text-blue-500">⭐ Score: {score}</p>
@@ -31,9 +33,11 @@ export function DailyTimeCard({ place, time, score, onClick, isCardSelected }: D
     );
 }
 
-export function WeekTimeCard({ dayOfWeek, time, score }: WeekCardProps) {
+export function WeekTimeCard({ dayOfWeek, time, score, onClick, isCardSelected }: WeekCardProps) {
     return (
-        <div className="w-full md:w-[calc(50%-0.5rem)] h-fit rounded-xl p-4 cursor-pointer bg-zinc-200 dark:bg-zinc-600 border border-zinc-300 dark:border-zinc-800 shadow-sm transition-all hover:bg-zinc-300 dark:hover:bg-zinc-700 hover:shadow-lg">
+        <div
+            onClick={onClick}
+            className={`w-full md:w-[calc(50%-0.5rem)] h-fit rounded-xl p-4 cursor-pointer bg-zinc-200 dark:bg-zinc-400 shadow-sm transition-all hover:bg-zinc-300 dark:hover:bg-zinc-700 hover:shadow-lg border ${isCardSelected ? 'border-orange-500 dark:border-orange-500' : 'border-zinc-300 dark:border-zinc-800'}`}>
             <h1 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100">{dayOfWeek}</h1>
             <p className="text-sm text-zinc-600 dark:text-zinc-300">{time}</p>
             <p className="text-sm font-medium text-blue-600 dark:text-blue-500">⭐ Score: {score}</p>

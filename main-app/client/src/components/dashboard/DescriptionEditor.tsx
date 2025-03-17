@@ -1,9 +1,6 @@
-// React
 import { Dispatch, SetStateAction } from 'react';
-// minimal-tiptap
 import { MinimalTiptapEditor } from '../dashboard/minimal-tiptap';
 import { Content } from '@tiptap/react'
-// Shadcui
 import { Label } from '../ui/label';
 
 type DescriptionEditorProps = {

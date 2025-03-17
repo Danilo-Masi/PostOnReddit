@@ -94,6 +94,8 @@ const calculateScore = (posts, onlineUsers) => {
 
     const maxPosts = Math.max(...Object.values(hourlyData).map(h => h.numPosts));
 
+    const currentTime = Date.now();
+
     let scores = Object.keys(hourlyData).map(hour => {
         const { totalUpvotes, totalComments, numPosts } = hourlyData[hour];
         const avgEngagement = (totalUpvotes + 2 * totalComments) / numPosts;
@@ -106,10 +108,16 @@ const calculateScore = (posts, onlineUsers) => {
             score = avgEngagement - competitionFactor;
         }
 
-        return { hour: parseInt(hour), score };
-    });
+        const postTime = new Date();
+        postTime.setUTCHours(parseInt(hour), 0, 0, 0);
 
-    return scores.sort((a, b) => b.score - a.score).slice(0, 4);
+        return { hour: parseInt(hour), timestamp: postTime.getTime(), score };
+    })
+        .filter(({ timestamp }) => timestamp >= currentTime)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 4);
+
+    return scores;
 };
 
 // Funzione principale

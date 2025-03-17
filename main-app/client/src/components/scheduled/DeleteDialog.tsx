@@ -6,7 +6,8 @@ import { useAppContext } from '../context/AppContext';
 // Axios
 import axios from "axios";
 // Icons
-import { Trash2 } from "lucide-react";
+import { Loader2, Trash2 } from "lucide-react";
+import { useState } from "react";
 
 // Url del server
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
@@ -14,9 +15,11 @@ const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 export default function DeleteDialog() {
 
     const { isDeleteDialogOpen, setDeleteDialogOpen, postList, setPostList, postId } = useAppContext();
+    const [isLoading, setLoading] = useState<boolean>(false);
 
     // Funzione per eliminare un determinato post dal DB
     const handleDeletePost = async () => {
+        setLoading(true);
         try {
             const authToken = localStorage.getItem('authToken');
             const response = await axios.post(`${SERVER_URL}/supabase/delete-post`, {
@@ -34,6 +37,8 @@ export default function DeleteDialog() {
         } catch (error: any) {
             console.log("CLIENT: Errore durante l'eliminazione del post", error.message);
             toast.warning("Error during the deleting process. Try later!");
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -51,8 +56,7 @@ export default function DeleteDialog() {
                     <AlertDialogAction
                         onClick={handleDeletePost}
                         className="bg-red-500 hover:bg-red-600 dark:bg-red-500 dark:hover:bg-red-600 dark:text-zinc-50">
-                        <Trash2 />
-                        Delete Permanently
+                        {isLoading ? <><Loader2 className='animate-spin' /> Loading</> : <><Trash2 /> Delete Permanently</>}
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>

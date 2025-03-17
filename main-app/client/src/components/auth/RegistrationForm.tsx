@@ -1,25 +1,17 @@
-// React
 import { useState } from "react";
-// React-router
 import { Link, NavigateFunction, useNavigate } from "react-router-dom";
-// Axios
 import axios from 'axios';
-// Shadcnui
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-// Icons
 import { LogIn } from 'lucide-react';
-// Components
 import Logo from "../custom/Logo";
 
-// Url del server
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 
 export default function RegistrationForm() {
-
     const navigate: NavigateFunction = useNavigate();
     const [name, setName] = useState<string>("");
     const [email, setEmail] = useState<string>("");

@@ -1,6 +1,4 @@
-// Shadcnui
 import { Avatar, AvatarImage } from "../ui/avatar";
-// Assets
 import face1 from '../../assets/face1.webp';
 import face2 from '../../assets/face2.webp';
 import face3 from '../../assets/face3.webp';
@@ -21,19 +19,20 @@ const GroupAvatar = () => {
 
 export default function AuthHero() {
     return (
-        <div className="w-1/2 h-svh hidden md:flex flex-col items-start justify-center gap-y-8 px-8 bg-orange-500 dark:bg-orange-500">
+        <div className="w-1/2 h-svh hidden md:flex flex-col items-center text-center justify-center gap-y-10 px-8 bg-gradient-to-tr from-orange-700 to-orange-400 dark:from-orange-600 dark:to-orange-500">
             <div className="max-w-md">
-                <h1 className="text-white font-extrabold text-4xl leading-tight">
-                    Post at the Best Time
+                <h1 className="text-white font-extrabold text-5xl leading-tight">
+                    Schedule Smarter, Grow Faster
                 </h1>
-                <h3 className="text-white/90 font-medium text-xl mt-2">
-                    Get more engagement with data-driven insights.
+                <h3 className="text-white/75 font-semibold text-lg mt-4">
+                    Post at the best times with data-driven insights.
                 </h3>
             </div>
-
-            <div className="flex flex-col gap-y-3">
-                <p className="text-white text-sm">Join 500+ founders and creators</p>
-                <GroupAvatar />
+            <div className="flex flex-col gap-y-2">
+                <div className="flex items-center gap-x-2">
+                    <GroupAvatar />
+                    <p className="text-white text-sm">Join 100+ happy users</p>
+                </div>
             </div>
         </div>
     );

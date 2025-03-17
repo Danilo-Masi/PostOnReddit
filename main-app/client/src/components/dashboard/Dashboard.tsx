@@ -15,7 +15,7 @@ import WeekTime from './WeekTime';
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
 // Icons
-import { Clock4, ScanEye, Settings } from 'lucide-react';
+import { Check, Loader2, ScanEye, Settings } from 'lucide-react';
 // Hooks
 import { checkRedditAuthorization } from '@/hooks/use-retrieve-data';
 // Context
@@ -26,6 +26,7 @@ const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 
 export default function Dashboard() {
   const [isAccessToken, setAccessToken] = useState<boolean>(false);
+  const [isLoading, setLoading] = useState<boolean>(false);
 
   const {
     setSelectedSection,
@@ -86,7 +87,7 @@ export default function Dashboard() {
       errors.forEach((error) => toast.warning(error));
       return;
     }
-
+    setLoading(true);
     try {
       const authToken = localStorage.getItem('authToken');
       const response = await axios.post(
@@ -104,12 +105,13 @@ export default function Dashboard() {
       if (response.status === 200) handleSuccess();
     } catch (error: any) {
       console.error('Errore durante il salvataggio del post su DB', error.message);
-
       if (error.response?.data?.details) {
         error.response.data.details.forEach((errMsg: string) => toast.error(errMsg));
       } else {
         toast.error('An error occurred, please try again later');
       }
+    } finally {
+      setLoading(false);
     }
   }, [titleValue, descriptionValue, communityValue, flairValue, dateTime, handleSuccess]);
 
@@ -153,7 +155,7 @@ export default function Dashboard() {
             {/* Statistiche giorno e orari */}
             <div className="w-full h-auto min-h-[50svh] max-h-[50svh] md:max-h-full flex flex-col gap-3 my-3 md:my-5 overflow-scroll">
               <h1 className="font-bold text-xl md:text-lg text-zinc-900 dark:text-zinc-50">Best time for today</h1>
-              <DailyTime subreddit={communityValue} setDateTime={setDateTime} />
+              <DailyTime subreddit={communityValue} />
               <h1 className="font-bold text-xl md:text-lg text-zinc-900 dark:text-zinc-50">Best time for the week</h1>
               <WeekTime subreddit={communityValue} />
             </div>
@@ -166,8 +168,7 @@ export default function Dashboard() {
               <Button
                 className="w-full md:w-2/3 py-5 bg-orange-500 dark:bg-orange-500 hover:bg-orange-500 dark:hover:bg-orange-600 text-zinc-50 dark:text-zinc-50"
                 onClick={handlePostCreation}>
-                <Clock4 />
-                Schedule your post
+                {isLoading ? <><Loader2 className='animate-spin' /> Loading</> : <><Check /> Schedule your post</>}
               </Button>
             </div>
           </div>

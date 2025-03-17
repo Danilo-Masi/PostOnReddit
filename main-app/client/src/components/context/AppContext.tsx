@@ -69,7 +69,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [flairValue, setFlairValue] = useState("");
     const [dateTime, setDateTime] = useState(getUTCDate);
 
-
     return (
         <AppContext.Provider
             value={{

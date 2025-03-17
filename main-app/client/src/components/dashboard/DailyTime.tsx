@@ -1,22 +1,22 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
 import { DailyTimeCard } from "../custom/TimeCard";
 import { Loader2 } from "lucide-react";
+import { useAppContext } from "../context/AppContext";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 
 interface DailyTimeProps {
     subreddit: string;
-    setDateTime: Dispatch<SetStateAction<Date>>;
 }
 
-export default function DailyTime({ subreddit, setDateTime }: DailyTimeProps) {
+export default function DailyTime({ subreddit }: DailyTimeProps) {
     const navigate: NavigateFunction = useNavigate();
     const [bestTimes, setBestTimes] = useState<{ hour: string, score: number }[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
-    const [selectedHour, setSelectedHour] = useState<string | null>(null);
+    const { dateTime, setDateTime } = useAppContext();
 
     const handleFetchData = async () => {
         if (!subreddit || subreddit.trim() === "") return;
@@ -70,8 +70,6 @@ export default function DailyTime({ subreddit, setDateTime }: DailyTimeProps) {
         const now = new Date();
         now.setHours(parseInt(hour, 10), 0, 0, 0);
         setDateTime(now);
-        // Salva l'ora selezionata
-        setSelectedHour(hour);
     }
 
     const getOrdinalSuffix = (n: number) => {
@@ -92,21 +90,29 @@ export default function DailyTime({ subreddit, setDateTime }: DailyTimeProps) {
 
             {!loading && bestTimes.length === 0 && (
                 <>
-                    <DailyTimeCard place="1st place" time="N/A" score="N/A" />
-                    <DailyTimeCard place="2nd place" time="N/A" score="N/A" />
+                    <DailyTimeCard place="1st place" time="No data available" score="No score" />
+                    <DailyTimeCard place="2nd place" time="No data available" score="No score" />
                 </>
             )}
 
-            {!loading && bestTimes.length > 0 && bestTimes.map((time, index) => (
-                <DailyTimeCard
-                    key={index}
-                    place={`${getOrdinalSuffix(index + 1)} place`}
-                    time={is12HourFormat ? formatTime(time.hour) : `${time.hour}:00`}
-                    score={time.score.toFixed(0)}
-                    onClick={() => handleSetTime(time.hour)}
-                    isCardSelected={selectedHour === time.hour}
-                />
-            ))}
+            {!loading && bestTimes.length > 0 && bestTimes.map((time, index) => {
+                const today = new Date();
+                const isSameDay = dateTime.getDate() === today.getDate() &&
+                    dateTime.getMonth() === today.getMonth() &&
+                    dateTime.getFullYear() === today.getFullYear();
+                const isSameHour = dateTime.getHours() === parseInt(time.hour, 10);
+
+                return (
+                    <DailyTimeCard
+                        key={index}
+                        place={`${getOrdinalSuffix(index + 1)} place`}
+                        time={is12HourFormat ? formatTime(time.hour) : `${time.hour}:00`}
+                        score={time.score.toFixed(0)}
+                        onClick={() => handleSetTime(time.hour)}
+                        isCardSelected={isSameDay && isSameHour}
+                    />
+                );
+            })}
         </div>
     );
 }

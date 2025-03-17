@@ -1,4 +1,4 @@
-import { supabaseUser } from '../../config/supabase.mjs';
+import { supabaseAdmin } from '../../config/supabase.mjs';
 import logger from '../../config/logger.mjs';
 
 const MESSAGE = {
@@ -19,13 +19,13 @@ export const deletePost = async (req, res) => {
     }
 
     try {
-        let { error } = await supabaseUser
+        let { error } = await supabaseAdmin
             .from('posts')
             .delete()
             .eq('id', post_id);
 
         if (error) {
-            logger.error('Errore generico di Supabase durante la cancellazione del post dal DB: ' + error.message);
+            logger.error(`Errore generico di Supabase durante la cancellazione del post dal DB: ${error.message || error}`);
             return res.status(401).json({
                 message: MESSAGE.SUPABASE_ERROR,
             });
@@ -36,7 +36,7 @@ export const deletePost = async (req, res) => {
         });
 
     } catch (error) {
-        logger.error('Errore generico del Server: ' + error.message);
+        logger.error(`Errore generico del Server: ${error.message || error}`);
         return res.status(500).json({
             message: MESSAGE.SERVER_ERROR,
         });
