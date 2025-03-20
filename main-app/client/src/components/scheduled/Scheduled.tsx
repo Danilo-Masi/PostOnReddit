@@ -1,4 +1,3 @@
-// Components
 import { useEffect, useState } from "react";
 // Context
 import { useAppContext } from "../context/AppContext";
@@ -12,8 +11,8 @@ import { Button } from "../ui/button";
 import { toast } from "sonner";
 // Icons
 import { Loader2, Pencil } from "lucide-react";
+import { format, toZonedTime } from "date-fns-tz";
 
-// Url del server
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 
 type PostType = {
@@ -25,19 +24,17 @@ type PostType = {
   id: string;
 }
 
-// Funzione per formattare la data visualizzata
-const formatDate = (isoString: any) => {
-  const date = new Date(isoString);
+const formatDate = (isoString: string) => {
+  const userTimeZone = localStorage.getItem("userTimeZone") || Intl.DateTimeFormat().resolvedOptions().timeZone;
   const is24hFormat = localStorage.getItem("timeFormat") === "24h";
-  return new Intl.DateTimeFormat('en-US', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    hourCycle: is24hFormat ? "h24" : "h12",
-  }).format(date);
-}
+
+  const date = new Date(isoString);
+  const zonedDate = toZonedTime(date, userTimeZone);
+
+  // Formattazione dinamica in base alle preferenze utente
+  const timeFormat = is24hFormat ? "HH:mm" : "hh:mm a"; // 24h o 12h AM/PM
+  return format(zonedDate, `dd MMMM yyyy, ${timeFormat} zzz`, { timeZone: userTimeZone });
+};
 
 export default function Scheduled() {
 
@@ -111,14 +108,19 @@ export default function Scheduled() {
           <Loader2 className="w-8 h-8 text-zinc-500 animate-spin" />
         </div>
         : filteredPosts.length <= 0 ? (
-          <div className="w-full h-full flex flex-col justify-center items-center text-center gap-y-3 overflow-scroll">
-            <h1>You have no posts scheduled for the selected date</h1>
+          <div className="w-full h-full flex flex-col justify-center items-center text-center p-6">
+            <h2 className="text-lg font-semibold text-zinc-700 dark:text-zinc-300">
+              No scheduled posts
+            </h2>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">
+              Schedule a post now and keep your audience engaged
+            </p>
             <Button
               type="button"
-              className="bg-orange-500 dark:bg-orange-500 hover:bg-orange-600 dark:hover:bg-orange-600 dark:text-zinc-50"
+              className="flex items-center gap-2 px-4 py-2 bg-orange-500 dark:bg-orange-600 hover:bg-orange-600 dark:hover:bg-orange-700 text-white rounded-md transition-all"
               onClick={() => setSelectedSection("dashboard")}>
+              <Pencil className="w-4 h-4" />
               Schedule a post
-              <Pencil />
             </Button>
           </div>
         ) : (

@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { WeekTimeCard } from "../custom/TimeCard";
 import { Loader2 } from "lucide-react";
 import { useAppContext } from "../context/AppContext";
+import { format, toZonedTime } from "date-fns-tz";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 
@@ -92,13 +93,18 @@ export default function WeekTime({ subreddit }: WeekTimeProps) {
     };
 
     const formatTime = (hour: string) => {
-        const hourInt = parseInt(hour, 10);
-        const period = hourInt >= 12 ? "PM" : "AM";
-        const formattedHour = hourInt % 12 === 0 ? 12 : hourInt % 12;
-        return `${formattedHour}:00 ${period}`;
-    };
+        const userTimeZone = localStorage.getItem("userTimeZone") || "UTC";
+        const is12HourFormat = localStorage.getItem("timeFormat") === "12h";
 
-    const is12HourFormat = localStorage.getItem("timeFormat") === "12h";
+        // Converti l'ora da UTC al fuso selezionato
+        const utcDate = new Date();
+        utcDate.setUTCHours(parseInt(hour, 10), 0, 0, 0);
+        const zonedDate = toZonedTime(utcDate, userTimeZone);
+
+        // Formattazione dinamica in base alle preferenze utente
+        const timeFormat = is12HourFormat ? "hh:mm a" : "HH:mm";
+        return format(zonedDate, timeFormat, { timeZone: userTimeZone });
+    };
 
     const handleSetTime = (day: string, hour: string) => {
         const today = new Date();
@@ -138,7 +144,7 @@ export default function WeekTime({ subreddit }: WeekTimeProps) {
             {loading ? (<Loader2 className="animate-spin" />) : (
                 daysOfWeek.map((day) => {
                     const hasData = bestTimes && bestTimes[day];
-                    const time = hasData ? is12HourFormat ? formatTime(bestTimes[day].hour) : `${bestTimes[day].hour}:00` : "No data avabile";
+                    const time = hasData ? formatTime(bestTimes[day].hour) : "No data available";
                     const score = hasData ? bestTimes[day].score.toFixed(0) : "No score";
                     return (
                         <WeekTimeCard
