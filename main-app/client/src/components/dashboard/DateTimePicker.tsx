@@ -2,7 +2,7 @@
 import { Dispatch, SetStateAction, useState } from "react";
 // lib
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+import { format, toZonedTime } from "date-fns-tz";
 // Shadcnui
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -24,14 +24,17 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
     const hours = Array.from({ length: 12 }, (_, i) => i + 1);
     const handleDateSelect = (selectedDate: Date | undefined) => {
         if (selectedDate) {
-            setDate(selectedDate);
+            const userTimeZone = localStorage.getItem("userTimeZone") || "UTC";
+            const zonedDate = toZonedTime(selectedDate, userTimeZone);
+            setDate(zonedDate);
         }
     };
 
     // Funzione per gestire la data e l'orario selezionati
     const handleTimeChange = (type: "hour" | "minute" | "ampm", value: string) => {
         if (date) {
-            const newDate = new Date(date);
+            const userTimeZone = localStorage.getItem("userTimeZone") || "UTC";
+            const newDate = toZonedTime(new Date(date), userTimeZone);
 
             if (type === "hour") {
                 const hourValue = parseInt(value) % 12;
@@ -51,7 +54,7 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
 
             newDate.setSeconds(0);
             newDate.setMilliseconds(0);
-            
+
             setDate(newDate);
         }
     };
@@ -69,7 +72,7 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
                         )}>
                         <CalendarDays className="mr-2 h-4 w-4" />
                         {date ? (
-                            format(date, "MM/dd/yyyy hh:mm aa")
+                            format(toZonedTime(date, localStorage.getItem("userTimeZone") || "UTC"), "MM/dd/yyyy hh:mm aa")
                         ) : (
                             <span>MM/DD/YYYY hh:mm aa</span>
                         )}
@@ -91,11 +94,7 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
                                         <Button
                                             key={hour}
                                             size="icon"
-                                            variant={
-                                                date && date.getHours() % 12 === hour % 12
-                                                    ? "default"
-                                                    : "ghost"
-                                            }
+                                            variant={date && date.getHours() % 12 === hour % 12 ? "default" : "ghost"}
                                             className="sm:w-full shrink-0 aspect-square"
                                             onClick={() => handleTimeChange("hour", hour.toString())}>
                                             {hour}

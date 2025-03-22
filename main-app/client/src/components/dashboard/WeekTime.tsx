@@ -26,14 +26,12 @@ export default function WeekTime({ subreddit }: WeekTimeProps) {
 
     const handleFetchData = async () => {
         if (!subreddit.trim()) return;
-
         const token = localStorage.getItem('authToken');
         if (!token) {
             toast.error("User without permissions");
             navigate('/login');
             return;
         }
-
         setLoading(true);
         try {
             const response = await axios.get(`${SERVER_URL}/api/reddit-bestWeekTime`, {
@@ -43,21 +41,17 @@ export default function WeekTime({ subreddit }: WeekTimeProps) {
                     Authorization: `Bearer ${token}`
                 }
             });
-
             if (response.status !== 200 || !response.data.bestTimesByDay) {
                 setBestTimes({});
                 return;
             }
-
             const formattedData: { [day: string]: BestTime } = {};
             Object.entries(response.data.bestTimesByDay).forEach(([day, data]: [string, any]) => {
                 if (data) {
                     formattedData[day] = { hour: data.hour.toString(), score: data.score };
                 }
             });
-
             setBestTimes(formattedData);
-
         } catch (error: any) {
             console.error("Errore durante il caricamento dei dati:", error.message);
             toast.error("Errore nel caricamento dei dati");
@@ -95,12 +89,10 @@ export default function WeekTime({ subreddit }: WeekTimeProps) {
     const formatTime = (hour: string) => {
         const userTimeZone = localStorage.getItem("userTimeZone") || "UTC";
         const is12HourFormat = localStorage.getItem("timeFormat") === "12h";
-
         // Converti l'ora da UTC al fuso selezionato
         const utcDate = new Date();
         utcDate.setUTCHours(parseInt(hour, 10), 0, 0, 0);
         const zonedDate = toZonedTime(utcDate, userTimeZone);
-
         // Formattazione dinamica in base alle preferenze utente
         const timeFormat = is12HourFormat ? "hh:mm a" : "HH:mm";
         return format(zonedDate, timeFormat, { timeZone: userTimeZone });
@@ -110,32 +102,32 @@ export default function WeekTime({ subreddit }: WeekTimeProps) {
         const today = new Date();
         const currentDayIndex = today.getDay();
         const targetDayIndex = weekMap[day];
-
+    
         if (targetDayIndex === undefined) {
             console.error("Giorno non valido:", day);
             return;
         }
-
+    
         let daysToAdd = targetDayIndex - currentDayIndex;
         if (daysToAdd <= 0) {
             daysToAdd += 7;
         }
-
+    
         const targetDate = new Date();
         targetDate.setDate(today.getDate() + daysToAdd);
-
-        // Conversione dell'ora
+    
+        // Conversione dell'ora basata sul formato utente
         const [hourPart, period] = hour.split(" ");
         let hourNumber = parseInt(hourPart, 10);
-
+    
         if (period === "PM" && hourNumber !== 12) {
             hourNumber += 12;
         } else if (period === "AM" && hourNumber === 12) {
             hourNumber = 0;
         }
-
+    
         targetDate.setHours(hourNumber, 0, 0, 0);
-
+    
         setDateTime(targetDate);
     };
 

@@ -21,14 +21,12 @@ export default function DailyTime({ subreddit }: DailyTimeProps) {
 
     const handleFetchData = async () => {
         if (!subreddit || subreddit.trim() === "") return;
-
         const token = localStorage.getItem('authToken');
         if (!token) {
             toast.error("User without permissions");
             navigate('/login');
             return;
         }
-
         setLoading(true);
         try {
             const response = await axios.get(`${SERVER_URL}/api/reddit-bestDayTime`, {
@@ -38,13 +36,11 @@ export default function DailyTime({ subreddit }: DailyTimeProps) {
                     Authorization: `Bearer ${token}`
                 }
             });
-
             if (response.status !== 200 || !response.data.bestTimes) {
                 toast.info("The subreddit doesn't have available data");
                 setBestTimes([]);
                 return;
             }
-
             setBestTimes(response.data.bestTimes);
         } catch (error: any) {
             console.error("Errore durante il caricamento dei dati:", error.message);
@@ -63,21 +59,21 @@ export default function DailyTime({ subreddit }: DailyTimeProps) {
     const formatTime = (hour: string) => {
         const userTimeZone = localStorage.getItem("userTimeZone") || "UTC";
         const is12HourFormat = localStorage.getItem("timeFormat") === "12h";
-
         // Converti l'ora da UTC al fuso selezionato
         const utcDate = new Date();
         utcDate.setUTCHours(parseInt(hour, 10), 0, 0, 0);
         const zonedDate = toZonedTime(utcDate, userTimeZone);
-
         // Formattazione dinamica in base alle preferenze utente
         const timeFormat = is12HourFormat ? "hh:mm a" : "HH:mm";
         return format(zonedDate, timeFormat, { timeZone: userTimeZone });
     }
 
     const handleSetTime = (hour: string) => {
+        const userTimeZone = localStorage.getItem("userTimeZone") || "UTC";
         const now = new Date();
-        now.setHours(parseInt(hour, 10), 0, 0, 0);
-        setDateTime(now);
+        const zonedDate = toZonedTime(now, userTimeZone);
+        zonedDate.setHours(parseInt(hour, 10), 0, 0, 0);
+        setDateTime(zonedDate);
     }
 
     const getOrdinalSuffix = (n: number) => {
