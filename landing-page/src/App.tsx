@@ -1,15 +1,26 @@
-import { useEffect } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useAppContext } from "../src/context/AppContext";
-import Homepage from "./pages/Homepage";
-import Termspage from "./pages/Termspage";
-import Privacypage from "./pages/Privacypage";
-import Cookiepage from "./pages/Cookiepage";
-import CookiesDialog from "./components/custom/CookiesDialog";
-import Errorpage from "./pages/Errorpage";
+import { useAppContext } from "./context/AppContext";
+// Lazy loading delle pagine
+const Homepage = lazy(() => import("./pages/Homepage"));
+const Termspage = lazy(() => import("./pages/Termspage"));
+const Privacypage = lazy(() => import("./pages/Privacypage"));
+const Errorpage = lazy(() => import("./pages/Errorpage"));
 
-function App() {
+function AppRoutes() {
+  return (
+    <Suspense fallback={<div>loading...</div>}>
+      <Routes>
+        <Route index element={<Homepage />} />
+        <Route path="/terms-of-services" element={<Termspage />} />
+        <Route path="/privacy-policy" element={<Privacypage />} />
+        <Route path="*" element={<Errorpage />} />
+      </Routes>
+    </Suspense>
+  );
+}
 
+export default function App() {
   const { isCookiesBannerOpened, setCookiesBannerOpened } = useAppContext();
 
   useEffect(() => {
@@ -33,18 +44,12 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <Routes>
-          <Route index element={<Homepage />} />
-          <Route path="/" element={<Homepage />} />
-          <Route path="/terms-services" element={<Termspage />} />
-          <Route path="/privacy-policy" element={<Privacypage />} />
-          <Route path="/cookie-policy" element={<Cookiepage />} />
-          <Route path="*" element={<Errorpage />} />
-        </Routes>
+        <AppRoutes />
       </BrowserRouter>
-      {isCookiesBannerOpened && <CookiesDialog />}
+      {isCookiesBannerOpened && <div>cookieBanner</div>}
     </>
   );
 }
 
-export default App
+
+
