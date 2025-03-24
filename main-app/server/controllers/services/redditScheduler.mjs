@@ -5,7 +5,6 @@ import moment from 'moment-timezone';
 
 export const scheduleRedditPosts = async () => {
     const nowUtc = moment().utc().format('YYYY-MM-DD HH:mm:00');
-
     try {
         const { data, error } = await supabaseAdmin
             .from('posts')
@@ -14,7 +13,7 @@ export const scheduleRedditPosts = async () => {
             .eq('date_time', nowUtc);
 
         if (error) {
-            logger.error(`Errore nel recupero dei post da caricare dal DB: ${error.message}`);
+            logger.error(`Errore nel recupero dei post da caricare dal DB: ${error.message || error}`);
             return;
         }
 
@@ -33,7 +32,7 @@ export const scheduleRedditPosts = async () => {
         }
 
     } catch (error) {
-        logger.error('Errore generale del server durante la richiesta dei post con stato pending:', error);
+        logger.error(`Errore generale del server durante la richiesta dei post con stato pending: ${error.message || error}`);
         return;
     }
 };

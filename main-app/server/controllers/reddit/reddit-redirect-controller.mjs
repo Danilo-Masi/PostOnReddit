@@ -1,8 +1,6 @@
 import { decodeToken } from '../../controllers/services/decodeToken.mjs';
-import dotenv from 'dotenv';
 import logger from '../../config/logger.mjs';
-import { getRedditAccessToken } from '../services/redditToken.mjs';
-
+import dotenv from 'dotenv';
 dotenv.config();
 
 const CLIENT_ID = process.env.REDDIT_CLIENT_ID;
@@ -10,31 +8,28 @@ const REDIRECT_URI = process.env.REDDIT_REDIRECT_URI;
 const SCOPES = 'identity flair modflair read submit';
 
 const MESSAGES = {
-  NO_TOKEN: 'Token mancante',
+  MISSING_TOKEN: 'Token mancante',
   INVALID_TOKEN: 'Token non valido',
   SERVER_ERROR: 'Errore generico del server',
 };
 
 export const redditRedirect = async (req, res) => {
-
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
   if (!token) {
     logger.error('Token mancante');
     return res.status(401).json({
-      message: MESSAGES.NO_TOKEN,
+      message: MESSAGES.MISSING_TOKEN,
     });
   }
 
   const user = await decodeToken(token);
-
   if (!user) {
     return res.status(400).json({
       message: MESSAGES.INVALID_TOKEN,
     });
   }
-
   const user_id = user.user.id;
 
   try {

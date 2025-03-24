@@ -1,10 +1,10 @@
 import axios from "axios";
 import { supabaseAdmin } from '../../config/supabase.mjs';
-import dotenv from 'dotenv';
 import TurndownService from 'turndown';
 import logger from '../../config/logger.mjs';
 import { getRedditAccessToken } from "./redditToken.mjs";
-
+import { refreshAccessToken } from "./redditRefreshToken.mjs";
+import dotenv from 'dotenv';
 dotenv.config();
 
 // Funzione per convertire HMTL in Markdown
@@ -22,7 +22,7 @@ const updatePostStatus = async (post_id, status) => {
             .eq('id', post_id);
 
         if (error) {
-            logger.info(`Errore durante l'aggiornamento dello stato del post ${post_id}: ${error.message}`);
+            logger.info(`Errore durante l'aggiornamento dello stato del post ${post_id}: ${error.message || error}`);
             return false;
         }
         return true;
@@ -35,8 +35,16 @@ const updatePostStatus = async (post_id, status) => {
 // Funzione per pubblicare un post su Reddit
 export const submitPostToReddit = async (post) => {
     try {
-        const access_token = await getRedditAccessToken(post.user_id);
-        if (!access_token) return updatePostStatus(post.id, 'failed');
+        const tokenData = await getRedditAccessToken(post.user_id);
+        if (!tokenData) return updatePostStatus(post.id, 'failed');
+
+        let { access_token, refresh_token, token_expiry } = tokenData;
+
+        // Se il token scadrà prima della pubblicazione, fai il refresh
+        if (new Date(token_expiry) <= new Date(post.date_time)) {
+            logger.info(`access_token di Reddit scaduto o in scadenza prima della pubblicazione, procedo con il refresh`);
+            access_token = await refreshAccessToken(refresh_token, post.user_id);
+        }
 
         const postData = {
             api_type: 'json',
@@ -45,7 +53,7 @@ export const submitPostToReddit = async (post) => {
             text: convertHTMLtoMarkdown(post.content) || '',
             kind: 'self',
             sendreplies: true,
-        }
+        };
 
         if (post.flair?.trim()) {
             postData.flair_id = post.flair;
@@ -65,4 +73,4 @@ export const submitPostToReddit = async (post) => {
         logger.error(`Errore pubblicando il post ${post.id}: ${error.message || error}`);
         return updatePostStatus(post.id, 'failed');
     }
-}
+};

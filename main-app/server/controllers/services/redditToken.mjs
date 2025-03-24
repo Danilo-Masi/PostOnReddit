@@ -5,15 +5,15 @@ export const getRedditAccessToken = async (user_id) => {
     try {
         const { data, error } = await supabaseAdmin
             .from('reddit_tokens')
-            .select('access_token')
+            .select('access_token, refresh_token, token_expiry')
             .eq('user_id', user_id)
             .single();
 
         if (error || !data?.access_token) {
-            logger.error(`Errore recuperando l'acess_token per user_id ${user_id}: ${error?.message || error}`);
+            logger.error(`Errore recuperando l'acess_token per user_id ${user_id}: ${error.message || error}`);
             return null;
         }
-        return data.access_token;
+        return data;
     } catch (error) {
         logger.error(`Errore imprevisto recuperando l'access_token per user_id ${user_id}: ${error.message || error}`);
         return null;

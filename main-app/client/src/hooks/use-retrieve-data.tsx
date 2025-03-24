@@ -1,7 +1,5 @@
-// Axios
 import axios from "axios";
 
-// Url del server
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 
 // Funzione per caricare i dati (email) di un utente dal DB

@@ -1,12 +1,11 @@
 import express from 'express';
-import dotenv from 'dotenv';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
 import rateLimit from 'express-rate-limit';
 import logger from './config/logger.mjs';
 import { applyRoutes } from './routes.mjs';
-
+import dotenv from 'dotenv';
 dotenv.config();
 
 const HOST = process.env.HOST || 'http://localhost';

@@ -5,12 +5,12 @@ export const decodeToken = async (token) => {
     try {
         const { data: user, error } = await supabaseUser.auth.getUser(token);
         if (error) {
-            logger.error(`Errore durante la decodifica del token Supabase: ${error.message}`);
+            logger.error(`Errore durante la decodifica del token Supabase: ${error.message || error}`);
             return null;
         }
         return user;
     } catch (error) {
-        logger.error(`Errore imprevisto nella decodifica del token di Supabase: ${error}`);
+        logger.error(`Errore imprevisto nella decodifica del token di Supabase: ${error.message || error}`);
         return null;
     }
 };

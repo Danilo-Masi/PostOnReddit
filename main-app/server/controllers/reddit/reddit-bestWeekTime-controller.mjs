@@ -115,11 +115,13 @@ export const redditBestWeeklyTimes = async (req, res) => {
     const subreddit = q.startsWith('r/') ? q.substring(2) : q;
 
     try {
-        const access_token = await getRedditAccessToken(user_id);
-        if (!access_token) {
+        const tokenData = await getRedditAccessToken(user_id);
+        if (!tokenData) {
             logger.error(`Errore nel recuper dell'access_token dal DB`);
             return res.status(500).json({ message: MESSAGES.SUPABASE_ERROR });
         }
+
+        let { access_token } = tokenData;
 
         let posts = await retrievePosts(subreddit, access_token);
 

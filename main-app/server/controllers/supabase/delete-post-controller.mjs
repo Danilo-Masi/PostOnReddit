@@ -10,7 +10,6 @@ const MESSAGE = {
 
 export const deletePost = async (req, res) => {
     const { post_id } = req.body;
-
     if (!post_id) {
         logger.error('Id del post non presente o non valido');
         return res.status(400).json({

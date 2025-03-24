@@ -1,57 +1,21 @@
 import axios from "axios";
 import NodeCache from 'node-cache';
 import logger from '../../config/logger.mjs';
-import { supabaseAdmin } from '../../config/supabase.mjs';
 import { decodeToken } from '../../controllers/services/decodeToken.mjs';
+import { refreshAccessToken } from "../services/redditRefreshToken.mjs";
+import { getRedditAccessToken } from "../services/redditToken.mjs";
 import dotenv from 'dotenv';
-
 dotenv.config();
 
 const MESSAGES = {
-    INVALID_QUERY: "La query della richiesta non è valida",
     MISSING_TOKEN: 'Token mancante',
     INVALID_TOKEN: 'Token non valido',
-    REFRESH_ERROR: 'Errore durante il refresh del token',
+    INVALID_QUERY: "La query della richiesta non è valida",
     REDDIT_ERROR: "Errore nel recupero dei subreddit",
     SERVER_ERROR: "Errore generico del server",
 }
 
 const cache = new NodeCache({ stdTTL: 300 });
-
-// Funzione per aggiornare l'access token tramite il refresh token
-const refreshAccessToken = async (refresh_token, user_id) => {
-    try {
-        const response = await axios.post('https://www.reddit.com/api/v1/access_token', null, {
-            params: {
-                grant_type: 'refresh_token',
-                refresh_token: refresh_token,
-            },
-            auth: {
-                username: process.env.REDDIT_CLIENT_ID,
-                password: process.env.REDDIT_CLIENT_SECRET,
-            },
-            headers: {
-                'User-Agent': 'web:postonreddit:v1.0.0 (by /u/WerewolfCapital4616)',
-            }
-        });
-
-        const newAccessToken = response.data.access_token;
-        const newExpiry = new Date();
-        newExpiry.setSeconds(newExpiry.getSeconds() + response.data.expires_in);
-
-        await supabaseAdmin
-            .from('reddit_tokens')
-            .update({ access_token: newAccessToken, token_expiry: newExpiry })
-            .eq('user_id', user_id);
-
-        logger.info('access_token di Reddit aggiornato');
-        return newAccessToken;
-
-    } catch (error) {
-        logger.error('Errore durante il refresh dell\'access_token di Reddit: ' + error.message);
-        throw new Error(MESSAGES.REFRESH_ERROR);
-    }
-};
 
 export const searchSubreddits = async (req, res) => {
     const authHeader = req.headers['authorization'];
@@ -59,25 +23,19 @@ export const searchSubreddits = async (req, res) => {
 
     if (!token) {
         logger.error('Token mancante');
-        return res.status(401).json({
-            message: MESSAGES.MISSING_TOKEN,
-        });
+        return res.status(401).json({ message: MESSAGES.MISSING_TOKEN });
     }
 
     const user = await decodeToken(token);
     if (!user) {
-        return res.status(400).json({
-            message: MESSAGES.INVALID_TOKEN,
-        });
+        return res.status(400).json({ message: MESSAGES.INVALID_TOKEN });
     }
 
     const user_id = user.user.id;
-
     const { q } = req.query;
+
     if (!q || q.trim().length < 2 || q.length > 100) {
-        return res.status(400).json({
-            message: MESSAGES.INVALID_QUERY,
-        });
+        return res.status(400).json({ message: MESSAGES.INVALID_QUERY });
     }
 
     // Controlla se i risultati sono già in cache
@@ -87,29 +45,19 @@ export const searchSubreddits = async (req, res) => {
     }
 
     try {
-        // Recupera il token di accesso Reddit
-        let { data, error } = await supabaseAdmin
-            .from('reddit_tokens')
-            .select('access_token, refresh_token, token_expiry')
-            .eq('user_id', user_id)
-            .single();
-
-        if (error || !data) {
+        const tokenData = await getRedditAccessToken(user_id);
+        if (!tokenData) {
             logger.error('Errore durante il caricamento del token Reddit');
-            return res.status(401).json({
-                message: MESSAGES.MISSING_TOKEN,
-            });
+            return res.status(401).json({ message: MESSAGES.MISSING_TOKEN });
         }
+        let { access_token, refresh_token, token_expiry } = tokenData;
 
-        let { access_token, refresh_token, token_expiry } = data;
-
-        // Se il token è scaduto, fai il refresh
-        if (new Date(token_expiry) <= new Date()) {
-            logger.info('access_token di Reddit scaduto, procedo con il refresh');
+        // Controlla se il token scadrà nei prossimi 5 minuti e aggiornarlo in anticipo
+        if (new Date(token_expiry) <= new Date(Date.now() + 5 * 60 * 1000)) {
+            logger.info('access_token di Reddit in scadenza, procedo con il refresh');
             access_token = await refreshAccessToken(refresh_token, user_id);
         }
 
-        // Chiamata all'API Reddit per cercare i subreddit
         const response = await axios.get("https://oauth.reddit.com/subreddits/search.json", {
             params: { q, limit: 5 },
             headers: {

@@ -36,7 +36,7 @@ export default function Hero({ id }: { id: string }) {
                     {/* CTA */}
                     <div className="flex flex-col items-center gap-y-2">
                         <StartButton buttonStyle="w-fit bg-orange-500 hover:bg-orange-600" />
-                        <p className="font-light text-zinc-600 text-balance">✌️ Join the other <span className="font-extrabold">+20</span> creators and founder!</p>
+                        <p className="font-light text-zinc-600 text-balance">✌️ Join the other <span className="font-extrabold">+100</span> creators and founder!</p>
                     </div>
                 </div>
             </BackgroundLines>

@@ -1,8 +1,7 @@
 import { supabaseAdmin } from '../../config/supabase.mjs';
 import axios from 'axios';
-import dotenv from 'dotenv';
 import logger from '../../config/logger.mjs';
-
+import dotenv from 'dotenv';
 dotenv.config();
 
 const CLIENT_ID = process.env.REDDIT_CLIENT_ID;

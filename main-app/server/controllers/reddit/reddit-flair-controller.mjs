@@ -1,26 +1,20 @@
 import axios from "axios";
 import { decodeToken } from '../../controllers/services/decodeToken.mjs';
-import dotenv from 'dotenv';
 import logger from '../../config/logger.mjs';
 import { getRedditAccessToken } from '../services/redditToken.mjs';
-
+import dotenv from 'dotenv';
 dotenv.config();
 
 const MESSAGES = {
-    REFRESH_ERROR: 'Errore durante il refresh del token',
     MISSING_TOKEN: 'Token mancante',
     INVALID_TOKEN: 'Token non valido',
     INVALID_QUERY: "La query della richiesta non è valida",
     SUPABASE_ERROR: "Errore di Supabase durante il carimaneto del reddit_token",
     REDDIT_ERROR: 'Errore durante la chiamata all\'API',
-    EMPTY_FLAIR: "Non c'è nessuna flair per questa subreddit",
-    RESPONSE_ERROR: 'La struttura della risposta ottenuta non è valida',
     SERVER_ERROR: "Errore generico del server",
 }
 
-
 export const searchFlair = async (req, res) => {
-
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
@@ -52,13 +46,13 @@ export const searchFlair = async (req, res) => {
     const subreddit = q.startsWith('r/') ? q.substring(2) : q;
 
     try {
-        const access_token = await getRedditAccessToken(user_id);
-        if (!access_token) {
+        const tokenData = await getRedditAccessToken(user_id);
+        if (!tokenData) {
             logger.error(`Errore nel recuper dell'access_token dal DB`);
             return res.status(500).json({ message: MESSAGES.SUPABASE_ERROR });
         }
+        let { access_token } = tokenData;
 
-        // Invia la richiesta all'API di Reddit
         const response = await axios.get(`https://oauth.reddit.com/r/${subreddit}/api/link_flair`, {
             headers: {
                 Authorization: `Bearer ${access_token}`,
