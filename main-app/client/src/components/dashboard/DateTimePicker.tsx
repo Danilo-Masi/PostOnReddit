@@ -1,15 +1,11 @@
-// React
 import { Dispatch, SetStateAction, useState } from "react";
-// lib
 import { cn } from "@/lib/utils";
-import { format, toZonedTime } from "date-fns-tz";
-// Shadcnui
+import { toZonedTime, formatInTimeZone } from "date-fns-tz";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Label } from "../ui/label";
-// Icons
 import { CalendarDays } from "lucide-react";
 
 interface DateTimePickerProps {
@@ -18,13 +14,13 @@ interface DateTimePickerProps {
 }
 
 export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
-
     const [isOpen, setIsOpen] = useState(false);
+    const userTimeZone = localStorage.getItem("userTimeZone") || Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     const hours = Array.from({ length: 12 }, (_, i) => i + 1);
+
     const handleDateSelect = (selectedDate: Date | undefined) => {
         if (selectedDate) {
-            const userTimeZone = localStorage.getItem("userTimeZone") || "UTC";
             const zonedDate = toZonedTime(selectedDate, userTimeZone);
             setDate(zonedDate);
         }
@@ -33,14 +29,13 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
     // Funzione per gestire la data e l'orario selezionati
     const handleTimeChange = (type: "hour" | "minute" | "ampm", value: string) => {
         if (date) {
-            const userTimeZone = localStorage.getItem("userTimeZone") || "UTC";
-            const newDate = toZonedTime(new Date(date), userTimeZone);
+            console.log("Data selezionata: " + date);
+            const zonedDate = toZonedTime(date, userTimeZone);
 
+            let newDate = new Date(zonedDate);
             if (type === "hour") {
                 const hourValue = parseInt(value) % 12;
-                newDate.setHours(
-                    (date.getHours() >= 12 ? 12 : 0) + hourValue
-                );
+                newDate.setHours((date.getHours() >= 12 ? 12 : 0) + hourValue);
             } else if (type === "minute") {
                 newDate.setMinutes(parseInt(value));
             } else if (type === "ampm") {
@@ -51,10 +46,9 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
                     newDate.setHours(currentHours - 12);
                 }
             }
-
             newDate.setSeconds(0);
             newDate.setMilliseconds(0);
-
+            console.log("Data convertita: " + newDate);
             setDate(newDate);
         }
     };
@@ -72,9 +66,9 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
                         )}>
                         <CalendarDays className="mr-2 h-4 w-4" />
                         {date ? (
-                            format(toZonedTime(date, localStorage.getItem("userTimeZone") || "UTC"), "MM/dd/yyyy hh:mm aa")
+                            formatInTimeZone(date, "Europe/Rome", "MM/dd/yyyy hh:mm aa")
                         ) : (
-                            <span>MM/DD/YYYY hh:mm aa</span>
+                            formatInTimeZone(new Date(), userTimeZone, "MM/dd/yyyy hh:mm aa")
                         )}
                     </Button>
                 </PopoverTrigger>

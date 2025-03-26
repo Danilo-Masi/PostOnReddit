@@ -31,7 +31,9 @@ export default function AuthHero() {
             <div className="flex flex-col gap-y-2">
                 <div className="flex items-center gap-x-2">
                     <GroupAvatar />
-                    <p className="text-white text-sm">Join 100+ happy users</p>
+                    <div className="w-full">
+                        <p className="text-white text-sm">Join 100+ happy users</p>
+                    </div>
                 </div>
             </div>
         </div>

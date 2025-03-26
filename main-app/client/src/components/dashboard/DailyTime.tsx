@@ -13,6 +13,7 @@ interface DailyTimeProps {
     subreddit: string;
 }
 
+// Funzione per caricare i dati dall'endpoint 
 export default function DailyTime({ subreddit }: DailyTimeProps) {
     const navigate: NavigateFunction = useNavigate();
     const [bestTimes, setBestTimes] = useState<{ hour: string, score: number }[]>([]);
@@ -41,10 +42,11 @@ export default function DailyTime({ subreddit }: DailyTimeProps) {
                 setBestTimes([]);
                 return;
             }
+            console.log(response.data.bestTimes[0].hour); /////***** LOG *****/////
             setBestTimes(response.data.bestTimes);
         } catch (error: any) {
             console.error("Errore durante il caricamento dei dati:", error.message);
-            toast.error("Errore nel caricamento dei dati");
+            toast.error("Error loading the data");
         } finally {
             setLoading(false);
         }
@@ -56,26 +58,29 @@ export default function DailyTime({ subreddit }: DailyTimeProps) {
         }
     }, [subreddit]);
 
+    // Funzione che formatta la visualizzazione degli orari
     const formatTime = (hour: string) => {
-        const userTimeZone = localStorage.getItem("userTimeZone") || "UTC";
+        const userTimeZone = localStorage.getItem("userTimeZone") || Intl.DateTimeFormat().resolvedOptions().timeZone;
         const is12HourFormat = localStorage.getItem("timeFormat") === "12h";
-        // Converti l'ora da UTC al fuso selezionato
+        // Creazione di una data UTC con l'ora specificata
         const utcDate = new Date();
         utcDate.setUTCHours(parseInt(hour, 10), 0, 0, 0);
+        // Conversione nel fuso orario dell'utente
         const zonedDate = toZonedTime(utcDate, userTimeZone);
-        // Formattazione dinamica in base alle preferenze utente
+        // Formattazione dinamica
         const timeFormat = is12HourFormat ? "hh:mm a" : "HH:mm";
         return format(zonedDate, timeFormat, { timeZone: userTimeZone });
-    }
+    };
 
+    // Funzione per impostare la data e l'orario selezionati
     const handleSetTime = (hour: string) => {
-        const userTimeZone = localStorage.getItem("userTimeZone") || "UTC";
         const now = new Date();
-        const zonedDate = toZonedTime(now, userTimeZone);
-        zonedDate.setHours(parseInt(hour, 10), 0, 0, 0);
-        setDateTime(zonedDate);
-    }
+        now.setHours(parseInt(hour, 10), 0, 0, 0);
+        setDateTime(now);
+        console.log("UTC Selected: " + now.getHours()); /////***** LOG *****///////
+    };
 
+    // Funzione per impostare i suffissi alle card
     const getOrdinalSuffix = (n: number) => {
         if (n % 100 >= 11 && n % 100 <= 13) return `${n}th`;
         switch (n % 10) {
@@ -111,8 +116,7 @@ export default function DailyTime({ subreddit }: DailyTimeProps) {
                         time={formatTime(time.hour)}
                         score={time.score.toFixed(0)}
                         onClick={() => handleSetTime(time.hour)}
-                        isCardSelected={isSameDay && isSameHour}
-                    />
+                        isCardSelected={isSameDay && isSameHour} />
                 );
             })}
         </div>
