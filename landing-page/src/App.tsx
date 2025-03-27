@@ -46,7 +46,6 @@ export default function App() {
       <BrowserRouter>
         <AppRoutes />
       </BrowserRouter>
-      {isCookiesBannerOpened && <div>cookieBanner</div>}
     </>
   );
 }

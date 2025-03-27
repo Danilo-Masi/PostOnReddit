@@ -22,7 +22,7 @@ interface SearchInputProps {
     setCommunityValue: Dispatch<SetStateAction<string>>;
 }
 
-export default function SearchInput({ communityValue, setCommunityValue }: SearchInputProps) {
+export default function SearchSubreddits({ communityValue, setCommunityValue }: SearchInputProps) {
     const [query, setQuery] = useState("");
     const [results, setResults] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);

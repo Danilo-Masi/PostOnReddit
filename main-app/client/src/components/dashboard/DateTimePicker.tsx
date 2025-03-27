@@ -1,12 +1,12 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import { cn } from "@/lib/utils";
-import { toZonedTime, formatInTimeZone } from "date-fns-tz";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Label } from "../ui/label";
 import { CalendarDays } from "lucide-react";
+import { format } from "date-fns";
 
 interface DateTimePickerProps {
     date: Date;
@@ -15,14 +15,19 @@ interface DateTimePickerProps {
 
 export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
     const [isOpen, setIsOpen] = useState(false);
-    const userTimeZone = localStorage.getItem("userTimeZone") || Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     const hours = Array.from({ length: 12 }, (_, i) => i + 1);
 
     const handleDateSelect = (selectedDate: Date | undefined) => {
         if (selectedDate) {
-            const zonedDate = toZonedTime(selectedDate, userTimeZone);
-            setDate(zonedDate);
+            const utcDate = new Date(Date.UTC(
+                selectedDate.getFullYear(),
+                selectedDate.getMonth(),
+                selectedDate.getDate(),
+                selectedDate.getHours(),
+                selectedDate.getMinutes()
+            ));
+            setDate(utcDate);
         }
     };
 
@@ -30,20 +35,18 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
     const handleTimeChange = (type: "hour" | "minute" | "ampm", value: string) => {
         if (date) {
             console.log("Data selezionata: " + date);
-            const zonedDate = toZonedTime(date, userTimeZone);
-
-            let newDate = new Date(zonedDate);
+            let newDate = new Date(date);
             if (type === "hour") {
                 const hourValue = parseInt(value) % 12;
-                newDate.setHours((date.getHours() >= 12 ? 12 : 0) + hourValue);
+                newDate.setUTCHours((newDate.getUTCHours() >= 12 ? 12 : 0) + hourValue);
             } else if (type === "minute") {
-                newDate.setMinutes(parseInt(value));
+                newDate.setUTCMinutes(parseInt(value));
             } else if (type === "ampm") {
-                const currentHours = newDate.getHours();
+                const currentHours = newDate.getUTCHours();
                 if (value === "PM" && currentHours < 12) {
-                    newDate.setHours(currentHours + 12);
+                    newDate.setUTCHours(currentHours + 12);
                 } else if (value === "AM" && currentHours >= 12) {
-                    newDate.setHours(currentHours - 12);
+                    newDate.setUTCHours(currentHours - 12);
                 }
             }
             newDate.setSeconds(0);
@@ -52,6 +55,10 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
             setDate(newDate);
         }
     };
+
+    const formatDate = (date: Date) => {
+        return format(date, "dd/MM/yyyy hh:mm aa");
+    }
 
     return (
         <div className="w-full flex flex-col gap-y-3">
@@ -65,11 +72,7 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
                             !date && "text-muted-foreground"
                         )}>
                         <CalendarDays className="mr-2 h-4 w-4" />
-                        {date ? (
-                            formatInTimeZone(date, "Europe/Rome", "MM/dd/yyyy hh:mm aa")
-                        ) : (
-                            formatInTimeZone(new Date(), userTimeZone, "MM/dd/yyyy hh:mm aa")
-                        )}
+                        {date ? formatDate(date) : formatDate(new Date())}
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
@@ -88,7 +91,7 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
                                         <Button
                                             key={hour}
                                             size="icon"
-                                            variant={date && date.getHours() % 12 === hour % 12 ? "default" : "ghost"}
+                                            variant={date && date.getUTCHours() % 12 === hour % 12 ? "default" : "ghost"}
                                             className="sm:w-full shrink-0 aspect-square"
                                             onClick={() => handleTimeChange("hour", hour.toString())}>
                                             {hour}
@@ -104,7 +107,7 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
                                             key={minute}
                                             size="icon"
                                             variant={
-                                                date && date.getMinutes() === minute
+                                                date && date.getUTCMinutes() === minute
                                                     ? "default"
                                                     : "ghost"
                                             }
@@ -126,8 +129,8 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
                                             size="icon"
                                             variant={
                                                 date &&
-                                                    ((ampm === "AM" && date.getHours() < 12) ||
-                                                        (ampm === "PM" && date.getHours() >= 12))
+                                                    ((ampm === "AM" && date.getUTCHours() < 12) ||
+                                                        (ampm === "PM" && date.getUTCHours() >= 12))
                                                     ? "default"
                                                     : "ghost"
                                             }

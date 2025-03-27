@@ -5,9 +5,9 @@ import axios from 'axios';
 import { Content } from '@tiptap/react';
 // Components
 import DescriptionEditor from './DescriptionEditor';
-import SelectOption from './SelectOption';
+import SelectFlair from './SelectFlair';
 import TitleEditor from './TitleEditor';
-import SearchInput from './SearchInput';
+import SearchSubreddits from './SearchSubreddits';
 import { DateTimePicker } from './DateTimePicker';
 import DailyTime from './DailyTime';
 import WeekTime from './WeekTime';
@@ -27,6 +27,7 @@ const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 export default function Dashboard() {
   const [isAccessToken, setAccessToken] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
+  const userTimeZone = localStorage.getItem("userTimeZone") || Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   const {
     setSelectedSection,
@@ -142,8 +143,8 @@ export default function Dashboard() {
           <div className="w-full md:w-1/2 h-full flex flex-col p-5 gap-y-10 md:gap-y-0 bg-zinc-100 dark:bg-zinc-800 border border-border rounded-lg">
             {/* Input subreddit, flair, date */}
             <div className="w-full flex flex-col md:flex-row md:flex-wrap gap-4">
-              <SearchInput communityValue={communityValue} setCommunityValue={setCommunityValue} />
-              <SelectOption
+              <SearchSubreddits communityValue={communityValue} setCommunityValue={setCommunityValue} />
+              <SelectFlair
                 subreddit={communityValue}
                 isDisabled={!communityValue}
                 placeholder="Select a flair"
@@ -154,9 +155,9 @@ export default function Dashboard() {
             </div>
             {/* Statistiche giorno e orari */}
             <div className="w-full h-auto min-h-[50svh] max-h-[50svh] md:max-h-full flex flex-col gap-3 my-3 md:my-5 overflow-scroll">
-              <h1 className="font-bold text-xl md:text-lg text-zinc-900 dark:text-zinc-50">Best time for today</h1>
+              <h1 className="font-bold text-xl md:text-lg text-zinc-900 dark:text-zinc-50">Best time for today ({userTimeZone})</h1>
               <DailyTime subreddit={communityValue} />
-              <h1 className="font-bold text-xl md:text-lg text-zinc-900 dark:text-zinc-50">Best time for the week</h1>
+              <h1 className="font-bold text-xl md:text-lg text-zinc-900 dark:text-zinc-50">Best time for the week ({userTimeZone})</h1>
               <WeekTime subreddit={communityValue} />
             </div>
             {/* Buttons */}

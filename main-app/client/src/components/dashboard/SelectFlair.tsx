@@ -25,7 +25,7 @@ type Options = {
     text: string,
 }
 
-export default function SelectOption({ subreddit, isDisabled, placeholder, value, setValue }: SelectOptionProps) {
+export default function SelectFlair({ subreddit, isDisabled, placeholder, value, setValue }: SelectOptionProps) {
 
     const navigate: NavigateFunction = useNavigate();
     const [options, setOptions] = useState<Options[]>([]);

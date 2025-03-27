@@ -42,7 +42,7 @@ export default function DailyTime({ subreddit }: DailyTimeProps) {
                 setBestTimes([]);
                 return;
             }
-            console.log(response.data.bestTimes[0].hour); /////***** LOG *****/////
+            console.log("Ora dal backend in UTC: " + response.data.bestTimes[0].hour); //LOG
             setBestTimes(response.data.bestTimes);
         } catch (error: any) {
             console.error("Errore durante il caricamento dei dati:", error.message);
@@ -67,17 +67,21 @@ export default function DailyTime({ subreddit }: DailyTimeProps) {
         utcDate.setUTCHours(parseInt(hour, 10), 0, 0, 0);
         // Conversione nel fuso orario dell'utente
         const zonedDate = toZonedTime(utcDate, userTimeZone);
+        console.log("Data visualizzata formattata con fuso orario: " + zonedDate.getHours()); //LOG
         // Formattazione dinamica
         const timeFormat = is12HourFormat ? "hh:mm a" : "HH:mm";
-        return format(zonedDate, timeFormat, { timeZone: userTimeZone });
+        const formattedDate = format(zonedDate, timeFormat, { timeZone: userTimeZone });
+        return formattedDate;
     };
 
     // Funzione per impostare la data e l'orario selezionati
     const handleSetTime = (hour: string) => {
+        // Crea una data di base in UTC
         const now = new Date();
-        now.setHours(parseInt(hour, 10), 0, 0, 0);
+        now.setUTCHours(parseInt(hour, 10), 0, 0, 0);
+        console.log("Data creata per il setDateTime: " + now.getHours()); //LOG
+        // Salva la data nel fuso orario corretto
         setDateTime(now);
-        console.log("UTC Selected: " + now.getHours()); /////***** LOG *****///////
     };
 
     // Funzione per impostare i suffissi alle card
@@ -115,8 +119,8 @@ export default function DailyTime({ subreddit }: DailyTimeProps) {
                         place={`${getOrdinalSuffix(index + 1)} place`}
                         time={formatTime(time.hour)}
                         score={time.score.toFixed(0)}
-                        onClick={() => handleSetTime(time.hour)}
-                        isCardSelected={isSameDay && isSameHour} />
+                        onClick={() => handleSetTime(time.hour)} />
+                        //isCardSelected={isSameDay && isSameHour} />
                 );
             })}
         </div>

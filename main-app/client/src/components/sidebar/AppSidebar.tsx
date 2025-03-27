@@ -16,7 +16,7 @@ import { checkData } from "@/hooks/use-retrieve-data"
 const links = [
     { title: "Dashboard", key: "dashboard", icon: Command },
     { title: "Scheduled post", key: "scheduled-post", icon: CalendarCheck2 },
-    { title: "Feedback", key: "feedback", icon: MessageSquareText },
+    { title: "Feature request", key: "feedback", icon: MessageSquareText },
     { title: "Settings", key: "settings", icon: Settings }
 ]
 

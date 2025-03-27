@@ -1,6 +1,5 @@
-
 import { cn } from "@/lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import React, { useRef, useState, useEffect } from "react";
 
 export const BackgroundBeamsWithCollision = ({
@@ -13,64 +12,19 @@ export const BackgroundBeamsWithCollision = ({
     const containerRef = useRef<HTMLDivElement>(null);
     const parentRef = useRef<HTMLDivElement>(null);
 
-    const beams = [
-        {
-            initialX: 10,
-            translateX: 10,
-            duration: 7,
-            repeatDelay: 3,
-            delay: 2,
-        },
-        {
-            initialX: 600,
-            translateX: 600,
-            duration: 3,
-            repeatDelay: 3,
-            delay: 4,
-        },
-        {
-            initialX: 100,
-            translateX: 100,
-            duration: 7,
-            repeatDelay: 7,
-            className: "h-6",
-        },
-        {
-            initialX: 400,
-            translateX: 400,
-            duration: 5,
-            repeatDelay: 14,
-            delay: 4,
-        },
-        {
-            initialX: 800,
-            translateX: 800,
-            duration: 11,
-            repeatDelay: 2,
-            className: "h-20",
-        },
-        {
-            initialX: 1000,
-            translateX: 1000,
-            duration: 4,
-            repeatDelay: 2,
-            className: "h-12",
-        },
-        {
-            initialX: 1200,
-            translateX: 1200,
-            duration: 6,
-            repeatDelay: 4,
-            delay: 2,
-            className: "h-6",
-        },
-    ];
+    const beams = Array.from({ length: 10 }, (_, i) => ({
+        initialX: i * 100,
+        translateX: i * 100,
+        duration: Math.random() * 8 + 3, // Durata casuale tra 3 e 11 secondi
+        repeatDelay: Math.random() * 5 + 2, // Ritardo casuale tra 2 e 7 secondi
+        className: i % 2 === 0 ? "h-8" : "h-12", // Alterna tra due altezze
+    }));
 
     return (
         <div
             ref={parentRef}
             className={cn(
-                "w-full h-full bg-gradient-to-br from-orange-600 via-red-400 to-orange-200 relative flex flex-col items-center justify-center gap-y-12 px-5 py-10 overflow-hidden rounded-xl",
+                "h-full flex-col bg-gradient-to-b from-white to-neutral-100 dark:from-neutral-950 dark:to-neutral-800 relative flex items-center w-full justify-center overflow-hidden",
                 className
             )}
         >
@@ -113,7 +67,7 @@ const CollisionMechanism = React.forwardRef<
             repeatDelay?: number;
         };
     }
->(({ parentRef, containerRef, beamOptions = {} }) => {
+>(({ parentRef, containerRef, beamOptions = {} }, ref) => {
     const beamRef = useRef<HTMLDivElement>(null);
     const [collision, setCollision] = useState<{
         detected: boolean;
@@ -199,7 +153,7 @@ const CollisionMechanism = React.forwardRef<
                     repeatDelay: beamOptions.repeatDelay || 0,
                 }}
                 className={cn(
-                    "absolute left-0 top-20 m-auto h-14 w-px rounded-full bg-gradient-to-t from-orange-500 via-orange-800 to-transparent",
+                    "absolute left-0 top-20 m-auto h-14 w-px rounded-full bg-gradient-to-t from-orange-300 via-orange-600 to-transparent",
                     beamOptions.className
                 )}
             />
@@ -238,7 +192,7 @@ const Explosion = ({ ...props }: React.HTMLProps<HTMLDivElement>) => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 1.5, ease: "easeOut" }}
-                className="absolute -inset-x-10 top-0 m-auto h-2 w-10 rounded-full bg-gradient-to-r from-transparent via-orange-500 to-transparent blur-sm"
+                className="absolute -inset-x-10 top-0 m-auto h-2 w-10 rounded-full bg-gradient-to-r from-transparent via-orange-600 to-transparent blur-sm"
             ></motion.div>
             {spans.map((span) => (
                 <motion.span
@@ -250,7 +204,7 @@ const Explosion = ({ ...props }: React.HTMLProps<HTMLDivElement>) => {
                         opacity: 0,
                     }}
                     transition={{ duration: Math.random() * 1.5 + 0.5, ease: "easeOut" }}
-                    className="absolute h-1 w-1 rounded-full bg-gradient-to-b from-orange-500 to-orange-500"
+                    className="absolute h-1 w-1 rounded-full bg-gradient-to-b from-orange-300 to-orange-600"
                 />
             ))}
         </div>
