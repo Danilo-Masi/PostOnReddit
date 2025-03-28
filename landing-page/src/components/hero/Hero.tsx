@@ -37,7 +37,7 @@ const Navbar = () => {
 
 const GroupAvatar = () => {
     return (
-        <div className="w-full md:w-fit flex -space-x-3">
+        <div className="w-full md:w-fit flex -space-x-3 justify-center md:justify-start">
             {[face1, face2, face3, face4, face5].map((face, index) => (
                 <Avatar key={index} className="w-11 h-11 ring-2 ring-zinc-50 shadow-lg">
                     <AvatarImage src={face} className="object-cover object-center" />
@@ -51,7 +51,7 @@ const Testimonial = () => {
     return (
         <div className="flex flex-col md:flex-row gap-3 items-center justify-start mt-6 md:mt-0">
             <GroupAvatar />
-            <div>
+            <div className="w-full flex flex-col items-center md:items-start">
                 <Rating style={{ maxWidth: 150 }} value={4.7} readOnly />
                 <p className="text-sm text-zinc-500"><span className="font-bold text-zinc-700">100+ founders </span> posting at the right times</p>
             </div>
