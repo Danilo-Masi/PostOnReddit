@@ -1,13 +1,13 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
 import { WeekTimeCard } from "../custom/TimeCard";
-import { Goal, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useAppContext } from "../context/AppContext";
 import { format, toZonedTime } from "date-fns-tz";
-import { checkPlan } from "@/hooks/use-verify";
-import { Button } from "../ui/button";
+//import { checkPlan } from "@/hooks/use-verify";
+//import { Button } from "../ui/button";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 
@@ -45,16 +45,15 @@ export default function WeekTime({ subreddit }: { subreddit: string }) {
     const navigate: NavigateFunction = useNavigate();
     const [state, dispatch] = useReducer(reducer, initialState);
     const { setDateTime } = useAppContext();
-    const [isPro, setIsPro] = useState<boolean>(false);
+    //const [isPro, setIsPro] = useState<boolean>(false);
 
-    useEffect(() => {
+    /*useEffect(() => {
         const fetchPlanStatus = async () => {
             const planStatus = await checkPlan();
-            console.log("Plan status fetched:", planStatus);
             setIsPro(planStatus);
         };
         fetchPlanStatus();
-    }, []);
+    }, []);*/
 
     const handleFetchData = async () => {
         if (!subreddit.trim()) return;
@@ -102,10 +101,10 @@ export default function WeekTime({ subreddit }: { subreddit: string }) {
     };
 
     useEffect(() => {
-        if (subreddit.trim() && isPro) {
+        if (subreddit.trim()) {
             handleFetchData();
         }
-    }, [subreddit, isPro]);
+    }, [subreddit]);
 
     const daysOfWeek = [
         "Monday",
@@ -172,14 +171,7 @@ export default function WeekTime({ subreddit }: { subreddit: string }) {
 
     return (
         <div className="w-full h-auto flex flex-col md:flex-row md:flex-wrap gap-4">
-            {!isPro ? (
-                <div className="w-full min-h-[40svh] md:min-h-[25svh] flex justify-center items-center bg-zinc-200 rounded-lg">
-                    <Button>
-                        Become pro to access this data
-                        <Goal />
-                    </Button>
-                </div>
-            ) : state.loading ? (<Loader2 className="animate-spin" />) : (
+            {state.loading ? (<Loader2 className="animate-spin" />) : (
                 <>
                     {daysOfWeek.map((day) => {
                         const hasData = state.bestTimes && state.bestTimes[day];
