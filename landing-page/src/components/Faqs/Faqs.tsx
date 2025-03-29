@@ -22,7 +22,7 @@ export default function Faqs() {
             <Accordion
                 type="single"
                 collapsible
-                className="w-full md:w-2/3 text-foreground mt-20">
+                className="w-full md:w-1/2 text-foreground mt-20">
                 {faqs && faqs.map((item, index) => (
                     <AccordionItem
                         key={index}

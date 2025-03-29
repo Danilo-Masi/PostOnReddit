@@ -27,7 +27,13 @@ const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 export default function Dashboard() {
   const [isAccessToken, setAccessToken] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
-  const userTimeZone = localStorage.getItem("userTimeZone") || Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const [userTimeZone] = useState(
+    localStorage.getItem("userTimeZone") || Intl.DateTimeFormat().resolvedOptions().timeZone
+  );
+
+  useEffect(() => {
+    localStorage.setItem("userTimeZone", userTimeZone);
+  }, [userTimeZone]);
 
   const {
     setSelectedSection,
@@ -45,21 +51,17 @@ export default function Dashboard() {
   } = useAppContext();
 
   // Funzione per la validazione del form
-  const handleValidateForm = useCallback(
-    (title: string, content: Content, community: string, data: Date) => {
-      const errors: string[] = [];
-      if (!title.trim()) errors.push("The title can't be empty");
-      if (!content || content.length <= 0) errors.push("The content can't be empty");
-      if (!community.trim()) errors.push("The community is not selected");
-      if (!data || isNaN(data.getTime())) {
-        errors.push("The date selected is not valid");
-      } else if (data.getTime() < Date.now()) {
-        errors.push("The date can't be in the past");
-      }
-      return errors;
-    },
-    []
-  );
+  const handleValidateForm = useCallback((title: string, content: Content, community: string, data: Date) => {
+    const errors = [
+      !title.trim() && "The title can't be empty",
+      !content || content.length <= 0 && "The content can't be empty",
+      !community.trim() && "The community is not selected",
+      (!data || isNaN(data.getTime())) && "The date selected is not valid",
+      (data.getTime() < Date.now()) && "The date can't be in the past",
+    ].filter(Boolean);
+
+    return errors as string[];
+  }, []);
 
   // Funzione per gestire il successo
   const handleSuccess = useCallback(() => {
@@ -68,18 +70,9 @@ export default function Dashboard() {
     setDescriptionValue('');
     setCommunityValue('');
     setFlairValue('');
-    setDateTime(
-      new Date(
-        new Date().getUTCFullYear(),
-        new Date().getUTCMonth(),
-        new Date().getUTCDate(),
-        new Date().getUTCHours(),
-        new Date().getUTCMinutes(),
-        0,
-        0
-      )
-    );
-  }, [setTitleValue, setDescriptionValue, setCommunityValue, setFlairValue, setDateTime]);
+    const nowInUserTZ = new Date().toLocaleString("en-US", { timeZone: userTimeZone });
+    setDateTime(new Date(nowInUserTZ));
+  }, [setTitleValue, setDescriptionValue, setCommunityValue, setFlairValue, setDateTime, userTimeZone]);
 
   // Funzione per creare un post
   const handlePostCreation = useCallback(async () => {
@@ -118,12 +111,9 @@ export default function Dashboard() {
 
   // Recupera il token di autorizzazione solo una volta
   useEffect(() => {
-    const fetchInfo = async () => {
-      const verifiedToken = await checkRedditAuthorization();
-      setAccessToken(verifiedToken || false);
-    };
-
-    fetchInfo();
+    (async () => {
+      setAccessToken(await checkRedditAuthorization() || false);
+    })();
   }, []);
 
   // Struttura del componente
@@ -162,11 +152,12 @@ export default function Dashboard() {
             </div>
             {/* Buttons */}
             <div className="w-full h-auto flex flex-col md:flex-row gap-4">
-              <Button className="w-full md:w-1/3 py-5" onClick={() => setPreviewDialogOpen(true)}>
+              <Button aria-label="Preview your post" className="w-full md:w-1/3 py-5" onClick={() => setPreviewDialogOpen(true)}>
                 <ScanEye />
                 Preview
               </Button>
               <Button
+                aria-label="Schedule your post"
                 className="w-full md:w-2/3 py-5 bg-orange-500 dark:bg-orange-500 hover:bg-orange-500 dark:hover:bg-orange-600 text-zinc-50 dark:text-zinc-50"
                 onClick={handlePostCreation}>
                 {isLoading ? <><Loader2 className='animate-spin' /> Loading</> : <><Check /> Schedule your post</>}
@@ -175,14 +166,14 @@ export default function Dashboard() {
           </div>
         </>
       ) : (
-        <div className="w-full h-full flex flex-col justify-center items-center text-center gap-y-6 overflow-scroll">
+        <div className="w-full h-full flex flex-col justify-center items-center text-center gap-y-3">
           <h1 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50">
             Grant Reddit permissions to start creating your post
           </h1>
           <p className="text-sm font-medium text-zinc-500 dark:text-zinc-300">
             You need to authorize access before you can schedule posts
           </p>
-          <Button className="bg-orange-500 dark:bg-orange-500 hover:bg-orange-600 dark:hover:bg-orange-600 dark:text-zinc-50" onClick={() => setSelectedSection('settings')}>
+          <Button aria-label="Go to settings" className="bg-orange-500 dark:bg-orange-500 hover:bg-orange-600 dark:hover:bg-orange-600 dark:text-zinc-50" onClick={() => setSelectedSection('settings')}>
             <Settings />
             Go to Settings
           </Button>

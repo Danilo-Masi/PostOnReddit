@@ -1,10 +1,7 @@
-// Context
 import { useAppContext } from "../context/AppContext";
-// Shadcnui
 import { Button } from "../ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import { Badge } from "@/components/ui/badge";
-// Icons
 import { Trash2 } from "lucide-react";
 
 interface PostProps {
@@ -20,26 +17,26 @@ export default function Post({ title, content, date, community, status, postId }
 
     const { setDeleteDialogOpen, setPostId } = useAppContext();
 
-    // Funzione per modificare lo stile dinamicamente in base allo stato del post
+    // Function to dynamically change the style based on the post status
     const statusColor = () => {
         if (status === "pending") return "border-yellow-500 text-yellow-500 dark:border-yellow-300 dark:text-yellow-300";
         if (status === "posted") return "border-green-500 text-green-500 dark:border-green-500 dark:text-green-500";
         return "border-red-500 text-red-500 dark:border-red-500 dark:text-red-500";
     }
 
-    // Funzione per renderizzare il contenuto del post in formato HTML
+    // Function to render the post content in HTML format
     const renderContent = (content: string) => {
         if (!content || typeof content !== "string") return null;
 
-        // Creiamo un div temporaneo per estrarre il testo puro dall'HTML
+        // Create a temporary div to extract plain text from HTML
         const tempElement = document.createElement("div");
         tempElement.innerHTML = content;
         let plainText = tempElement.textContent || tempElement.innerText || "";
 
-        // Rimuoviamo virgolette doppie e singole all'inizio e alla fine
+        // Remove double and single quotes at the beginning and end
         plainText = plainText.trim().replace(/^["']|["']$/g, '');
 
-        // Divide il testo in parole e lo tronca se necessario
+        // Split the text into words and truncate if necessary
         const words = plainText.split(/\s+/);
         const truncatedText = words.length > 30 ? words.slice(0, 30).join(" ") + "..." : plainText;
 
@@ -50,7 +47,7 @@ export default function Post({ title, content, date, community, status, postId }
         );
     };
 
-    // Funzione per passare il postId e aprire la dialog per la cancellazione
+    // Function to pass the postId and open the delete dialog
     const handleOpenDeleteDialog = () => {
         setPostId(postId);
         setDeleteDialogOpen(true);
@@ -91,6 +88,5 @@ export default function Post({ title, content, date, community, status, postId }
                 </Button>
             </CardFooter>
         </Card>
-
     );
 }

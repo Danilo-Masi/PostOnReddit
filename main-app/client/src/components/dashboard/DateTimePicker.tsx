@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -6,59 +6,59 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Label } from "../ui/label";
 import { CalendarDays } from "lucide-react";
-import { format } from "date-fns";
+import { format } from "date-fns-tz";
 
 interface DateTimePickerProps {
-    date: Date;
+    date: Date | null;
     setDate: Dispatch<SetStateAction<Date>>;
 }
 
 export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
     const [isOpen, setIsOpen] = useState(false);
 
+    useEffect(() => {
+        if (!date) {
+            const userTimeZone = localStorage.getItem("userTimeZone") || Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const now = new Date();
+            const localDate = new Date(now.toLocaleString("en-US", { timeZone: userTimeZone }));
+            setDate(localDate);
+        }
+    }, [date, setDate]);
+
     const hours = Array.from({ length: 12 }, (_, i) => i + 1);
 
     const handleDateSelect = (selectedDate: Date | undefined) => {
         if (selectedDate) {
-            const utcDate = new Date(Date.UTC(
-                selectedDate.getFullYear(),
-                selectedDate.getMonth(),
-                selectedDate.getDate(),
-                selectedDate.getHours(),
-                selectedDate.getMinutes()
-            ));
-            setDate(utcDate);
+            setDate(selectedDate);
         }
     };
 
-    // Funzione per gestire la data e l'orario selezionati
     const handleTimeChange = (type: "hour" | "minute" | "ampm", value: string) => {
         if (date) {
-            console.log("Data selezionata: " + date);
             let newDate = new Date(date);
             if (type === "hour") {
                 const hourValue = parseInt(value) % 12;
-                newDate.setUTCHours((newDate.getUTCHours() >= 12 ? 12 : 0) + hourValue);
+                newDate.setHours(hourValue + (newDate.getHours() >= 12 ? 12 : 0));
             } else if (type === "minute") {
-                newDate.setUTCMinutes(parseInt(value));
+                newDate.setMinutes(parseInt(value));
             } else if (type === "ampm") {
-                const currentHours = newDate.getUTCHours();
+                const currentHours = newDate.getHours();
                 if (value === "PM" && currentHours < 12) {
-                    newDate.setUTCHours(currentHours + 12);
+                    newDate.setHours(currentHours + 12);
                 } else if (value === "AM" && currentHours >= 12) {
-                    newDate.setUTCHours(currentHours - 12);
+                    newDate.setHours(currentHours - 12);
                 }
             }
             newDate.setSeconds(0);
             newDate.setMilliseconds(0);
-            console.log("Data convertita: " + newDate);
             setDate(newDate);
         }
     };
 
     const formatDate = (date: Date) => {
-        return format(date, "dd/MM/yyyy hh:mm aa");
-    }
+        const userTimeZone = localStorage.getItem("userTimeZone") || Intl.DateTimeFormat().resolvedOptions().timeZone;
+        return format(date, "dd/MM/yyyy hh:mm aa", { timeZone: userTimeZone });
+    };
 
     return (
         <div className="w-full flex flex-col gap-y-3">
@@ -72,14 +72,14 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
                             !date && "text-muted-foreground"
                         )}>
                         <CalendarDays className="mr-2 h-4 w-4" />
-                        {date ? formatDate(date) : formatDate(new Date())}
+                        {date ? formatDate(date) : "Select date"}
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
                     <div className="sm:flex">
                         <Calendar
                             mode="single"
-                            selected={date}
+                            selected={date ?? new Date()}
                             onSelect={handleDateSelect}
                             initialFocus
                             disabled={(day) => day < new Date(new Date().setHours(0, 0, 0, 0))}
@@ -87,11 +87,11 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
                         <div className="flex flex-col sm:flex-row sm:h-[300px] divide-y sm:divide-y-0 sm:divide-x dark:bg-zinc-700">
                             <ScrollArea className="w-64 sm:w-auto">
                                 <div className="flex sm:flex-col p-2">
-                                    {hours.reverse().map((hour) => (
+                                    {hours.map((hour) => (
                                         <Button
                                             key={hour}
                                             size="icon"
-                                            variant={date && date.getUTCHours() % 12 === hour % 12 ? "default" : "ghost"}
+                                            variant={date && date.getHours() % 12 === hour % 12 ? "default" : "ghost"}
                                             className="sm:w-full shrink-0 aspect-square"
                                             onClick={() => handleTimeChange("hour", hour.toString())}>
                                             {hour}
@@ -107,7 +107,7 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
                                             key={minute}
                                             size="icon"
                                             variant={
-                                                date && date.getUTCMinutes() === minute
+                                                date && date.getMinutes() === minute
                                                     ? "default"
                                                     : "ghost"
                                             }
@@ -129,8 +129,8 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
                                             size="icon"
                                             variant={
                                                 date &&
-                                                    ((ampm === "AM" && date.getUTCHours() < 12) ||
-                                                        (ampm === "PM" && date.getUTCHours() >= 12))
+                                                    ((ampm === "AM" && date.getHours() < 12) ||
+                                                        (ampm === "PM" && date.getHours() >= 12))
                                                     ? "default"
                                                     : "ghost"
                                             }

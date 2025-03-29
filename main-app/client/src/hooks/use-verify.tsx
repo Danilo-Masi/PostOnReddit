@@ -23,3 +23,27 @@ export const checkToken = async () => {
         return false;
     }
 }
+
+// Funzione che verifica se l'utente è in versione pro
+export const checkPlan = async () => {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        console.error('CLIENT: Token mancante');
+        localStorage.removeItem('authToken');
+        return false;
+    }
+    try {
+        const response = await axios.get(`${SERVER_URL}/supabase/check-plan`, {
+            headers: { Authorization: `Bearer ${token}` },
+            timeout: 5000,
+        });
+        if (response.status === 200) {
+            return response.data.isPro;
+        }
+        return false;
+    } catch (error: any) {
+        console.error('CLIENT: Errore generico del server', error.message);
+        localStorage.removeItem('authToken');
+        return false;
+    }
+}

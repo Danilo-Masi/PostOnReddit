@@ -1,19 +1,13 @@
-// Shadcnui
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
 import { toast } from 'sonner';
-// Context
 import { useAppContext } from '../context/AppContext';
-// Axios
 import axios from "axios";
-// Icons
 import { Loader2, Trash2 } from "lucide-react";
 import { useState } from "react";
 
-// Url del server
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 
 export default function DeleteDialog() {
-
     const { isDeleteDialogOpen, setDeleteDialogOpen, postList, setPostList, postId } = useAppContext();
     const [isLoading, setLoading] = useState<boolean>(false);
 
@@ -26,17 +20,18 @@ export default function DeleteDialog() {
                 post_id: postId
             }, {
                 headers: { Authorization: `Bearer ${authToken}` },
+                timeout: 5000,
             });
 
             if (response.status === 200) {
-                toast.info("Post succesfully deleted!");
+                toast.info("Post successfully deleted!");
                 const updatedList = postList.filter((post) => post.id !== postId);
                 setPostList(updatedList);
                 setDeleteDialogOpen(false);
             }
         } catch (error: any) {
             console.log("CLIENT: Errore durante l'eliminazione del post", error.message);
-            toast.warning("Error during the deleting process. Try later!");
+            toast.warning("There was an error deleting the post. Please try again later!");
         } finally {
             setLoading(false);
         }
@@ -55,8 +50,9 @@ export default function DeleteDialog() {
                     <AlertDialogCancel className="hover:bg-gray-100">Cancel</AlertDialogCancel>
                     <AlertDialogAction
                         onClick={handleDeletePost}
+                        aria-label="Delete post permanently"
                         className="bg-red-500 hover:bg-red-600 dark:bg-red-500 dark:hover:bg-red-600 dark:text-zinc-50">
-                        {isLoading ? <><Loader2 className='animate-spin' /> Loading</> : <><Trash2 /> Delete Permanently</>}
+                        {isLoading ? <><Loader2 className='animate-spin' /> Deleting...</> : <><Trash2 /> Delete Permanently</>}
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>

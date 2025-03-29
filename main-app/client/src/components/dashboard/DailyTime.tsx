@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
@@ -13,23 +13,50 @@ interface DailyTimeProps {
     subreddit: string;
 }
 
-// Funzione per caricare i dati dall'endpoint 
+interface State {
+    bestTimes: { hour: string, score: number }[];
+    loading: boolean;
+}
+
+const initialState: State = {
+    bestTimes: [],
+    loading: false,
+};
+
+function reducer(state: State, action: { type: string; payload?: any }): State {
+    switch (action.type) {
+        case 'SET_LOADING':
+            return { ...state, loading: action.payload };
+        case 'SET_BEST_TIMES':
+            return { ...state, bestTimes: action.payload };
+        default:
+            return state;
+    }
+}
+
 export default function DailyTime({ subreddit }: DailyTimeProps) {
     const navigate: NavigateFunction = useNavigate();
-    const [bestTimes, setBestTimes] = useState<{ hour: string, score: number }[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
-    const { dateTime, setDateTime } = useAppContext();
+    const [state, dispatch] = useReducer(reducer, initialState);
+    const { setDateTime } = useAppContext();
 
     const handleFetchData = async () => {
         if (!subreddit || subreddit.trim() === "") return;
+
         const token = localStorage.getItem('authToken');
         if (!token) {
             toast.error("User without permissions");
             navigate('/login');
             return;
         }
-        setLoading(true);
+
+        dispatch({ type: 'SET_LOADING', payload: true });
         try {
+            const cachedData = sessionStorage.getItem(`bestTimes_${subreddit}`);
+            if (cachedData) {
+                dispatch({ type: 'SET_BEST_TIMES', payload: JSON.parse(cachedData) });
+                return;
+            }
+
             const response = await axios.get(`${SERVER_URL}/api/reddit-bestDayTime`, {
                 params: { q: subreddit },
                 headers: {
@@ -37,54 +64,52 @@ export default function DailyTime({ subreddit }: DailyTimeProps) {
                     Authorization: `Bearer ${token}`
                 }
             });
+
             if (response.status !== 200 || !response.data.bestTimes) {
                 toast.info("The subreddit doesn't have available data");
-                setBestTimes([]);
+                dispatch({ type: 'SET_BEST_TIMES', payload: [] });
                 return;
             }
-            console.log("Ora dal backend in UTC: " + response.data.bestTimes[0].hour); //LOG
-            setBestTimes(response.data.bestTimes);
+
+            sessionStorage.setItem(`bestTimes_${subreddit}`, JSON.stringify(response.data.bestTimes));
+            dispatch({ type: 'SET_BEST_TIMES', payload: response.data.bestTimes });
+
         } catch (error: any) {
             console.error("Errore durante il caricamento dei dati:", error.message);
             toast.error("Error loading the data");
         } finally {
-            setLoading(false);
+            dispatch({ type: 'SET_LOADING', payload: false });
         }
     };
 
     useEffect(() => {
         if (subreddit && subreddit.trim() !== "") {
-            handleFetchData();
+            const cachedData = sessionStorage.getItem(`bestTimes_${subreddit}`);
+            if (!cachedData) {
+                handleFetchData();
+            } else {
+                dispatch({ type: 'SET_BEST_TIMES', payload: JSON.parse(cachedData) });
+            }
         }
     }, [subreddit]);
 
-    // Funzione che formatta la visualizzazione degli orari
     const formatTime = (hour: string) => {
         const userTimeZone = localStorage.getItem("userTimeZone") || Intl.DateTimeFormat().resolvedOptions().timeZone;
         const is12HourFormat = localStorage.getItem("timeFormat") === "12h";
-        // Creazione di una data UTC con l'ora specificata
         const utcDate = new Date();
         utcDate.setUTCHours(parseInt(hour, 10), 0, 0, 0);
-        // Conversione nel fuso orario dell'utente
+        
         const zonedDate = toZonedTime(utcDate, userTimeZone);
-        console.log("Data visualizzata formattata con fuso orario: " + zonedDate.getHours()); //LOG
-        // Formattazione dinamica
         const timeFormat = is12HourFormat ? "hh:mm a" : "HH:mm";
-        const formattedDate = format(zonedDate, timeFormat, { timeZone: userTimeZone });
-        return formattedDate;
+        return format(zonedDate, timeFormat, { timeZone: userTimeZone });
     };
 
-    // Funzione per impostare la data e l'orario selezionati
     const handleSetTime = (hour: string) => {
-        // Crea una data di base in UTC
         const now = new Date();
         now.setUTCHours(parseInt(hour, 10), 0, 0, 0);
-        console.log("Data creata per il setDateTime: " + now.getHours()); //LOG
-        // Salva la data nel fuso orario corretto
         setDateTime(now);
     };
 
-    // Funzione per impostare i suffissi alle card
     const getOrdinalSuffix = (n: number) => {
         if (n % 100 >= 11 && n % 100 <= 13) return `${n}th`;
         switch (n % 10) {
@@ -97,22 +122,16 @@ export default function DailyTime({ subreddit }: DailyTimeProps) {
 
     return (
         <div className="w-full h-auto flex flex-col md:flex-row md:flex-wrap gap-4">
-            {loading && <Loader2 className="animate-spin" />}
+            {state.loading && <Loader2 className="animate-spin" />}
 
-            {!loading && bestTimes.length === 0 && (
+            {!state.loading && state.bestTimes.length === 0 && (
                 <>
                     <DailyTimeCard place="1st place" time="No data available" score="No score" />
                     <DailyTimeCard place="2nd place" time="No data available" score="No score" />
                 </>
             )}
 
-            {!loading && bestTimes.length > 0 && bestTimes.map((time, index) => {
-                const today = new Date();
-                const isSameDay = dateTime.getDate() === today.getDate() &&
-                    dateTime.getMonth() === today.getMonth() &&
-                    dateTime.getFullYear() === today.getFullYear();
-                const isSameHour = dateTime.getHours() === parseInt(time.hour, 10);
-
+            {!state.loading && state.bestTimes.length > 0 && state.bestTimes.map((time, index) => {
                 return (
                     <DailyTimeCard
                         key={index}
@@ -120,7 +139,6 @@ export default function DailyTime({ subreddit }: DailyTimeProps) {
                         time={formatTime(time.hour)}
                         score={time.score.toFixed(0)}
                         onClick={() => handleSetTime(time.hour)} />
-                        //isCardSelected={isSameDay && isSameHour} />
                 );
             })}
         </div>

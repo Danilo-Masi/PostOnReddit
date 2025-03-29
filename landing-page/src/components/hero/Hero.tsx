@@ -64,9 +64,9 @@ export default function Hero() {
         <div className="w-full relative flex flex-col items-center justify-center">
             <BackgroundBeamsWithCollision>
                 <Navbar />
-                <div className="w-full md:w-[80%] px-4 py-10 md:py-20 flex flex-col items-center">
+                <div className="w-full md:w-[80%] px-4 py-10 md:py-20 flex flex-col items-center gap-8">
                     {/* Titolo */}
-                    <h1 className="relative z-10 mx-auto max-w-4xl text-center text-6xl font-extrabold text-zinc-700">
+                    <h1 className="relative z-10 mx-auto max-w-2xl text-center text-6xl font-extrabold text-zinc-700">
                         {"Grow your SaaS with Reddit"
                             .split(" ")
                             .map((word, index) => (
@@ -89,7 +89,7 @@ export default function Hero() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.3, delay: 0.8 }}
-                        className="relative z-10 mx-auto max-w-xl py-4 text-center text-lg font-normal text-zinc-600">
+                        className="relative z-10 mx-auto max-w-lg text-center text-lg font-normal text-zinc-600">
                         In ac volutpat sem, vitae luctus augue, praesent velit dolor, euismod eget purus a, mollis pulvinar
                     </motion.p>
                     {/* Bottoni */}
@@ -97,15 +97,15 @@ export default function Hero() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.3, delay: 1.1 }}
-                        className="relative z-10 mt-8 flex flex-wrap items-center justify-center gap-4">
+                        className="relative z-10 flex flex-wrap items-center justify-center gap-4">
                         <Button
-                            className="w-60 transform rounded-lg px-6 py-2 font-medium text-white transition-all duration-300 hover:-translate-y-0.5 shadow-md shadow-zinc-300 bg-orange-600 hover:bg-orange-700">
+                            className="w-60 transform rounded-lg px-6 font-medium text-white transition-all duration-300 hover:-translate-y-0.5 shadow-md shadow-zinc-300 bg-orange-600 hover:bg-orange-700">
                             Start growing
                             <TrendingUp />
                         </Button>
                         <Button
                             variant="outline"
-                            className="w-60 md:w-fit transform rounded-lg px-6 py-2 font-medium transition-all duration-300 hover:-translate-y-0.5 hover:bg-zinc-100">
+                            className="w-60 md:w-fit transform rounded-lg px-6 font-medium transition-all duration-300 hover:-translate-y-0.5 hover:bg-zinc-100">
                             Explore more
                         </Button>
                     </motion.div>
@@ -114,7 +114,7 @@ export default function Hero() {
                         initial={{ opacity: 0, }}
                         animate={{ opacity: 1, }}
                         transition={{ duration: 0.3, delay: 1.4 }}
-                        className="z-10 mt-6 flex flex-col items-center justify-center gap-2">
+                        className="z-10 flex flex-col items-center justify-center">
                         <Testimonial />
                     </motion.div>
                     {/* Immagine */}
@@ -122,7 +122,7 @@ export default function Hero() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.3, delay: 1.7 }}
-                        className="md:w-[80%] relative mt-20 rounded-3xl border border-zinc-100 bg-zinc-50 p-4 shadow-lg">
+                        className="md:w-[80%] relative mt-10 rounded-3xl border border-zinc-100 bg-zinc-50 p-4 shadow-lg">
                         <div className="overflow-hidden rounded-xl border border-zinc-100 relative">
                             <img
                                 src={hero}

@@ -22,8 +22,9 @@ export default function SelectDate({ selectedDate, setSelectedDate }: SelectDate
           <SelectValue placeholder="Select period" />
         </SelectTrigger>
         <SelectContent className="bg-zinc-100 dark:bg-zinc-800">
-          {times.map((item) => (
+          {times.map((item, index) => (
             <SelectItem
+              key={index}
               value={item.value}
               className={`cursor-pointer ${selectedDate === item.value ? "font-bold text-gray-900 dark:text-gray-100" : "text-gray-600 dark:text-gray-400"}`}>
               {item.text}

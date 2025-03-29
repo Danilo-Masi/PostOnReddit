@@ -10,6 +10,7 @@ import createPostRoute from './routes/supabase/create-post-route.mjs';
 import retrievePostsRoute from './routes/supabase/retrieve-posts-route.mjs';
 import deletePostRoute from './routes/supabase/delete-post-route.mjs';
 import deletePermissionsRoute from './routes/supabase/delete-permissions-route.mjs';
+import checkPlan from './routes/supabase/check-plan-route.mjs';
 // Reddit
 import redditRedirectRoute from './routes/reddit/reddit-redirect-route.mjs';
 import redditCallbackRoute from './routes/reddit/reddit-callback-route.mjs';
@@ -34,6 +35,7 @@ export const applyRoutes = (app) => {
     app.use('/supabase', retrievePostsRoute);
     app.use('/supabase', deletePostRoute);
     app.use('/supabase', deletePermissionsRoute);
+    app.use('/supabase', checkPlan);
     // Reddit 
     app.use('/api', redditRedirectRoute);
     app.use('/api', redditCallbackRoute);
