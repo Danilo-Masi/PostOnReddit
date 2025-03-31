@@ -4,7 +4,7 @@ import Demo from "./Demo";
 
 export default function Features() {
     return (
-        <BlockContainer>
+        <BlockContainer id="Features">
             <Header
                 title="3 easy steps to skyrocket your views!!"
                 caption="Learn how our platform helps you post at the perfect time, boost engagement, and grow your presence effortlessly" />

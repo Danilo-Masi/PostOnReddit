@@ -35,6 +35,8 @@ type AppContextType = {
     setFlairValue: Dispatch<SetStateAction<string>>;
     dateTime: Date;
     setDateTime: Dispatch<SetStateAction<Date>>;
+    isPro: boolean;
+    setIsPro: Dispatch<SetStateAction<boolean>>;
 };
 
 // Funzione per ottenere la data UTC
@@ -68,6 +70,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [communityValue, setCommunityValue] = useState("");
     const [flairValue, setFlairValue] = useState("");
     const [dateTime, setDateTime] = useState(getUTCDate);
+    const [isPro, setIsPro] = useState<boolean>(false);
 
     return (
         <AppContext.Provider
@@ -96,6 +99,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
                 setFlairValue,
                 dateTime,
                 setDateTime,
+                isPro,
+                setIsPro,
             }}>
             {children}
         </AppContext.Provider>

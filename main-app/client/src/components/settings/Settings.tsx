@@ -1,4 +1,3 @@
-// Components
 import ThemeSettings from "./ThemeSettings";
 import ProfileSettings from "./ProfileSettings";
 import ChangelogSettings from "./ChangelogSettings";

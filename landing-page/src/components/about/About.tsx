@@ -5,20 +5,19 @@ import BlockContainer from '../custom/BlockContainer';
 export default function About() {
     return (
         <BlockContainer>
-            {/* Immagine e primo paragrafo */}
-            <div className='w-full md:w-[60%] md:h-[30svh] flex flex-col md:flex-row gap-5'>
+            <div className='w-full md:w-[70%]  flex flex-col md:flex-row justify-start items-start gap-5'>
                 <img
                     alt='picture image'
                     src={me}
-                    className='w-fit h-[40svh] md:h-full rounded-lg' />
-                <p className='text-balance'>
+                    className='w-2/3 md:w-1/3 h-auto object-contain rounded-xl' />
+                <p className='w-full md:w-2/3 text-balance'>
                     Hey, it's Danilo 👋
                     <br />
                     <br />
-                    In 2018, I believed I was Mark Zuckerberg, built a startup for 1 year, and got 0 users...
+                    Back in 2018, I thought I could be the next Mark Zuckerberg. I built a startup for a year, but it didn't go as planned, and I ended up with no users...
                     <br />
                     <br />
-                    A few years after my burnout, I restarted the journey differently: I shipped like a madman—16 startups in 2 years. Now I'm happy and earn $45,000 a month.
+                    After a few tough years, I decided to approach things differently. I learned from my failures, took things step by step, and now, I'm excited to have launched postonreddit. It's been a journey of growth, and I'm finally on a path that feels right.
                 </p>
             </div>
         </BlockContainer>

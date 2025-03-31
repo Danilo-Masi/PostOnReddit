@@ -12,6 +12,7 @@ import face4 from '../../assets/images/face4.webp';
 import face5 from '../../assets/images/face5.webp';
 import { Rating } from '@smastrom/react-rating';
 import { BackgroundBeamsWithCollision } from "../ui/background-beams-with-collision";
+import { scrollToElement } from "@/utility/use-animation";
 
 const Navbar = () => {
     return (
@@ -22,12 +23,12 @@ const Navbar = () => {
             </div>
             <div className="flex items-center gap-12">
                 <ul className="hidden md:flex gap-x-6 ">
-                    <li><Link to="/">Features</Link></li>
-                    <li><Link to="/">Pricing</Link></li>
-                    <li><Link to="/">Faqs</Link></li>
+                    <li><Link to="/" onClick={() => scrollToElement("#Features")}>How it works</Link></li>
+                    <li><Link to="/" onClick={() => scrollToElement("#Pricing")}>Pricing</Link></li>
+                    <li><Link to="/" onClick={() => scrollToElement("#Support")}>Support</Link></li>
                 </ul>
                 <Button className="font-medium text-white transition-all duration-300 hover:-translate-y-0.5 shadow-md shadow-zinc-300 bg-orange-600 hover:bg-orange-700">
-                    Start growing
+                    Start now
                     <TrendingUp />
                 </Button>
             </div>
@@ -53,7 +54,7 @@ const Testimonial = () => {
             <GroupAvatar />
             <div className="w-full flex flex-col items-center md:items-start">
                 <Rating style={{ maxWidth: 150 }} value={4.7} readOnly />
-                <p className="text-sm text-zinc-500"><span className="font-bold text-zinc-700">100+ founders </span> posting at the right times</p>
+                <p className="text-sm text-zinc-500"><span className="font-bold text-zinc-700">100+ founders </span> scheduling smarter on Reddit</p>
             </div>
         </div>
     );
@@ -67,7 +68,7 @@ export default function Hero() {
                 <div className="w-full md:w-[80%] px-4 py-10 md:py-20 flex flex-col items-center gap-8">
                     {/* Titolo */}
                     <h1 className="relative z-10 mx-auto max-w-2xl text-center text-6xl font-extrabold text-zinc-700">
-                        {"Grow your SaaS with Reddit"
+                        {"Boost your SaaS with Reddit"
                             .split(" ")
                             .map((word, index) => (
                                 <motion.span
@@ -90,7 +91,7 @@ export default function Hero() {
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.3, delay: 0.8 }}
                         className="relative z-10 mx-auto max-w-lg text-center text-lg font-normal text-zinc-600">
-                        In ac volutpat sem, vitae luctus augue, praesent velit dolor, euismod eget purus a, mollis pulvinar
+                        Schedule your posts and maximize engagement effortlessly.
                     </motion.p>
                     {/* Bottoni */}
                     <motion.div
@@ -100,13 +101,13 @@ export default function Hero() {
                         className="relative z-10 flex flex-wrap items-center justify-center gap-4">
                         <Button
                             className="w-60 transform rounded-lg px-6 font-medium text-white transition-all duration-300 hover:-translate-y-0.5 shadow-md shadow-zinc-300 bg-orange-600 hover:bg-orange-700">
-                            Start growing
+                            Get started
                             <TrendingUp />
                         </Button>
                         <Button
                             variant="outline"
                             className="w-60 md:w-fit transform rounded-lg px-6 font-medium transition-all duration-300 hover:-translate-y-0.5 hover:bg-zinc-100">
-                            Explore more
+                            Learn more
                         </Button>
                     </motion.div>
                     {/* Testimonial */}
@@ -137,4 +138,3 @@ export default function Hero() {
         </div>
     );
 }
-

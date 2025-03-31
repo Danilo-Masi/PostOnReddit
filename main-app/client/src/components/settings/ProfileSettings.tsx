@@ -58,9 +58,6 @@ const TimeFormatButton = ({ is24HourFormat, set24HourFormat }: TimeFormatButtonP
                 <Timer />
                 {is24HourFormat ? "Switch to AM/PM" : "Switch to 24h Format"}
             </Button>
-            <p className="text-sm text-zinc-500">
-                *Changing the time format affects only the time display and does not impact the creation or scheduling of posts
-            </p>
         </div>
     );
 }
@@ -175,8 +172,11 @@ export default function ProfileSettings() {
 
     return (
         <CardBase cardTitle="Profile Settings" cardDescription="Manage your profile preferences" mdWidth="md:w-1/3 h-fit">
-            <TimeFormatButton is24HourFormat={is24HourFormat} set24HourFormat={set24HourFormat} />
             <TimeZoneDropdown />
+            <TimeFormatButton is24HourFormat={is24HourFormat} set24HourFormat={set24HourFormat} />
+            <p className="text-sm text-zinc-500 mb-3">
+                *Changing the time format or time zone will only adjust how times are displayed. It won’t affect post creation, scheduling, or how the app functions, everything will continue to work as expected.
+            </p>
             <RedditPermissionButton isAuthorized={isRedditAuthorized} onRevoke={handleRemovePermits} onRequest={handleRequestPermits} />
         </CardBase>
     );

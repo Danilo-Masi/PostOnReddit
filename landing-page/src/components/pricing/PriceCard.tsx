@@ -1,4 +1,4 @@
-import { Check, X } from "lucide-react";
+import { Check, Gift, TrendingUp, X } from "lucide-react";
 import { Button } from "../ui/button";
 
 interface PriceCardProps {
@@ -8,17 +8,15 @@ interface PriceCardProps {
     validPoint: string[],
     invalidPoint?: string[],
     textButton: string;
-    bestOffer?: string;
+    bestOffer: boolean;
+    handleClick: () => void;
 }
 
-export default function PriceCard({ title, price, discountedPrice, validPoint, invalidPoint, textButton, bestOffer }: PriceCardProps) {
+export default function PriceCard({ title, price, discountedPrice, validPoint, invalidPoint, textButton, bestOffer, handleClick }: PriceCardProps) {
 
-    const handleClick = () => {
-        alert('Price Button clicked');
-    }
 
     return (
-        <div className={`w-full md:w-2/6 h-auto min-h-[50svh] p-5 flex flex-col gap-y-6 rounded-lg bg-card text-card-foreground border-2 shadow-md ${bestOffer && bestOffer === title ? 'border-principal' : 'border-border'}`}>
+        <div className={`w-full md:w-2/6 h-auto min-h-[50svh] p-5 flex flex-col gap-y-6 rounded-lg bg-card text-card-foreground border-2 shadow-md ${bestOffer ? 'border border-orange-600' : 'border-none'}`}>
             <h3 className="text-2xl font-semibold">{title}</h3>
             <h3 className="text-4xl font-bold">
                 <span className="text-lg font-medium line-through text-muted-foreground mr-3">${price}</span>
@@ -43,8 +41,11 @@ export default function PriceCard({ title, price, discountedPrice, validPoint, i
                     ))}
                 </ul>
             </div>
-            <Button className="w-full">
+            <Button
+                className="w-full transform rounded-lg px-6 font-medium transition-all duration-300 hover:-translate-y-0.5 bg-orange-600 hover:bg-orange-500"
+                onClick={handleClick}>
                 {textButton}
+                {bestOffer ? (<TrendingUp />) : (<Gift />)}
             </Button>
         </div>
     );

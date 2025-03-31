@@ -3,47 +3,46 @@ import Header from "../custom/Header";
 import PriceCard from "./PriceCard";
 
 const starterValidPoints = [
-    "React boilerplate",
-    "SEO e Blog",
-    "Mailgun emails",
-    "Stripe / Lemon squeezy",
+    "Optimal posting time for today",
 ];
 
 const starterInvalidPoints = [
-    "Discord community & Leaderboard",
-    "$1,210 worth of discounts",
+    "Weekly posting insights not included",
+    "Limited to one scheduled post at a time",
+    "No access to upcoming premium features",
 ];
 
 const premiumValidPoints = [
-    "React boilerplate",
-    "SEO e Blog",
-    "Mailgun emails",
-    "Stripe / Lemon squeezy",
-    "Discord community & Leaderboard",
-    "$1,210 worth of discounts",
+    "Optimal posting time for today",
+    "Best posting time for the entire week",
+    "Unlimited scheduled posts",
+    "Early access to future features",
 ]
 
 export default function Pricing() {
     return (
-        <BlockContainer>
+        <BlockContainer id="Pricing">
             <Header
-                title="Phasellus euismod est eget tempus tincidunt"
-                caption="Phasellus dictum imperdiet velit eget commodo. Quisque auctor quis leo sed aliquam. In aliquet feugiat libero ac semper" />
+                title="Find the Best Plan for Your Growth"
+                caption="Whether you're just starting out or need unlimited scheduling, we have the right plan for you." />
             <div className="w-full flex flex-col md:flex-row items-center justify-center gap-10 mt-20">
                 <PriceCard
-                    title="Starter"
-                    price="299"
-                    discountedPrice="199"
+                    title="Free plan"
+                    price="0"
+                    discountedPrice="0"
                     validPoint={starterValidPoints}
                     invalidPoint={starterInvalidPoints}
-                    textButton="Call to action" />
+                    textButton="Start for Free"
+                    bestOffer={false}
+                    handleClick={() => (window.location.href = "https://app.postonreddit.com/login")} />
                 <PriceCard
-                    title="Premium"
-                    price="349"
-                    discountedPrice="249"
+                    title="Lifetime Access"
+                    price="27"
+                    discountedPrice="23"
                     validPoint={premiumValidPoints}
-                    textButton="Call to action"
-                    bestOffer="Premium" />
+                    textButton="Unlock Pro Features"
+                    bestOffer={true}
+                    handleClick={() => (window.location.href = "https://app.postonreddit.com/registration")} />
             </div>
         </BlockContainer>
     )

@@ -6,7 +6,7 @@ const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 export const checkToken = async () => {
     const token = localStorage.getItem('authToken');
     if (!token) {
-        console.error('CLIENT: Token mancante');
+        console.error('Token mancante');
         localStorage.removeItem('authToken');
         return false;
     }
@@ -18,7 +18,7 @@ export const checkToken = async () => {
             return true;
         }
     } catch (error: any) {
-        console.error('CLIENT: Errore generico del server', error.message);
+        console.error(`Errore generico del server: ${error.message || error}`);
         localStorage.removeItem('authToken');
         return false;
     }

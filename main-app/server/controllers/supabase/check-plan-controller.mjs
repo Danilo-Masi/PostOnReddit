@@ -9,6 +9,8 @@ const MESSAGES = {
     INVALID_TOKEN: 'Token non valido',
     SUPABASE_ERROR: 'Errore nel recupero dei post dal DB',
     SERVER_ERROR: 'Errore generico del server',
+    SUBSCRIPTION_ERROR: 'Errore durante la verifica della sottoscrizione dell\'utente',
+    NO_PRO: 'L\'utente non è autorizzato ad accedere ai dati',
 }
 
 export const checkPlan = async (req, res) => {
@@ -29,6 +31,7 @@ export const checkPlan = async (req, res) => {
         });
     }
     const user_id = user.user.id;
+
     try {
         let { data, error } = await supabaseAdmin
             .from('profiles')
@@ -47,7 +50,7 @@ export const checkPlan = async (req, res) => {
         }
 
         return res.status(200).json({
-            isPro: data.ispro, 
+            isPro: data.ispro,
         });
     } catch (error) {
         logger.error(`Errore generico del Server: ${error.message || error}`);
@@ -55,5 +58,4 @@ export const checkPlan = async (req, res) => {
             message: MESSAGES.SERVER_ERROR,
         });
     }
-
 };

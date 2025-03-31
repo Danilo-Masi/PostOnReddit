@@ -3,6 +3,7 @@ import { decodeToken } from '../../controllers/services/decodeToken.mjs';
 import logger from '../../config/logger.mjs';
 import dotenv from 'dotenv';
 import { getRedditAccessToken } from '../services/redditToken.mjs';
+import { checkSubscription } from "../services/checkSubscription.mjs";
 
 dotenv.config();
 
@@ -115,6 +116,19 @@ export const redditBestWeeklyTimes = async (req, res) => {
     const subreddit = q.startsWith('r/') ? q.substring(2) : q;
 
     try {
+        // INIZIO CODICE MODIFICATO
+        let isPro = await checkSubscription(user_id);
+
+        if (isPro === null) {
+            return res.status(500).json({ message: MESSAGES.SUBSCRIPTION_ERROR });
+        }
+
+        if (!isPro) {
+            logger.info(`L'utente ${user_id} non ha un piano pro`);
+            return res.status(204).json({ message: MESSAGES.NO_PRO });
+        }
+        // FINE CODICE MODIFICATO
+
         const tokenData = await getRedditAccessToken(user_id);
         if (!tokenData) {
             logger.error(`Errore nel recuper dell'access_token dal DB`);
