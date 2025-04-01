@@ -3,13 +3,6 @@ import { supabaseAdmin } from '../../config/supabase.mjs';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const MESSAGES = {
-    MISSING_TOKEN: 'Token mancante',
-    INVALID_TOKEN: 'Token non valido',
-    SUPABASE_ERROR: 'Errore nel recupero dei post dal DB',
-    SERVER_ERROR: 'Errore generico del server',
-}
-
 export const checkSubscription = async (user_id) => {
     try {
         let { data, error } = await supabaseAdmin
@@ -19,18 +12,18 @@ export const checkSubscription = async (user_id) => {
             .single();
 
         if (error) {
-            logger.error(`Errore durante il recupero dei dati: ${error.message || error}`);
+            logger.error(`Errore durante il recupero dei dati - checkSubscription: ${error.message || error}`);
             return null;
         }
 
         if (!data) {
-            logger.error(`Nessun piano trovato per l'utente con ID ${user_id}`);
+            logger.error(`Nessun piano trovato per l'utente con ID ${user_id} - checkSubscription`);
             return false;
         }
 
         return data.ispro === true;
     } catch (error) {
-        logger.error(`Errore generico del Server: ${error.message || error}`);
+        logger.error(`Errore generico del Server - checkSubscription: ${error.message || error}`);
         return null;
     }
 };

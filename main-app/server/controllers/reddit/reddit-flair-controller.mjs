@@ -1,58 +1,29 @@
 import axios from "axios";
-import { decodeToken } from '../../controllers/services/decodeToken.mjs';
 import logger from '../../config/logger.mjs';
 import { getRedditAccessToken } from '../services/redditToken.mjs';
 import dotenv from 'dotenv';
+import { validateToken } from "../services/validateToken.mjs";
+import { validateQuery } from "../services/validateQuery.mjs";
 dotenv.config();
 
-const MESSAGES = {
-    MISSING_TOKEN: 'Token mancante',
-    INVALID_TOKEN: 'Token non valido',
-    INVALID_QUERY: "La query della richiesta non è valida",
-    SUPABASE_ERROR: "Errore di Supabase durante il carimaneto del reddit_token",
-    REDDIT_ERROR: 'Errore durante la chiamata all\'API',
-    SERVER_ERROR: "Errore generico del server",
-}
-
 export const searchFlair = async (req, res) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-
-    if (!token) {
-        logger.error('Token mancante');
-        return res.status(401).json({
-            message: MESSAGES.MISSING_TOKEN,
-        });
-    }
-
-    const user = await decodeToken(token);
-    if (!user) {
-        return res.status(400).json({
-            message: MESSAGES.INVALID_TOKEN,
-        });
-    }
-
-    const user_id = user.user.id;
-
-    const { q } = req.query;
-
-    if (q.trim().length < 2 || q.length > 100) {
-        logger.error('Query non valida');
-        return res.status(400).json({
-            message: MESSAGES.INVALID_QUERY,
-        });
-    }
-
-    const subreddit = q.startsWith('r/') ? q.substring(2) : q;
-
     try {
+        // Validazione del token
+        const authHeader = req.headers['authorization'];
+        const user_id = await validateToken(authHeader);
+
+        // Validazione query
+        const subreddit = validateQuery(req.query.q);
+
+        // Recupero access_token Reddit
         const tokenData = await getRedditAccessToken(user_id);
         if (!tokenData) {
-            logger.error(`Errore nel recuper dell'access_token dal DB`);
-            return res.status(500).json({ message: MESSAGES.SUPABASE_ERROR });
+            logger.error(`Errore nel recupero dell'access_token - reddit-flair-controller`);
+            return res.status(500).end();
         }
         let { access_token } = tokenData;
 
+        // Chiamata API Reddit
         const response = await axios.get(`https://oauth.reddit.com/r/${subreddit}/api/link_flair`, {
             headers: {
                 Authorization: `Bearer ${access_token}`,
@@ -62,29 +33,23 @@ export const searchFlair = async (req, res) => {
         });
 
         if (response.status !== 200) {
-            return res.status(502).json({
-                message: MESSAGES.REDDIT_ERROR,
-            });
+            return res.status(502).end();
         }
 
         const flairs = response.data;
         const flair = flairs.map((flair) => ({ id: flair.id, text: flair.text }));
 
-        return res.status(200).json({
-            flair,
-        })
+        return res.status(200).json({ flair })
 
     } catch (error) {
         if (error.status === 403) {
-            logger.info('Nessun flair disponibile per questa subreddit');
+            logger.info('Nessun flair disponibile per questa subreddit - reddit-flair-controller');
             return res.status(200).json({
                 flair: [],
             });
         } else {
-            logger.error('Errore generico del Server: ' + error.message);
-            return res.status(500).json({
-                message: MESSAGES.SERVER_ERROR,
-            });
+            logger.error(`Errore generico del Server - reddit-flair-controller: ${error.message || error}`);
+            return res.status(500).end();
         }
     }
 }

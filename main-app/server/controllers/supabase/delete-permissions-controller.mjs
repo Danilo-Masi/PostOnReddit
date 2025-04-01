@@ -1,56 +1,27 @@
 import { supabaseAdmin } from '../../config/supabase.mjs';
 import logger from '../../config/logger.mjs';
-import { decodeToken } from '../../controllers/services/decodeToken.mjs';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const MESSAGES = {
-    MISSING_TOKEN: 'Token mancante',
-    INVALID_TOKEN: 'Token non valido',
-    SUPABASE_ERROR: 'Errore generico di Supabase durante il cancellamento dei permessi',
-    SUCCESS_MESSAGE: 'Permessi annullati correttamente',
-    SERVER_ERROR: 'Errore generico del server',
-}
-
 export const deletePermissions = async (req, res) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-    if (!token) {
-        logger.error('Token mancante');
-        return res.status(400).json({
-            message: MESSAGES.MISSING_TOKEN,
-        });
-    }
-
-    const user = await decodeToken(token);
-    if (!user) {
-        return res.status(400).json({
-            message: MESSAGES.INVALID_TOKEN,
-        });
-    }
-    const user_id = user.user.id;
-
     try {
+        const authHeader = req.headers['authorization'];
+        const user_id = await validateToken(authHeader);
+
         let { error } = await supabaseAdmin
             .from('reddit_tokens')
             .delete()
             .eq('user_id', user_id);
 
         if (error) {
-            logger.error(`Errore generico di Supabase durante il cancellamento del access_token dal DB: ${error.message || error}`);
-            return res.status(401).json({
-                message: MESSAGES.SUPABASE_ERROR,
-            });
+            logger.error(`Errore generico di Supabase durante il cancellamento del access_token dal DB - delete-permissions-controller: ${error.message || error}`);
+            return res.status(401).end();
         }
 
-        return res.status(200).json({
-            message: MESSAGES.SUCCESS_MESSAGE,
-        });
+        return res.status(200).end();
 
     } catch (error) {
-        logger.error(`Errore generico del Server: ${error.message || error}`);
-        return res.status(500).json({
-            message: MESSAGES.SERVER_ERROR,
-        });
+        logger.error(`Errore generico del Server - delete-permissions-controller: ${error.message || error}`);
+        return res.status(500).end();
     }
 }

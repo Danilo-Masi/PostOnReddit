@@ -1,19 +1,11 @@
 import axios from "axios";
-import { decodeToken } from '../../controllers/services/decodeToken.mjs';
 import logger from '../../config/logger.mjs';
-import dotenv from 'dotenv';
 import { getRedditAccessToken } from "../services/redditToken.mjs";
-
+import { decodeToken } from '../../controllers/services/decodeToken.mjs';
+import dotenv from 'dotenv';
+import { validateToken } from "../services/validateToken.mjs";
+import { validateQuery } from "../services/validateQuery.mjs";
 dotenv.config();
-
-const MESSAGES = {
-    MISSING_TOKEN: 'Token mancante',
-    INVALID_TOKEN: 'Token non valido',
-    INVALID_QUERY: "La subreddit della richiesta non è valida",
-    SUPABASE_ERROR: "Errore di Supabase durante il caricamento dell'access_token dal DB",
-    SUBREDDIT_VOID: "La subreddit specificata non presenta alcun dato",
-    SERVER_ERROR: "Errore generico del server",
-};
 
 // Funzione per caricare i dati dei post della giornata
 const retrivePosts = async (subreddit, access_token) => {
@@ -34,14 +26,14 @@ const retrivePosts = async (subreddit, access_token) => {
         });
 
         if (searchResponse.status !== 200) {
-            logger.error('Errore durante il caricamento dei post dall\'Endpoint search');
+            logger.error(`Errore durante il caricamento dei post - reddit-bestDayTime-controller: ${searchResponse.status}`);
             return null;
         }
 
         return searchResponse.data.data.children || [];
 
     } catch (error) {
-        logger.error('Errore generico del Server - retrivePosts: ' + error.message);
+        logger.error(`Errore generico del Server - reddit-bestDayTime-controller: ${error.message || error}`);
         return [];
     }
 };
@@ -58,14 +50,14 @@ const retriveOnlineUsers = async (subreddit, access_token) => {
         });
 
         if (aboutResponse.status !== 200) {
-            logger.error('Errore durante il caricamento degli utenti online dall\'Endpoint about.json');
+            logger.error(`Errore durante il caricamento del numero di utenti online - reddit-bestDayTime-controller: ${aboutResponse.status}`);
             return null;
         }
 
         return aboutResponse.data.data.accounts_active || 0;
 
     } catch (error) {
-        logger.error('Errore generico del Server - retriveOnlineUsers: ' + error.message);
+        logger.error(`Errore generico del Server - reddit-bestDayTime-controller:  ${error.message || error}`);
         return null;
     }
 };
@@ -122,41 +114,25 @@ const calculateScore = (posts, onlineUsers) => {
 
 // Funzione principale
 export const redditBestDayTime = async (req, res) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-
-    if (!token) {
-        logger.error('Token mancante');
-        return res.status(401).json({ message: MESSAGES.MISSING_TOKEN });
-    }
-
-    const user = await decodeToken(token);
-    if (!user) {
-        return res.status(400).json({ message: MESSAGES.INVALID_TOKEN });
-    }
-
-    const user_id = user.user.id;
-    const { q } = req.query;
-
-    if (q.trim().length < 2 || q.length > 100) {
-        return res.status(400).json({ message: MESSAGES.INVALID_QUERY });
-    }
-
-    const subreddit = q.startsWith('r/') ? q.substring(2) : q;
-
     try {
+        // Validazione del token
+        const authHeader = req.headers['authorization'];
+        const user_id = await validateToken(authHeader);
+
+        // Validazione query
+        const subreddit = validateQuery(req.query.q);
+
         const tokenData = await getRedditAccessToken(user_id);
         if (!tokenData) {
-            logger.error(`Errore nel recuper dell'access_token dal DB`);
-            return res.status(500).json({ message: MESSAGES.SUPABASE_ERROR });
+            logger.error(`Errore nel recupero dell'access_token - reddit-bestDayTime-controller`);
+            return res.status(500).end();
         }
-
         let { access_token } = tokenData;
 
         let posts = await retrivePosts(subreddit, access_token);
         if (posts.length === 0) {
-            logger.info('La subreddit specificata non presenta alcun dato');
-            return res.status(200).json({ message: MESSAGES.SUBREDDIT_VOID });
+            logger.info(`La subreddit: ${subreddit} non presenta alcun dato - reddit-bestDayTime-controller`);
+            return res.status(200).end();
         }
 
         let onlineUsers = await retriveOnlineUsers(subreddit, access_token);
@@ -166,7 +142,7 @@ export const redditBestDayTime = async (req, res) => {
         return res.status(200).json({ subreddit, bestTimes });
 
     } catch (error) {
-        logger.error('Errore generico del Server - redditBestDayTime: ' + error.message);
-        return res.status(500).json({ message: MESSAGES.SERVER_ERROR });
+        logger.error(`Errore generico del Server - reddit-bestDayTime-controller:  ${error.message || error}`);
+        return res.status(500).end();
     }
 };

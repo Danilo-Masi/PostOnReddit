@@ -22,12 +22,12 @@ const updatePostStatus = async (post_id, status) => {
             .eq('id', post_id);
 
         if (error) {
-            logger.info(`Errore durante l'aggiornamento dello stato del post ${post_id}: ${error.message || error}`);
+            logger.info(`Errore durante l'aggiornamento dello stato del post ${post_id} - redditServices: ${error.message || error}`);
             return false;
         }
         return true;
     } catch (error) {
-        logger.info(`Errore imprevisto nella modifica dello stato del post ${post_id}: ${error.message || error}`);
+        logger.info(`Errore imprevisto nella modifica dello stato del post ${post_id} - redditServices: ${error.message || error}`);
         return false;
     }
 }
@@ -42,7 +42,7 @@ export const submitPostToReddit = async (post) => {
 
         // Se il token scadrà prima della pubblicazione, fai il refresh
         if (new Date(token_expiry) <= new Date(post.date_time)) {
-            logger.info(`access_token di Reddit scaduto o in scadenza prima della pubblicazione, procedo con il refresh`);
+            logger.info(`access_token di Reddit scaduto o in scadenza prima della pubblicazione, procedo con il refresh - redditServices`);
             access_token = await refreshAccessToken(refresh_token, post.user_id);
         }
 
@@ -70,7 +70,7 @@ export const submitPostToReddit = async (post) => {
         return updatePostStatus(post.id, response.status === 200 ? 'posted' : 'failed');
 
     } catch (error) {
-        logger.error(`Errore pubblicando il post ${post.id}: ${error.message || error}`);
+        logger.error(`Errore pubblicando il post ${post.id} - redditServices: ${error.message || error}`);
         return updatePostStatus(post.id, 'failed');
     }
 };

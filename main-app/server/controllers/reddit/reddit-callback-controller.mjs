@@ -15,14 +15,11 @@ const MESSAGE = {
 }
 
 export const redditCallback = async (req, res) => {
-
     const { code, state, error } = req.query;
 
     if (error) {
-        logger.error('Errore generico di Reddit: ' + error.message);
-        return res.status(400).json({
-            message: MESSAGE.REDDIT_ERROR,
-        });
+        logger.error(`Errore generico di Reddit - reddit-callback-controller: ${error.message || error}`);
+        return res.status(400).end();
     }
 
     try {
@@ -58,19 +55,15 @@ export const redditCallback = async (req, res) => {
 
         // Gestisce eventuali errori derivati dall'inserimento dei dati nel DB
         if (error) {
-            logger.error('Errore generico di Supabase durante la fase di salvataggio dei dati di Reddit nel DB: ' + error.message);
-            return res.status(401).json({
-                message: MESSAGE.SUPABASE_ERROR,
-            });
+            logger.error(`Errore durante la fase di salvataggio dei dati di Reddit nel DB - reddit-callback-controller: ${error.message || error}`);
+            return res.status(401).end();
         }
 
         // Redirect alla pagina principale della piattaforma
         return res.redirect("https://postonredditclient.vercel.app");
 
     } catch (error) {
-        logger.error('Errore generico del Server: ' + error.message);
-        return res.status(500).json({
-            message: MESSAGE.SERVER_ERROR,
-        });
+        logger.error(`Errore generico del Server - reddit-callback-controller: ${error.message || error}`);
+        return res.status(500).end();
     }
 }

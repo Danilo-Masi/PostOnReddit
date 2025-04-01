@@ -166,7 +166,7 @@ export default function WeekTime({ subreddit }: { subreddit: string }) {
         setDateTime(targetDate);
     };
 
-    const handleProMember = () => {
+    const redirectCheckout = async () => {
         toast.info("Pro membership will be available soon! 😉");
     };
 
@@ -182,7 +182,7 @@ export default function WeekTime({ subreddit }: { subreddit: string }) {
                 <div className="w-full min-h-[40svh] md:min-h-[25svh] flex justify-center items-center bg-zinc-200 rounded-lg">
                     <Button
                         variant="default"
-                        onClick={handleProMember}>
+                        onClick={redirectCheckout}>
                         Unlock Pro Features
                         <TrendingUp />
                     </Button>

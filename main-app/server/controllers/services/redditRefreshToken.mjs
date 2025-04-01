@@ -29,11 +29,11 @@ export const refreshAccessToken = async (refresh_token, user_id) => {
             .update({ access_token: newAccessToken, token_expiry: newExpiry })
             .eq('user_id', user_id);
 
-        logger.info('access_token di Reddit aggiornato');
+        logger.info('access_token di Reddit aggiornato - redditRefreshToken');
         return newAccessToken;
 
     } catch (error) {
-        logger.error(`Errore durante il refresh dell\'access_token di Reddit: ${error.message || error}`);
+        logger.error(`Errore durante il refresh dell\'access_token di Reddit - redditRefreshToken: ${error.message || error}`);
         throw new Error(MESSAGES.REFRESH_ERROR);
     }
 };

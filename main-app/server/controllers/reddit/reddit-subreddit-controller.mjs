@@ -1,60 +1,41 @@
 import axios from "axios";
 import NodeCache from 'node-cache';
 import logger from '../../config/logger.mjs';
-import { decodeToken } from '../../controllers/services/decodeToken.mjs';
 import { refreshAccessToken } from "../services/redditRefreshToken.mjs";
 import { getRedditAccessToken } from "../services/redditToken.mjs";
+import { validateToken } from "../services/validateToken.mjs";
+import { validateQuery } from '../services/validateQuery.mjs';
 import dotenv from 'dotenv';
 dotenv.config();
-
-const MESSAGES = {
-    MISSING_TOKEN: 'Token mancante',
-    INVALID_TOKEN: 'Token non valido',
-    INVALID_QUERY: "La query della richiesta non è valida",
-    REDDIT_ERROR: "Errore nel recupero dei subreddit",
-    SERVER_ERROR: "Errore generico del server",
-}
 
 const cache = new NodeCache({ stdTTL: 300 });
 
 export const searchSubreddits = async (req, res) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-
-    if (!token) {
-        logger.error('Token mancante');
-        return res.status(401).json({ message: MESSAGES.MISSING_TOKEN });
-    }
-
-    const user = await decodeToken(token);
-    if (!user) {
-        return res.status(400).json({ message: MESSAGES.INVALID_TOKEN });
-    }
-
-    const user_id = user.user.id;
-    const { q } = req.query;
-
-    if (!q || q.trim().length < 2 || q.length > 100) {
-        return res.status(400).json({ message: MESSAGES.INVALID_QUERY });
-    }
-
-    // Controlla se i risultati sono già in cache
-    const cachedSubreddits = cache.get(q);
-    if (cachedSubreddits) {
-        return res.status(200).json({ subreddits: cachedSubreddits });
-    }
-
     try {
+        // Validazione del token
+        const authHeader = req.headers['authorization'];
+        const user_id = await validateToken(authHeader);
+
+        // Validazione query
+        const {q} = req.query;
+        const subreddit = validateQuery(q);
+
+        // Controlla se i risultati sono già in cache
+        const cachedSubreddits = cache.get(subreddit);
+        if (cachedSubreddits) {
+            return res.status(200).json({ subreddits: cachedSubreddits });
+        }
+
         const tokenData = await getRedditAccessToken(user_id);
         if (!tokenData) {
-            logger.error('Errore durante il caricamento del token Reddit');
-            return res.status(401).json({ message: MESSAGES.MISSING_TOKEN });
+            logger.error('Errore durante il caricamento del token Reddit - reddit-subreddut-controller');
+            return res.status(401).end();
         }
         let { access_token, refresh_token, token_expiry } = tokenData;
 
         // Controlla se il token scadrà nei prossimi 5 minuti e aggiornarlo in anticipo
         if (new Date(token_expiry) <= new Date(Date.now() + 5 * 60 * 1000)) {
-            logger.info('access_token di Reddit in scadenza, procedo con il refresh');
+            logger.info('access_token di Reddit in scadenza, procedo con il refresh - reddit-subreddut-controller');
             access_token = await refreshAccessToken(refresh_token, user_id);
         }
 
@@ -68,8 +49,8 @@ export const searchSubreddits = async (req, res) => {
         });
 
         if (response.status !== 200 || !response.data?.data) {
-            logger.error('Errore nel recupero dei subreddit da Reddit');
-            return res.status(502).json({ message: MESSAGES.REDDIT_ERROR });
+            logger.error(`Errore nel recupero dei subreddit da Reddit - reddit-subreddut-controller: ${response.status}`);
+            return res.status(502).end();
         }
 
         const subreddits = response.data.data.children.map((child) => child.data.display_name_prefixed);
@@ -81,12 +62,12 @@ export const searchSubreddits = async (req, res) => {
 
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            logger.error(`Errore Axios: ${error.message}`);
-            logger.error(`Status: ${error.response?.status}`);
-            logger.error(`Response: ${JSON.stringify(error.response?.data)}`);
+            logger.error(`Errore Axios - reddit-subreddut-controller: ${error.message}`);
+            logger.error(`Status - reddit-subreddut-controller: ${error.response?.status}`);
+            logger.error(`Response - reddit-subreddut-controller: ${JSON.stringify(error.response?.data)}`);
         } else {
-            logger.error(`Errore generico: ${error}`);
+            logger.error(`Errore generico - reddit-subreddut-controller: ${error.message || error}`);
         }
-        return res.status(500).json({ message: MESSAGES.SERVER_ERROR });
+        return res.status(500).end();
     }
 };
