@@ -3,7 +3,7 @@ import hero from '../../assets/images/hero.webp';
 import icon from '../../assets/images/icon.png';
 import { Link } from "react-router";
 import { Button } from "../ui/button";
-import { TrendingUp } from "lucide-react";
+import { CirclePlay, TrendingUp } from "lucide-react";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import face1 from '../../assets/images/face1.webp';
 import face2 from '../../assets/images/face2.webp';
@@ -66,6 +66,17 @@ export default function Hero() {
             <BackgroundBeamsWithCollision>
                 <Navbar />
                 <div className="w-full md:w-[80%] px-4 py-10 md:py-20 flex flex-col items-center gap-8">
+                    {/* Link alla demo */}
+                    <motion.span
+                        initial={{ opacity: 0, filter: "blur(4px)", y: 10 }}
+                        animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+                        transition={{
+                            duration: 0.3,
+                            delay: 0.1,
+                            ease: "easeInOut",
+                        }} className="flex items-center justify-center">
+                        <Link to="/" onClick={() => scrollToElement("#Features")} className="flex gap-2 underline text-sm text-orange-600"><CirclePlay className="h-5 w-5" /> Try the Demo</Link>
+                    </motion.span>
                     {/* Titolo */}
                     <h1 className="relative z-10 mx-auto max-w-2xl text-center text-6xl font-extrabold text-zinc-700">
                         {"Boost your SaaS with Reddit"

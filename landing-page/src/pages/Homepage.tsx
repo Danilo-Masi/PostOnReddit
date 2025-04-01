@@ -11,8 +11,8 @@ export default function Homepage() {
     return (
         <AppContainer>
             <Hero />
-            <Features />
             <Social />
+            <Features />
             <About />
             <Pricing />
             <Faqs />

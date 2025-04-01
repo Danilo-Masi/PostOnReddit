@@ -1,6 +1,7 @@
 import { Suspense, lazy, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useAppContext } from "./context/AppContext";
+import Fallback from "./components/custom/Fallback";
 // Lazy loading delle pagine
 const Homepage = lazy(() => import("./pages/Homepage"));
 const Termspage = lazy(() => import("./pages/Termspage"));
@@ -9,7 +10,7 @@ const Errorpage = lazy(() => import("./pages/Errorpage"));
 
 function AppRoutes() {
   return (
-    <Suspense fallback={<div>loading...</div>}>
+    <Suspense fallback={<Fallback />}>
       <Routes>
         <Route index element={<Homepage />} />
         <Route path="/terms-of-services" element={<Termspage />} />
