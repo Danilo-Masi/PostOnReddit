@@ -1,38 +1,31 @@
 import axios from "axios";
 import logger from "../../config/logger.mjs";
 
-export const getRedirectUrl = async (req, res) => {
+export const createCheckoutSession = async (req, res) => {
     try {
+        const { customerEmail } = req.body;
 
-        logger.info(`Richiesta di checkout a Creem: Product ID: ${productId}`);
+        if (!customerEmail) {
+            return res.status(400).json({ error: "Email cliente mancante." });
+        }
 
         const response = await axios.post(
-            "https://api.creem.io/v1/checkouts",
-            { product_id: productId },
-            { headers: { "x-api-key": apiKey } }
+            "https://test-api.creem.io/v1/checkouts",
+            {
+                product_id: process.env.CREEM_PRODUCT_ID,
+                request_id: `checkout_${Date.now()}`,
+                success_url: process.env.CREEM_SUCCESS_URL,
+                customer: { email: customerEmail }
+            },
+            {
+                headers: { "x-api-key": process.env.CREEM_API_KEY }
+            }
         );
 
-        logger.info(`Risposta ricevuta da Creem: ${JSON.stringify(response.data)}`);
+        return res.status(200).json({ checkoutUrl: response.data.checkout_url });
 
-        if (!response.data || !response.data.url) {
-            throw new Error("URL di checkout non ricevuto da Creem.");
-        }
-
-        return res.redirect(response.data.url);
     } catch (error) {
-        if (error.response) {
-            // Errore ricevuto da Creem (es. 403, 400, ecc.)
-            logger.error(
-                `Errore API Creem - Status: ${error.response.status}, Data: ${JSON.stringify(error.response.data)}`
-            );
-        } else if (error.request) {
-            // Nessuna risposta ricevuta
-            logger.error(`Errore di rete: nessuna risposta da Creem - ${error.message}`);
-        } else {
-            // Altro tipo di errore (es. errore nella costruzione della richiesta)
-            logger.error(`Errore sconosciuto - ${error.stack || error.message}`);
-        }
-
-        return res.status(500).send("Errore nel checkout");
+        logger.error(`Errore nella creazione della sessione di checkout: ${error.message}`);
+        return res.status(500).json({ error: "Errore nella creazione della sessione di checkout." });
     }
 };
