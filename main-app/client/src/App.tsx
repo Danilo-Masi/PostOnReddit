@@ -1,29 +1,37 @@
-// React-router
+import { Suspense, lazy, memo } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-// Pages
-import HomePage from "./pages/HomePage";
-import LoginPage from "./pages/LoginPage";
-import RegistrationPage from "./pages/RegistrationPage";
 import { useAppContext } from "./components/context/AppContext";
 import PreviewDialog from "./components/custom/PreviewDialog";
+import Fallback from "./components/custom/Fallback";
 
-function App() {
+const HomePage = lazy(() => import("./pages/HomePage"));
+const LoginPage = lazy(() => import("./pages/LoginPage"));
+const RegistrationPage = lazy(() => import("./pages/RegistrationPage"));
 
-  const { isPreviewDialogOpen } = useAppContext();
+const MemoizedPreviewDialog = memo(PreviewDialog);
 
+function AppRoutes() {
   return (
-    <>
-      <BrowserRouter>
-        <Routes>
-          <Route index element={<HomePage />} />
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/registration" element={<RegistrationPage />} />
-        </Routes>
-      </BrowserRouter>
-      {isPreviewDialogOpen && <PreviewDialog />}
-    </>
+    <Suspense fallback={<Fallback />}>
+      <Routes>
+        <Route index element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/registration" element={<RegistrationPage />} />
+      </Routes>
+    </Suspense>
   );
 }
 
-export default App
+const MemoizedAppRoutes = memo(AppRoutes);
+
+export default function App() {
+  const { isPreviewDialogOpen } = useAppContext();
+
+  return (
+    <BrowserRouter>
+      <MemoizedAppRoutes />
+      {isPreviewDialogOpen && <MemoizedPreviewDialog />}
+    </BrowserRouter>
+  );
+}
+

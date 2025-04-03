@@ -1,9 +1,7 @@
-import AppContainer from "@/components/custom/AppContainer";
+import React from 'react'
 
 export default function Termspage() {
   return (
-    <AppContainer>
-      Termspage
-    </AppContainer>
+    <div>Termspage</div>
   )
 }

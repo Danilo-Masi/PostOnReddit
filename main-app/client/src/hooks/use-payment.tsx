@@ -10,10 +10,16 @@ export const getCheckout = async () => {
         return;
     }
 
+    const authToken = await localStorage.getItem("authToken");
+    if (!authToken) {
+        console.log("Nessun token di autenticazione trovato");
+        return;
+    }
+
     try {
         const response = await axios.post(`${SERVER_URL}/payment/checkout`,
             { customerEmail },
-            { headers: { "Content-Type": "application/json" } }
+            { headers: { "Content-Type": "application/json", Authorization: `Bearer ${authToken}`, } }
         );
 
         const checkoutUrl = response.data.checkoutUrl;

@@ -1,9 +1,7 @@
-import AppContainer from "@/components/custom/AppContainer";
+import React from 'react'
 
 export default function Privacypage() {
   return (
-    <AppContainer>
-      Privacypage
-    </AppContainer>
+    <div>Privacypage</div>
   )
 }

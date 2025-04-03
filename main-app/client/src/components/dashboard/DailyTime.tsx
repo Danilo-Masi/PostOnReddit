@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useCallback, useMemo } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
@@ -14,21 +14,30 @@ interface DailyTimeProps {
 }
 
 interface State {
-    bestTimes: { hour: string, score: number }[];
+    bestTimes: { hour: string; score: number }[];
     loading: boolean;
+    error: string | null;
 }
+
+type Action =
+    | { type: 'SET_LOADING'; payload: boolean }
+    | { type: 'SET_BEST_TIMES'; payload: { hour: string; score: number }[] }
+    | { type: 'SET_ERROR'; payload: string | null };
 
 const initialState: State = {
     bestTimes: [],
     loading: false,
+    error: null,
 };
 
-function reducer(state: State, action: { type: string; payload?: any }): State {
+function reducer(state: State, action: Action): State {
     switch (action.type) {
         case 'SET_LOADING':
             return { ...state, loading: action.payload };
         case 'SET_BEST_TIMES':
-            return { ...state, bestTimes: action.payload };
+            return { ...state, bestTimes: action.payload, error: null };
+        case 'SET_ERROR':
+            return { ...state, error: action.payload };
         default:
             return state;
     }
@@ -39,8 +48,8 @@ export default function DailyTime({ subreddit }: DailyTimeProps) {
     const [state, dispatch] = useReducer(reducer, initialState);
     const { setDateTime } = useAppContext();
 
-    const handleFetchData = async () => {
-        if (!subreddit || subreddit.trim() === "") return;
+    const handleFetchData = useCallback(async () => {
+        if (!subreddit?.trim()) return;
 
         const token = localStorage.getItem('authToken');
         if (!token) {
@@ -50,6 +59,8 @@ export default function DailyTime({ subreddit }: DailyTimeProps) {
         }
 
         dispatch({ type: 'SET_LOADING', payload: true });
+        dispatch({ type: 'SET_ERROR', payload: null });
+
         try {
             const cachedData = sessionStorage.getItem(`bestTimes_${subreddit}`);
             if (cachedData) {
@@ -66,34 +77,35 @@ export default function DailyTime({ subreddit }: DailyTimeProps) {
             });
 
             if (response.status !== 200 || !response.data.bestTimes) {
-                toast.info("The subreddit doesn't have available data");
-                dispatch({ type: 'SET_BEST_TIMES', payload: [] });
+                dispatch({ type: 'SET_ERROR', payload: "No data available for this subreddit" });
                 return;
             }
 
-            sessionStorage.setItem(`bestTimes_${subreddit}`, JSON.stringify(response.data.bestTimes));
-            dispatch({ type: 'SET_BEST_TIMES', payload: response.data.bestTimes });
+            const bestTimes = response.data.bestTimes;
+            sessionStorage.setItem(`bestTimes_${subreddit}`, JSON.stringify(bestTimes));
+            dispatch({ type: 'SET_BEST_TIMES', payload: bestTimes });
 
         } catch (error: any) {
-            console.error("Errore durante il caricamento dei dati:", error.message);
-            toast.error("Error loading the data");
+            const errorMessage = error.response?.data?.message || "Error loading the data";
+            dispatch({ type: 'SET_ERROR', payload: errorMessage });
+            toast.error(errorMessage);
         } finally {
             dispatch({ type: 'SET_LOADING', payload: false });
         }
-    };
+    }, [subreddit, navigate]);
 
     useEffect(() => {
-        if (subreddit && subreddit.trim() !== "") {
+        if (subreddit?.trim()) {
             const cachedData = sessionStorage.getItem(`bestTimes_${subreddit}`);
-            if (!cachedData) {
-                handleFetchData();
-            } else {
+            if (cachedData) {
                 dispatch({ type: 'SET_BEST_TIMES', payload: JSON.parse(cachedData) });
+            } else {
+                handleFetchData();
             }
         }
-    }, [subreddit]);
+    }, [subreddit, handleFetchData]);
 
-    const formatTime = (hour: string) => {
+    const formatTime = useCallback((hour: string) => {
         const userTimeZone = localStorage.getItem("userTimeZone") || Intl.DateTimeFormat().resolvedOptions().timeZone;
         const is12HourFormat = localStorage.getItem("timeFormat") === "12h";
         const utcDate = new Date();
@@ -102,15 +114,15 @@ export default function DailyTime({ subreddit }: DailyTimeProps) {
         const zonedDate = toZonedTime(utcDate, userTimeZone);
         const timeFormat = is12HourFormat ? "hh:mm a" : "HH:mm";
         return format(zonedDate, timeFormat, { timeZone: userTimeZone });
-    };
+    }, []);
 
-    const handleSetTime = (hour: string) => {
+    const handleSetTime = useCallback((hour: string) => {
         const now = new Date();
         now.setUTCHours(parseInt(hour, 10), 0, 0, 0);
         setDateTime(now);
-    };
+    }, [setDateTime]);
 
-    const getOrdinalSuffix = (n: number) => {
+    const getOrdinalSuffix = useCallback((n: number) => {
         if (n % 100 >= 11 && n % 100 <= 13) return `${n}th`;
         switch (n % 10) {
             case 1: return `${n}st`;
@@ -118,29 +130,44 @@ export default function DailyTime({ subreddit }: DailyTimeProps) {
             case 3: return `${n}rd`;
             default: return `${n}th`;
         }
-    };
+    }, []);
+
+    const timeCards = useMemo(() => {
+        if (state.loading) {
+            return <Loader2 className="animate-spin" />;
+        }
+
+        if (state.error || state.bestTimes.length === 0) {
+            return (
+                <>
+                    <DailyTimeCard 
+                        place="1st place" 
+                        time="No data available" 
+                        score="No score" 
+                    />
+                    <DailyTimeCard 
+                        place="2nd place" 
+                        time="No data available" 
+                        score="No score" 
+                    />
+                </>
+            );
+        }
+
+        return state.bestTimes.map((time, index) => (
+            <DailyTimeCard
+                key={`${time.hour}-${index}`}
+                place={`${getOrdinalSuffix(index + 1)} place`}
+                time={formatTime(time.hour)}
+                score={time.score.toFixed(0)}
+                onClick={() => handleSetTime(time.hour)}
+            />
+        ));
+    }, [state.loading, state.error, state.bestTimes, getOrdinalSuffix, formatTime, handleSetTime]);
 
     return (
         <div className="w-full h-auto flex flex-col md:flex-row md:flex-wrap gap-4">
-            {state.loading && <Loader2 className="animate-spin" />}
-
-            {!state.loading && state.bestTimes.length === 0 && (
-                <>
-                    <DailyTimeCard place="1st place" time="No data available" score="No score" />
-                    <DailyTimeCard place="2nd place" time="No data available" score="No score" />
-                </>
-            )}
-
-            {!state.loading && state.bestTimes.length > 0 && state.bestTimes.map((time, index) => {
-                return (
-                    <DailyTimeCard
-                        key={index}
-                        place={`${getOrdinalSuffix(index + 1)} place`}
-                        time={formatTime(time.hour)}
-                        score={time.score.toFixed(0)}
-                        onClick={() => handleSetTime(time.hour)} />
-                );
-            })}
+            {timeCards}
         </div>
     );
 }

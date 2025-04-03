@@ -1,37 +1,40 @@
-// React
-import { Dispatch, SetStateAction, useCallback, useState } from "react";
-// React-router
+import { Dispatch, SetStateAction, useCallback, useState, useMemo, useEffect } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
-// Axios
 import axios, { AxiosError } from "axios";
-// Shadcn/ui
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverTrigger } from "../ui/popover";
 import { PopoverContent } from "@radix-ui/react-popover";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { Label } from "../ui/label";
-// Icons
+import { cn } from "@/lib/utils";
 import { ChevronsUpDown, Loader2 } from "lucide-react";
 
-// Url del server
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
 
-interface SearchInputProps {
+interface SearchSubredditsProps {
     communityValue: string;
     setCommunityValue: Dispatch<SetStateAction<string>>;
+    error?: string;
 }
 
-export default function SearchSubreddits({ communityValue, setCommunityValue }: SearchInputProps) {
+export default function SearchSubreddits({ communityValue, setCommunityValue, error }: SearchSubredditsProps) {
     const [query, setQuery] = useState("");
     const [results, setResults] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
+    const [hasFixed, setHasFixed] = useState(false);
 
+    const showError = error && !hasFixed;
     const navigate: NavigateFunction = useNavigate();
 
-    // Funzione per ricercare i subreddit
-    const handleSearch = async (searchTerm: string) => {
+    useEffect(() => {
+        if (showError) {
+            toast.error(error);
+        }
+    }, [showError, error]);
+
+    const handleSearch = useCallback(async (searchTerm: string) => {
         const token = localStorage.getItem("authToken");
         if (!token) {
             toast.error("User without permissions");
@@ -47,7 +50,6 @@ export default function SearchSubreddits({ communityValue, setCommunityValue }: 
 
         try {
             setLoading(true);
-
             const response = await axios.get(`${SERVER_URL}/api/search-subreddits`, {
                 params: { q: searchTerm },
                 headers: {
@@ -81,32 +83,64 @@ export default function SearchSubreddits({ communityValue, setCommunityValue }: 
         } finally {
             setLoading(false);
         }
-    };
+    }, [navigate]);
 
-    // Funzione per gestire l'input dell'utente
     const onSearchChange = useCallback((value: string) => {
         setQuery(value);
         handleSearch(value);
-    }, []);
+    }, [handleSearch]);
 
-    // Funzione per selezionare una community tra quelle disponibili
-    const handleSelectCommunity = (community: string) => {
+    const handleSelectCommunity = useCallback((community: string) => {
         setCommunityValue(community);
         setOpen(false);
         setQuery("");
         setResults([]);
-    };
+        setHasFixed(true);
+    }, [setCommunityValue]);
+
+    const commandContent = useMemo(() => (
+        <Command className="w-[250px] border-elevation3 shadow-elevation3 shadow-md mt-1 border dark:bg-zinc-700 dark:hover:bg-zinc-600">
+            <CommandInput placeholder="Search for communities..." value={query} onValueChange={onSearchChange} />
+            <CommandList>
+                {loading && (
+                    <CommandEmpty className="flex items-center justify-center">
+                        <Loader2 className="animate-spin" />
+                    </CommandEmpty>
+                )}
+                {results.length > 0 && (
+                    <CommandGroup heading="Suggestions">
+                        {results.map((subreddit, index) => (
+                            <CommandItem key={index} onSelect={() => handleSelectCommunity(subreddit)}>
+                                {subreddit}
+                            </CommandItem>
+                        ))}
+                    </CommandGroup>
+                )}
+                {!loading && results.length === 0 && query.length >= 2 && (
+                    <CommandEmpty>No results found.</CommandEmpty>
+                )}
+            </CommandList>
+        </Command>
+    ), [loading, results, query, onSearchChange, handleSelectCommunity]);
 
     return (
         <div className="w-full md:w-[calc(50%-0.5rem)] flex flex-col gap-y-3">
-            <Label className="text-zinc-700 dark:text-zinc-200">Select a subreddit</Label>
+            <Label className={cn(
+                "text-zinc-700 dark:text-zinc-200",
+                showError && "text-red-500 dark:text-red-400"
+            )}>
+                Select a subreddit
+            </Label>
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <Button
                         variant="outline"
                         role="combobox"
                         aria-expanded={open}
-                        className="w-full justify-between dark:bg-zinc-700 dark:hover:bg-zinc-600">
+                        className={cn(
+                            "w-full justify-between dark:bg-zinc-700 dark:hover:bg-zinc-600",
+                            showError && "border-red-500 dark:border-red-400"
+                        )}>
                         {communityValue ? (
                             <p className="font-medium text-sm text-textPrimary">{communityValue}</p>
                         ) : (
@@ -116,28 +150,7 @@ export default function SearchSubreddits({ communityValue, setCommunityValue }: 
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent className="z-50">
-                    <Command className="w-[250px] border-elevation3 shadow-elevation3 shadow-md mt-1 border dark:bg-zinc-700 dark:hover:bg-zinc-600">
-                        {/* Input di ricerca */}
-                        <CommandInput placeholder="Search for communities..." value={query} onValueChange={onSearchChange} />
-                        <CommandList>
-                            {/* Mostra un indicatore di caricamento */}
-                            {loading && <CommandEmpty className="flex items-center justify-center"><Loader2 className="animate-spin"/></CommandEmpty>}
-                            {/* Mostra i risultati della ricerca */}
-                            {results.length > 0 && (
-                                <CommandGroup heading="Suggestions">
-                                    {results.map((subreddit, index) => (
-                                        <CommandItem key={index} onSelect={() => handleSelectCommunity(subreddit)}>
-                                            {subreddit}
-                                        </CommandItem>
-                                    ))}
-                                </CommandGroup>
-                            )}
-                            {/* Mostra un indicatore quando non ci sono risultati */}
-                            {!loading && results.length === 0 && query.length >= 2 && (
-                                <CommandEmpty>No results found.</CommandEmpty>
-                            )}
-                        </CommandList>
-                    </Command>
+                    {commandContent}
                 </PopoverContent>
             </Popover>
         </div>

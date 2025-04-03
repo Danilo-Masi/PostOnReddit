@@ -1,7 +1,6 @@
 import axios from "axios";
 import logger from '../../config/logger.mjs';
 import { getRedditAccessToken } from "../services/redditToken.mjs";
-import { decodeToken } from '../../controllers/services/decodeToken.mjs';
 import dotenv from 'dotenv';
 import { validateToken } from "../services/validateToken.mjs";
 import { validateQuery } from "../services/validateQuery.mjs";

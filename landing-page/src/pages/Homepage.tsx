@@ -1,22 +1,7 @@
-import About from "@/components/about/About";
-import AppContainer from "@/components/custom/AppContainer";
-import Faqs from "@/components/faqs/Faqs";
-import Features from "@/components/features/Features";
-import Footer from "@/components/footer/Footer";
-import Hero from "@/components/hero/Hero";
-import Pricing from "@/components/pricing/Pricing";
-import Social from "@/components/social/Social";
-
 export default function Homepage() {
     return (
-        <AppContainer>
-            <Hero />
-            <Social />
-            <Features />
-            <About />
-            <Pricing />
-            <Faqs />
-            <Footer />
-        </AppContainer>
+        <div className="flex flex-col min-h-screen bg-zinc-50 dark:bg-zinc-950">
+            ciao
+        </div>
     );
 }
