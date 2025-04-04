@@ -1,9 +1,9 @@
 import axios from "axios";
 import logger from '../../config/logger.mjs';
 import { getRedditAccessToken } from "../services/redditToken.mjs";
-import dotenv from 'dotenv';
 import { validateToken } from "../services/validateToken.mjs";
 import { validateQuery } from "../services/validateQuery.mjs";
+import dotenv from 'dotenv';
 dotenv.config();
 
 // Funzione per caricare i dati dei post della giornata
@@ -37,7 +37,7 @@ const retrivePosts = async (subreddit, access_token) => {
     }
 };
 
-// Funzione per caricare i dati degli utenti online attivi
+// Funzione per caricare i dati degli utenti online attivi //DA MODIFICARE
 const retriveOnlineUsers = async (subreddit, access_token) => {
     try {
         const aboutResponse = await axios.get(`https://oauth.reddit.com/r/${subreddit}/about.json`, {
@@ -63,8 +63,23 @@ const retriveOnlineUsers = async (subreddit, access_token) => {
 
 // Funzione per calcolare i migliori momenti della giornata in cui postare
 const calculateScore = (posts, onlineUsers) => {
+    const now = new Date();
+    const currentHour = now.getUTCHours();
+    const currentDay = now.getUTCDate();
+
+    // Filter posts to only include those from today
+    const todayPosts = posts.filter(post => {
+        const postDate = new Date(post.data.created_utc * 1000);
+        return postDate.getUTCDate() === currentDay;
+    });
+
+    // If no posts from today, return empty array
+    if (todayPosts.length === 0) {
+        return [];
+    }
+
     let hourlyData = {};
-    posts.forEach(post => {
+    todayPosts.forEach(post => {
         const postDate = new Date(post.data.created_utc * 1000);
         const hour = postDate.getUTCHours();
         const upvotes = post.data.ups;
@@ -85,8 +100,6 @@ const calculateScore = (posts, onlineUsers) => {
 
     const maxPosts = Math.max(...Object.values(hourlyData).map(h => h.numPosts));
 
-    const currentTime = Date.now();
-
     let scores = Object.keys(hourlyData).map(hour => {
         const { totalUpvotes, totalComments, numPosts } = hourlyData[hour];
         const avgEngagement = (totalUpvotes + 2 * totalComments) / numPosts;
@@ -103,8 +116,11 @@ const calculateScore = (posts, onlineUsers) => {
         postTime.setUTCHours(parseInt(hour), 0, 0, 0);
 
         return { hour: parseInt(hour), timestamp: postTime.getTime(), score };
+
     })
-        .filter(({ timestamp }) => timestamp >= currentTime)
+        .filter(({ hour }) => {
+            return hour > currentHour;
+        })
         .sort((a, b) => b.score - a.score)
         .slice(0, 4);
 
@@ -114,11 +130,9 @@ const calculateScore = (posts, onlineUsers) => {
 // Funzione principale
 export const redditBestDayTime = async (req, res) => {
     try {
-        // Validazione del token
         const authHeader = req.headers['authorization'];
         const user_id = await validateToken(authHeader);
 
-        // Validazione query
         const subreddit = validateQuery(req.query.q);
 
         const tokenData = await getRedditAccessToken(user_id);

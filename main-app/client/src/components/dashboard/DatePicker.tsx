@@ -9,7 +9,7 @@ import { format } from "date-fns-tz";
 import { useAppContext } from "../context/AppContext";
 
 export function DatePicker() {
-    const [isOpen, setIsOpen] = useState(false);    
+    const [isOpen, setIsOpen] = useState(false);
     const { dateTime, setDateTime } = useAppContext();
 
     const handleDateSelect = (selectedDate: Date | undefined) => {

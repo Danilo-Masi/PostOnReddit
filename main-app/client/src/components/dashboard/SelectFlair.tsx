@@ -55,7 +55,7 @@ export default function SelectFlair({ subreddit, isDisabled, placeholder, value,
 
             const flair = response.data.flair || [];
             setOptions(flair);
-            
+
             if (flair.length === 0) {
                 setError("No flairs available for this subreddit");
             }

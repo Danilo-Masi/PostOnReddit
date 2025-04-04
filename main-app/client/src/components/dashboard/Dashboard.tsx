@@ -8,7 +8,6 @@ import { checkPlan } from '@/hooks/use-verify';
 import { useAppContext } from '../context/AppContext';
 import { cn } from '@/lib/utils';
 
-// Components
 import DescriptionEditor from './DescriptionEditor';
 import SelectFlair from './SelectFlair';
 import TitleEditor from './TitleEditor';
@@ -16,6 +15,7 @@ import SearchSubreddits from './SearchSubreddits';
 import { DateTimePicker } from './DateTimePicker';
 import DailyTime from './DailyTime';
 import WeekTime from './WeekTime';
+import { toZonedTime } from 'date-fns-tz';
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 
@@ -30,7 +30,7 @@ export default function Dashboard() {
   const [isAccessToken, setAccessToken] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
-  const [userTimeZone] = useState(() => 
+  const [userTimeZone] = useState(() =>
     localStorage.getItem("userTimeZone") || Intl.DateTimeFormat().resolvedOptions().timeZone
   );
 
@@ -51,6 +51,7 @@ export default function Dashboard() {
     setIsPro
   } = useAppContext();
 
+  // Funzione per validare il form
   const validateForm = useCallback((): FormErrors => {
     const newErrors: FormErrors = {};
 
@@ -75,16 +76,18 @@ export default function Dashboard() {
     return newErrors;
   }, [titleValue, descriptionValue, communityValue, dateTime]);
 
+  // Funzione per gestire il successo
   const handleSuccess = useCallback(() => {
     toast.success('Post scheduled correctly!');
     setTitleValue('');
     setDescriptionValue('');
     setCommunityValue('');
     setFlairValue('');
-    setDateTime(new Date());
+    setDateTime(toZonedTime(new Date(), userTimeZone));
     setErrors({});
   }, [setTitleValue, setDescriptionValue, setCommunityValue, setFlairValue, setDateTime]);
 
+  // Funzione per gestire la creazione del post
   const handlePostCreation = useCallback(async () => {
     const formErrors = validateForm();
     if (Object.keys(formErrors).length > 0) {
@@ -156,6 +159,7 @@ export default function Dashboard() {
     initializeApp();
   }, [setIsPro]);
 
+  // Funzione per generare il contenuto del pulsante di pianificazione
   const scheduleButtonContent = useMemo(() => (
     isLoading ? (
       <>

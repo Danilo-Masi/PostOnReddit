@@ -31,7 +31,7 @@ export function TimePicker() {
             for (let minute = 0; minute < 60; minute += interval) {
                 const date = new Date();
                 date.setHours(hour, minute, 0, 0);
-                
+
                 let displayTime;
                 if (is12Hour) {
                     const period = hour < 12 ? "AM" : "PM";
@@ -53,7 +53,7 @@ export function TimePicker() {
 
     const handleTimeSelect = (selectedTime: { value: string; date: Date }) => {
         if (!dateTime) return;
-        
+
         const [hours, minutes] = selectedTime.value.split(':').map(Number);
         const newDate = new Date(dateTime);
         newDate.setHours(hours, minutes, 0, 0);
@@ -86,10 +86,10 @@ export function TimePicker() {
                             {timeOptions.map((time) => (
                                 <Button
                                     key={time.value}
-                                    variant={dateTime && 
-                                        dateTime.getHours() === time.date.getHours() && 
-                                        dateTime.getMinutes() === time.date.getMinutes() 
-                                        ? "default" 
+                                    variant={dateTime &&
+                                        dateTime.getHours() === time.date.getHours() &&
+                                        dateTime.getMinutes() === time.date.getMinutes()
+                                        ? "default"
                                         : "ghost"}
                                     className="justify-start font-normal px-4"
                                     onClick={() => handleTimeSelect(time)}>

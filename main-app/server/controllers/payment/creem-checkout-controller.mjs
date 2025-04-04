@@ -44,6 +44,30 @@ export const handleSuccessCallback = async (req, res) => {
             return res.redirect(`${process.env.FRONTEND_URL}/payment-error?error=missing_request_id`);
         }
 
+        // Verify the user exists before updating
+        const { data: userData, error: userError } = await supabaseAdmin
+            .from('profiles')
+            .select('id, ispro')
+            .eq('id', request_id)
+            .single();
+
+        if (userError) {
+            logger.error(`Errore nel recupero dei dati utente: ${userError.message}`);
+            return res.redirect(`${process.env.FRONTEND_URL}/payment-error?error=user_not_found`);
+        }
+
+        if (!userData) {
+            logger.error(`Utente non trovato con ID: ${request_id}`);
+            return res.redirect(`${process.env.FRONTEND_URL}/payment-error?error=user_not_found`);
+        }
+
+        // Check if user is already pro to prevent duplicate charges
+        if (userData.ispro) {
+            logger.info(`Utente ${request_id} è già pro, reindirizzamento alla pagina di successo`);
+            return res.redirect(`${process.env.FRONTEND_URL}/payment-success?status=already_pro`);
+        }
+
+        // Update user to pro status
         const { data, error } = await supabaseAdmin
             .from('profiles')
             .update({
@@ -55,18 +79,34 @@ export const handleSuccessCallback = async (req, res) => {
 
         if (error) {
             logger.error(`Errore nell'aggiornamento dei dati utente: ${error.message}`);
-            return res.redirect(`${process.env.FRONTEND_URL}/payment-error`);
+            return res.redirect(`${process.env.FRONTEND_URL}/payment-error?error=update_failed`);
         }
 
         if (!data || data.length === 0) {
-            logger.error(`Utente non trovato con ID: ${request_id}`);
-            return res.redirect(`${process.env.FRONTEND_URL}/payment-error`);
+            logger.error(`Aggiornamento fallito per l'utente con ID: ${request_id}`);
+            return res.redirect(`${process.env.FRONTEND_URL}/payment-error?error=update_failed`);
         }
 
+        // Verify the update was successful
+        const { data: verifyData, error: verifyError } = await supabaseAdmin
+            .from('profiles')
+            .select('ispro')
+            .eq('id', request_id)
+            .single();
+
+        if (verifyError || !verifyData || !verifyData.ispro) {
+            logger.error(`Verifica fallita per l'utente con ID: ${request_id}`);
+            return res.redirect(`${process.env.FRONTEND_URL}/payment-error?error=verification_failed`);
+        }
+
+        // Log successful payment
+        logger.info(`Pagamento completato con successo per l'utente: ${request_id}`);
+
+        // Redirect to success page with transaction ID
         return res.redirect(`${process.env.FRONTEND_URL}/payment-success`);
 
     } catch (error) {
         logger.error(`Errore nella gestione della callback di successo: ${error.message}`);
-        return res.redirect(`${process.env.FRONTEND_URL}/payment-error`);
+        return res.redirect(`${process.env.FRONTEND_URL}/payment-error?error=server_error`);
     }
 };

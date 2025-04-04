@@ -30,6 +30,7 @@ export default function DescriptionEditor({
 }: DescriptionEditorProps) {
     const [isFocused, setIsFocused] = useState(false);
     const [hasFixed, setHasFixed] = useState(false);
+    const [key, setKey] = useState(0);
 
     const showError = error && !hasFixed;
 
@@ -38,6 +39,13 @@ export default function DescriptionEditor({
             toast.error(error);
         }
     }, [showError, error]);
+
+    // Reset the editor when descriptionValue becomes empty
+    useEffect(() => {
+        if (descriptionValue === '') {
+            setKey(prev => prev + 1);
+        }
+    }, [descriptionValue]);
 
     const handleChange = useCallback((content: Content) => {
         if (typeof content === 'string' && content.length > maxLength) {
@@ -81,6 +89,7 @@ export default function DescriptionEditor({
 
             <div className={containerClassName}>
                 <MinimalTiptapEditor
+                    key={key}
                     aria-label={label}
                     aria-required={required}
                     aria-invalid={!!showError}
