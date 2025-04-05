@@ -10,9 +10,15 @@ import { Button } from "../ui/button";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 
+const CACHE_VALIDITY_DURATION = 60 * 60 * 1000;
+
 interface BestTime {
   hour: string;
   score: number;
+  giorno?: string;
+  ora?: string;
+  timestamp?: number;
+  confidence?: number;
 }
 
 interface State {
@@ -70,6 +76,12 @@ export default function WeekTime({ subreddit }: { subreddit: string }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { setDateTime, isPro, setIsPro } = useAppContext();
 
+  // Funzione per verificare se il cache è valido
+  const isCacheValid = useCallback((timestamp: number) => {
+    const now = new Date().getTime();
+    return now - timestamp < CACHE_VALIDITY_DURATION;
+  }, []);
+
   // Funzione per caricare i dati dai server
   const handleFetchData = useCallback(async () => {
     if (!subreddit.trim()) return;
@@ -90,19 +102,17 @@ export default function WeekTime({ subreddit }: { subreddit: string }) {
         try {
           const parsedData = JSON.parse(cachedData);
 
-          if (parsedData && typeof parsedData === 'object' && parsedData.bestTimesByDay) {
-            const formattedData: { [day: string]: BestTime } = {};
-            Object.entries(parsedData.bestTimesByDay).forEach(([day, data]: [string, any]) => {
-              if (data) {
-                formattedData[day] = { hour: data.hour.toString(), score: data.score };
-              }
-            });
-
-            dispatch({ type: 'SET_BEST_TIMES', payload: formattedData });
-            return;
-          } else if (typeof parsedData === 'object' && Object.keys(parsedData).length > 0) {
-            dispatch({ type: 'SET_BEST_TIMES', payload: parsedData });
-            return;
+          // Check if the cache has a timestamp and if it's still valid
+          if (parsedData.timestamp && isCacheValid(parsedData.timestamp)) {
+            if (parsedData && typeof parsedData === 'object' && parsedData.bestTimes) {
+              dispatch({ type: 'SET_BEST_TIMES', payload: parsedData.bestTimes });
+              return;
+            } else if (typeof parsedData === 'object' && Object.keys(parsedData).length > 0) {
+              dispatch({ type: 'SET_BEST_TIMES', payload: parsedData });
+              return;
+            }
+          } else {
+            console.log('Cache expired, fetching fresh data');
           }
         } catch (error) {
           console.error('Error parsing cached week data:', error);
@@ -117,26 +127,25 @@ export default function WeekTime({ subreddit }: { subreddit: string }) {
         }
       });
 
-      if (response.status === 204) {
+      if (response.status === 403) {
         setIsPro(false);
         dispatch({ type: 'SET_ERROR', payload: "Upgrade to a Pro membership to unlock this data." });
         return;
       }
 
-      if (response.status !== 200 || !response.data.bestTimesByDay) {
+      if (response.status !== 200 || !response.data.bestTimes) {
         dispatch({ type: 'SET_ERROR', payload: "No data available for this subreddit" });
         return;
       }
 
-      const formattedData: { [day: string]: BestTime } = {};
-      Object.entries(response.data.bestTimesByDay).forEach(([day, data]: [string, any]) => {
-        if (data) {
-          formattedData[day] = { hour: data.hour.toString(), score: data.score };
-        }
-      });
+      // Store data with timestamp
+      const dataToCache = {
+        ...response.data,
+        timestamp: new Date().getTime()
+      };
 
-      sessionStorage.setItem(`bestTimes-${subreddit}`, JSON.stringify(response.data));
-      dispatch({ type: 'SET_BEST_TIMES', payload: formattedData });
+      sessionStorage.setItem(`bestTimes-${subreddit}`, JSON.stringify(dataToCache));
+      dispatch({ type: 'SET_BEST_TIMES', payload: response.data.bestTimes });
 
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || "Error loading the data";
@@ -145,21 +154,39 @@ export default function WeekTime({ subreddit }: { subreddit: string }) {
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false });
     }
-  }, [subreddit, navigate, setIsPro]);
+  }, [subreddit, navigate, setIsPro, isCacheValid]);
 
   // Funzione per formattare l'ora
-  const formatTime = useCallback((hour: string) => {
+  const formatTime = useCallback((timeData: BestTime) => {
     const userTimeZone = localStorage.getItem("userTimeZone") || Intl.DateTimeFormat().resolvedOptions().timeZone;
     const is12HourFormat = localStorage.getItem("timeFormat") === "12h";
-    const utcDate = new Date();
-    utcDate.setUTCHours(parseInt(hour, 10), 0, 0, 0);
-    const zonedDate = toZonedTime(utcDate, userTimeZone);
+
+    // Use the timestamp if available, otherwise parse the hour
+    let dateToFormat: Date;
+    if (timeData.timestamp) {
+      dateToFormat = new Date(timeData.timestamp);
+    } else {
+      const utcDate = new Date();
+      utcDate.setUTCHours(parseInt(timeData.hour, 10), 0, 0, 0);
+      dateToFormat = utcDate;
+    }
+
+    const zonedDate = toZonedTime(dateToFormat, userTimeZone);
     const timeFormat = is12HourFormat ? "hh:mm a" : "HH:mm";
     return format(zonedDate, timeFormat, { timeZone: userTimeZone });
   }, []);
 
   // Funzione per impostare la data nel DateTimePicker
-  const handleSetTime = useCallback((day: string, hour: string) => {
+  const handleSetTime = useCallback((day: string, timeData: BestTime) => {
+    if (timeData.timestamp) {
+      const dateToSet = new Date(timeData.timestamp);
+      const userTimeZone = localStorage.getItem("userTimeZone") || Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const localDate = new Date(dateToSet.toLocaleString('en-US', { timeZone: userTimeZone }));
+      setDateTime(localDate);
+      return;
+    }
+
+    // Fallback nel caso in cui il timestamp non sia disponibile
     const utcDate = new Date();
     const currentDayIndex = utcDate.getUTCDay();
     const targetDayIndex = WEEK_MAP[day];
@@ -175,19 +202,15 @@ export default function WeekTime({ subreddit }: { subreddit: string }) {
     }
 
     const targetUtcDate = new Date(utcDate);
-
     targetUtcDate.setUTCDate(targetUtcDate.getUTCDate() + daysToAdd);
-
-    targetUtcDate.setUTCHours(parseInt(hour, 10), 0, 0, 0);
+    targetUtcDate.setUTCHours(parseInt(timeData.hour, 10), 0, 0, 0);
 
     setDateTime(targetUtcDate);
-
   }, [setDateTime]);
 
   // Funzione per gestire il checkout
   const redirectCheckout = useCallback(async () => {
     toast.info("Pro membership will be available soon! 😉");
-    //getCheckout();
   }, []);
 
   // Funzione per caricare i dati dai server
@@ -199,53 +222,62 @@ export default function WeekTime({ subreddit }: { subreddit: string }) {
     }
   }, [subreddit, isPro, handleFetchData]);
 
-  // Funzione per generare il componente ProUpgrade
-  const renderProUpgrade = useMemo(() => (
-    <div className="w-full min-h-[40svh] md:min-h-[25svh] flex justify-center items-center bg-zinc-200 rounded-lg">
-      <Button
-        variant="default"
-        onClick={redirectCheckout}
-        className="flex items-center gap-2">
-        Unlock Pro Features
-        <TrendingUp className="w-4 h-4" />
-      </Button>
-    </div>
-  ), [redirectCheckout]);
-
   // Funzione per generare i componenti WeekTimeCard
-  const renderTimeCards = useMemo(() => {
+  const weekCards = useMemo(() => {
     if (state.loading) {
       return <Loader2 className="animate-spin" />;
     }
 
     if (state.error) {
       return (
-        <div className="w-full text-center text-red-500">
-          {state.error}
+        <div className="w-full flex flex-col items-center justify-center p-4">
+          <p className="text-red-500 mb-4">{state.error}</p>
+          {!isPro && (
+            <Button onClick={redirectCheckout} className="bg-blue-600 hover:bg-blue-700">
+              <TrendingUp className="mr-2 h-4 w-4" />
+              Upgrade to Pro
+            </Button>
+          )}
         </div>
       );
     }
 
+    // If user is not pro, show upgrade button instead of cards
+    if (!isPro) {
+      return (
+        <div className="w-full flex flex-col items-center justify-center p-8 bg-zinc-200 rounded-lg shadow-md">
+          <p className="text-gray-600 mb-6 text-center">
+            Upgrade to Pro to see the best posting times for each day of the week.
+          </p>
+          <Button
+            onClick={redirectCheckout}
+            className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2">
+            <TrendingUp className="mr-2 h-4 w-4" />
+            Upgrade to Pro
+          </Button>
+        </div>
+      );
+    }
+
+    // For pro users, always render cards for all days of the week
     return DAYS_OF_WEEK.map((day) => {
-      const hasData = state.bestTimes && state.bestTimes[day];
-      const time = hasData ? formatTime(state.bestTimes[day].hour) : "No data available";
-      const score = hasData ? state.bestTimes[day].score.toFixed(0) : "No score";
+      const timeData = state.bestTimes[day];
 
       return (
         <WeekTimeCard
           key={day}
           dayOfWeek={day}
-          time={time}
-          score={score}
-          onClick={hasData ? () => handleSetTime(day, state.bestTimes[day].hour) : undefined}
+          time={timeData ? formatTime(timeData) : "No data available"}
+          score={timeData ? timeData.score.toFixed(0) : "No score"}
+          onClick={timeData ? () => handleSetTime(day, timeData) : undefined}
         />
       );
     });
-  }, [state.loading, state.error, state.bestTimes, formatTime, handleSetTime]);
+  }, [state.loading, state.error, state.bestTimes, isPro, formatTime, handleSetTime, redirectCheckout]);
 
   return (
     <div className="w-full h-auto flex flex-col md:flex-row md:flex-wrap gap-4">
-      {!isPro ? renderProUpgrade : renderTimeCards}
+      {weekCards}
     </div>
   );
 }

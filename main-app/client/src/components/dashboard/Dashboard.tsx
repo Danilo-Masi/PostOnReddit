@@ -242,7 +242,7 @@ export default function Dashboard() {
           "overflow-scroll"
         )}>
           <h1 className="font-bold text-xl md:text-lg text-zinc-900 dark:text-zinc-50">
-            Best time for today ({userTimeZone})
+            Best time in the next 24 hours ({userTimeZone})
           </h1>
           <DailyTime subreddit={communityValue} />
 

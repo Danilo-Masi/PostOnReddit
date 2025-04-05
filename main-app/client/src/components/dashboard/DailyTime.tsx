@@ -6,22 +6,34 @@ import { DailyTimeCard } from "../custom/TimeCard";
 import { Loader2 } from "lucide-react";
 import { useAppContext } from "../context/AppContext";
 import { format, toZonedTime } from "date-fns-tz";
+import { isToday } from "date-fns";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
+// Cache validity duration in milliseconds (1 hour)
+const CACHE_VALIDITY_DURATION = 60 * 60 * 1000;
 
 interface DailyTimeProps {
   subreddit: string;
 }
 
+interface BestTime {
+  hour: string;
+  score: number;
+  giorno: string;
+  timestamp: number;
+  dayOfWeek?: number;
+  confidence?: number;
+}
+
 interface State {
-  bestTimes: { hour: string; score: number }[];
+  bestTimes: BestTime[];
   loading: boolean;
   error: string | null;
 }
 
 type Action =
   | { type: 'SET_LOADING'; payload: boolean }
-  | { type: 'SET_BEST_TIMES'; payload: { hour: string; score: number }[] }
+  | { type: 'SET_BEST_TIMES'; payload: BestTime[] }
   | { type: 'SET_ERROR'; payload: string | null };
 
 const initialState: State = {
@@ -48,6 +60,28 @@ export default function DailyTime({ subreddit }: DailyTimeProps) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { setDateTime } = useAppContext();
 
+  // Function to check if cached data is still valid
+  const isCacheValid = useCallback((timestamp: number) => {
+    const now = new Date().getTime();
+    return now - timestamp < CACHE_VALIDITY_DURATION;
+  }, []);
+
+  // Function to check if data is from today
+  const isDataFromToday = useCallback((data: any) => {
+    if (!data || !data.bestTimes || !Array.isArray(data.bestTimes) || data.bestTimes.length === 0) {
+      return false;
+    }
+
+    // Check if the first best time has a giorno property and if it's today
+    const firstBestTime = data.bestTimes[0];
+    if (firstBestTime && firstBestTime.giorno) {
+      const dataDate = new Date(firstBestTime.giorno);
+      return isToday(dataDate);
+    }
+
+    return false;
+  }, []);
+
   // Funzione per caricare i dati dai server
   const handleFetchData = useCallback(async () => {
     if (!subreddit?.trim()) return;
@@ -67,14 +101,22 @@ export default function DailyTime({ subreddit }: DailyTimeProps) {
       if (cachedData) {
         try {
           const parsedData = JSON.parse(cachedData);
-          if (parsedData && typeof parsedData === 'object' && parsedData.bestTimes) {
-            if (Array.isArray(parsedData.bestTimes)) {
-              dispatch({ type: 'SET_BEST_TIMES', payload: parsedData.bestTimes });
+
+          // Check if the cache has a timestamp, is still valid, and is from today
+          if (parsedData.timestamp &&
+            isCacheValid(parsedData.timestamp) &&
+            isDataFromToday(parsedData)) {
+            if (parsedData && typeof parsedData === 'object' && parsedData.bestTimes) {
+              if (Array.isArray(parsedData.bestTimes)) {
+                dispatch({ type: 'SET_BEST_TIMES', payload: parsedData.bestTimes });
+                return;
+              }
+            } else if (Array.isArray(parsedData)) {
+              dispatch({ type: 'SET_BEST_TIMES', payload: parsedData });
               return;
             }
-          } else if (Array.isArray(parsedData)) {
-            dispatch({ type: 'SET_BEST_TIMES', payload: parsedData });
-            return;
+          } else {
+            console.log('Cache expired, not from today, or invalid, fetching fresh data');
           }
         } catch (error) {
           console.error('Error parsing cached data:', error);
@@ -98,7 +140,13 @@ export default function DailyTime({ subreddit }: DailyTimeProps) {
         ? response.data.bestTimes
         : [];
 
-      sessionStorage.setItem(`bestTimes_${subreddit}`, JSON.stringify(response.data));
+      // Store data with timestamp
+      const dataToCache = {
+        ...response.data,
+        timestamp: new Date().getTime()
+      };
+
+      sessionStorage.setItem(`bestTimes_${subreddit}`, JSON.stringify(dataToCache));
       dispatch({ type: 'SET_BEST_TIMES', payload: bestTimes });
 
     } catch (error: any) {
@@ -108,7 +156,7 @@ export default function DailyTime({ subreddit }: DailyTimeProps) {
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false });
     }
-  }, [subreddit, navigate]);
+  }, [subreddit, navigate, isCacheValid, isDataFromToday]);
 
   useEffect(() => {
     if (subreddit?.trim()) {
@@ -118,28 +166,37 @@ export default function DailyTime({ subreddit }: DailyTimeProps) {
           const parsedData = JSON.parse(cachedData);
           console.log('Cached data:', parsedData);
 
-          if (parsedData && typeof parsedData === 'object' && parsedData.bestTimes) {
-            if (Array.isArray(parsedData.bestTimes)) {
-              dispatch({ type: 'SET_BEST_TIMES', payload: parsedData.bestTimes });
+          // Check if the cache has a timestamp, is still valid, and is from today
+          if (parsedData.timestamp &&
+            isCacheValid(parsedData.timestamp) &&
+            isDataFromToday(parsedData)) {
+            if (parsedData && typeof parsedData === 'object' && parsedData.bestTimes) {
+              if (Array.isArray(parsedData.bestTimes)) {
+                dispatch({ type: 'SET_BEST_TIMES', payload: parsedData.bestTimes });
+              } else {
+                console.error('bestTimes property is not an array:', parsedData.bestTimes);
+                dispatch({ type: 'SET_ERROR', payload: "Invalid data format" });
+              }
+            } else if (Array.isArray(parsedData)) {
+              dispatch({ type: 'SET_BEST_TIMES', payload: parsedData });
             } else {
-              console.error('bestTimes property is not an array:', parsedData.bestTimes);
+              console.error('Cached data is not in expected format:', parsedData);
               dispatch({ type: 'SET_ERROR', payload: "Invalid data format" });
             }
-          } else if (Array.isArray(parsedData)) {
-            dispatch({ type: 'SET_BEST_TIMES', payload: parsedData });
           } else {
-            console.error('Cached data is not in expected format:', parsedData);
-            dispatch({ type: 'SET_ERROR', payload: "Invalid data format" });
+            console.log('Cache expired, not from today, or invalid, fetching fresh data');
+            handleFetchData();
           }
         } catch (error) {
           console.error('Error parsing cached data:', error);
           dispatch({ type: 'SET_ERROR', payload: "Error parsing cached data" });
+          handleFetchData();
         }
       } else {
         handleFetchData();
       }
     }
-  }, [subreddit, handleFetchData]);
+  }, [subreddit, handleFetchData, isCacheValid, isDataFromToday]);
 
   useEffect(() => {
     if (subreddit?.trim() === "") {
@@ -148,28 +205,40 @@ export default function DailyTime({ subreddit }: DailyTimeProps) {
   }, [subreddit]);
 
   // Funzione per formattare l'ora
-  const formatTime = useCallback((hour: string) => {
+  const formatTime = useCallback((timeData: BestTime) => {
     const userTimeZone = localStorage.getItem("userTimeZone") || Intl.DateTimeFormat().resolvedOptions().timeZone;
     const is12HourFormat = localStorage.getItem("timeFormat") === "12h";
-    const utcDate = new Date();
-    utcDate.setUTCHours(parseInt(hour, 10), 0, 0, 0);
 
-    const zonedDate = toZonedTime(utcDate, userTimeZone);
+    // Use the timestamp if available, otherwise parse the hour
+    let dateToFormat: Date;
+    if (timeData.timestamp) {
+      dateToFormat = new Date(timeData.timestamp);
+    } else {
+      const utcDate = new Date();
+      utcDate.setUTCHours(parseInt(timeData.hour, 10), 0, 0, 0);
+      dateToFormat = utcDate;
+    }
+
+    const zonedDate = toZonedTime(dateToFormat, userTimeZone);
     const timeFormat = is12HourFormat ? "hh:mm a" : "HH:mm";
     return format(zonedDate, timeFormat, { timeZone: userTimeZone });
   }, []);
 
   // Funzione per impostare la data nel DateTimePicker  
-  const handleSetTime = useCallback((hour: string) => {
-    const utcDate = new Date();
-    utcDate.setUTCHours(parseInt(hour, 10), 0, 0, 0);
+  const handleSetTime = useCallback((timeData: BestTime) => {
+    // Use the timestamp if available, otherwise parse the hour
+    let dateToSet: Date;
+    if (timeData.timestamp) {
+      dateToSet = new Date(timeData.timestamp);
+    } else {
+      const utcDate = new Date();
+      utcDate.setUTCHours(parseInt(timeData.hour, 10), 0, 0, 0);
+      dateToSet = utcDate;
+    }
 
     const userTimeZone = localStorage.getItem("userTimeZone") || Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-    const localDate = new Date(utcDate.toLocaleString('en-US', { timeZone: userTimeZone }));
-
+    const localDate = new Date(dateToSet.toLocaleString('en-US', { timeZone: userTimeZone }));
     setDateTime(localDate);
-
   }, [setDateTime]);
 
   // Funzione per ottenere il suffisso ordinale
@@ -206,15 +275,26 @@ export default function DailyTime({ subreddit }: DailyTimeProps) {
       );
     }
 
-    return state.bestTimes.map((time, index) => (
-      <DailyTimeCard
-        key={`${time.hour}-${index}`}
-        place={`${getOrdinalSuffix(index + 1)} place`}
-        time={formatTime(time.hour)}
-        score={time.score.toFixed(0)}
-        onClick={() => handleSetTime(time.hour)}
-      />
-    ));
+    return state.bestTimes.map((time, index) => {
+      // Create a Date object from the timestamp or giorno
+      let dateObj: Date | undefined;
+      if (time.timestamp) {
+        dateObj = new Date(time.timestamp);
+      } else if (time.giorno) {
+        dateObj = new Date(time.giorno);
+      }
+      
+      return (
+        <DailyTimeCard
+          key={`${time.hour}-${index}`}
+          place={`${getOrdinalSuffix(index + 1)} place`}
+          time={formatTime(time)}
+          score={time.score.toFixed(0)}
+          date={dateObj}
+          onClick={() => handleSetTime(time)}
+        />
+      );
+    });
   }, [state.loading, state.error, state.bestTimes, getOrdinalSuffix, formatTime, handleSetTime]);
 
   return (
