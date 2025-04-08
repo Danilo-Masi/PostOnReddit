@@ -5,8 +5,8 @@ function FeatureCard({ image, title, description, style }: { image: string, titl
     return (
         <div className={`${style ? style : "w-full md:w-[calc(50%-0.75rem)]"} flex flex-col items-start justify-center gap-4 rounded-xl border border-zinc-200`}>
             <div className="w-full md:h-[80%] flex items-center justify-center overflow-hidden relative">
-                <div className="w-full h-full bg-gradient-to-b from-transparent via-transparent to-zinc-50 rounded-t-xl absolute top-0 left-0" />
-                <img src={image} alt={title} className="object-cover w-full h-full rounded-t-xl" />
+                <div className="w-full h-full bg-gradient-to-b from-zinc-100 via-transparent to-white rounded-t-xl absolute top-0 left-0 " />
+                <img src={image} alt={title} className="object-cover w-full h-full rounded-t-xl hover:scale-125 transition-all duration-300" />
             </div>
             <div className="w-full md:h-[20%] flex flex-col items-start justify-center gap-2 p-4">
                 <h3 className="text-xl font-semibold">{title}</h3>
@@ -45,9 +45,12 @@ const features = [
 
 export default function Features() {
     return (
-        <div className="w-full flex flex-col items-center justify-center bg-white">
-            <div className="w-[90%] md:w-[80%] flex flex-wrap items-center justify-center gap-4 py-52">
-                <Headline title="Features" description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos." />
+        <div className="w-full h-auto min-h-svh flex flex-col items-center justify-center bg-white" id="features">
+            <div className="w-[90%] md:w-[80%] flex flex-wrap items-center justify-center gap-4 py-24 md:py-32">
+                <Headline
+                    section="Features"
+                    title="Discover the Power of postonreddit"
+                    description="Explore our innovative features designed to streamline your Reddit experience. From scheduling posts to analyzing engagement, postonreddit provides everything you need to grow your community and boost your reach." />
                 {features.map((feature, index) => (
                     <FeatureCard key={`${feature.title}-${index}`} {...feature} />
                 ))}

@@ -12,8 +12,8 @@ function AppRoutes() {
     <Suspense fallback={<div>Loading...</div>}>
       <Routes>
         <Route index element={<Homepage />} />
-        <Route path="/terms-of-services" element={<Termspage />} />
-        <Route path="/privacy-policy" element={<Privacypage />} />
+        <Route path="/terms" element={<Termspage />} />
+        <Route path="/privacy" element={<Privacypage />} />
         <Route path="*" element={<Errorpage />} />
       </Routes>
     </Suspense>
