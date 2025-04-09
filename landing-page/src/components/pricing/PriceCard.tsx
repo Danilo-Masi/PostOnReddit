@@ -23,11 +23,11 @@ export default function PriceCard({ planTitle, planDescription, price, priceDesc
             <p className="text-sm text-zinc-500">{priceDescription}</p>
             <Separator className="w-full my-6" />
             <ul className="w-full flex flex-col items-start justify-start gap-2">
-                {goodFeatures.map((feature) => (
-                    <li className="flex flex-row items-center justify-start gap-2 text-zinc-800"><CheckIcon className="w-4 h-4 text-orange-600" /> {feature}</li>
+                {goodFeatures.map((feature, index) => (
+                    <li key={index} className="flex flex-row items-center justify-start gap-2 text-zinc-800"><CheckIcon className="w-4 h-4 text-orange-600" /> {feature}</li>
                 ))}
-                {badFeatures && badFeatures.map((feature) => (
-                    <li className="flex flex-row items-center justify-start gap-2 text-zinc-300"><X className="w-4 h-4" /> {feature}</li>
+                {badFeatures && badFeatures.map((feature, index) => (
+                    <li key={index} className="flex flex-row items-center justify-start gap-2 text-zinc-300"><X className="w-4 h-4" /> {feature}</li>
                 ))}
             </ul>
             <Button

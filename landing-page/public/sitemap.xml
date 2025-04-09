@@ -9,24 +9,17 @@
   </url>
 
   <url>
-    <loc>https://www.postonreddit.com/terms-services</loc>
+    <loc>https://www.postonreddit.com/terms</loc>
     <lastmod>2024-12-01</lastmod>
     <changefreq>yearly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://www.postonreddit.com/privacy-policy</loc>
+    <loc>https://www.postonreddit.com/privacy</loc>
     <lastmod>2024-12-01</lastmod>
     <changefreq>yearly</changefreq>
-    <priority>0.5</priority>
-  </url>
-
-  <url>
-    <loc>https://www.postonreddit.com/cookie-policy</loc>
-    <lastmod>2024-12-01</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.8</priority>
   </url>
 
   <url>
@@ -34,6 +27,13 @@
     <lastmod>2024-12-17</lastmod>
     <changefreq>never</changefreq>
     <priority>0.1</priority>
+  </url>
+
+  <url>
+    <loc>https://www.postonreddit.com/sitemap.xml</loc>
+    <lastmod>2024-12-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
 
 </urlset>

@@ -50,12 +50,12 @@ export default function Footer() {
           <h3 className="text-lg font-semibold text-white">Legal</h3>
           <ul className="space-y-3">
             <li>
-              <Link to="/terms" className="hover:text-white transition-colors">
+              <Link to="/terms" onClick={() => scrollTo(0, 0)} className="hover:text-white transition-colors">
                 Terms of Service
               </Link>
             </li>
             <li>
-              <Link to="/privacy" className="hover:text-white transition-colors">
+              <Link to="/privacy" onClick={() => scrollTo(0, 0)} className="hover:text-white transition-colors">
                 Privacy Policy
               </Link>
             </li>

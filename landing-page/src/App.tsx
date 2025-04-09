@@ -1,7 +1,8 @@
 import { Suspense, lazy, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useAppContext } from "./context/AppContext";
-// Lazy loading delle pagine
+import Fallback from "./components/custom/Fallback";
+import CookiesDialog from "./components/cookies/CookiesDialog";
 const Homepage = lazy(() => import("./pages/Homepage"));
 const Termspage = lazy(() => import("./pages/Termspage"));
 const Privacypage = lazy(() => import("./pages/Privacypage"));
@@ -9,7 +10,7 @@ const Errorpage = lazy(() => import("./pages/Errorpage"));
 
 function AppRoutes() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<Fallback />}>
       <Routes>
         <Route index element={<Homepage />} />
         <Route path="/terms" element={<Termspage />} />
@@ -21,32 +22,44 @@ function AppRoutes() {
 }
 
 export default function App() {
-  /*
-  const { isCookiesBannerOpened, setCookiesBannerOpened } = useAppContext();
+  const { isCookiesBannerOpen, setCookiesBannerOpen } = useAppContext();
+  const cookiesBanner = localStorage.getItem('cookieBanner');
+
+  const handleCookiesBanner = () => {
+    if (cookiesBanner === 'true') {
+      setCookiesBannerOpen(false);
+      loadAnalyticsScript();
+    } else if (cookiesBanner === 'false') {
+      setCookiesBannerOpen(false);
+    } else {
+      setCookiesBannerOpen(true);
+    }
+  };
+
+  const loadAnalyticsScript = () => {
+    const script = document.createElement('script');
+    script.src = "https://scripts.simpleanalyticscdn.com/latest.js";
+    script.async = true;
+    script.defer = true;
+    script.setAttribute('data-hostname', 'www.postonreddit.com');
+    script.onerror = (error: any) => {
+      console.error("CLIENT: Error loading Simple Analytics script", error.message);
+    };
+    document.head.appendChild(script);
+    // Cleanup function to remove the script
+    return () => { document.head.removeChild(script) };
+  };
 
   useEffect(() => {
-    if (localStorage.getItem('cookieBanner')) {
-      setCookiesBannerOpened(false);
-      // Simple analytics
-      const script = document.createElement('script');
-      script.src = "https://scripts.simpleanalyticscdn.com/latest.js";
-      script.async = true;
-      script.defer = true;
-      script.setAttribute('data-hostname', 'www.postonreddit.com');
-      script.onerror = (error: any) => {
-        console.error("CLIENT: Errore nel caricamento di Simple Analytics", error.message);
-      }
-      document.head.appendChild(script);
-    } else {
-      setCookiesBannerOpened(true);
-    }
-  }, []); */
+    handleCookiesBanner();
+  }, [cookiesBanner]);
 
   return (
     <>
       <BrowserRouter>
         <AppRoutes />
       </BrowserRouter>
+      {isCookiesBannerOpen && <CookiesDialog />}
     </>
   );
 }

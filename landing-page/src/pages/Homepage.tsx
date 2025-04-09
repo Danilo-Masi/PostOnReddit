@@ -1,23 +1,27 @@
-import Hero from "@/components/hero/Hero";
-import Features from "@/components/features/Features";
-import Testimonial from "@/components/testimonial/Testimonial";
-import Demo from "@/components/demo/Demo";
-import Pricing from "@/components/pricing/Pricing";
-import Faq from "@/components/faq/Faq";
-import FooterHero from "@/components/footerHero/FooterHero";
-import Footer from "@/components/footer/Footer";
+import { Suspense, lazy } from 'react';
+import Fallback from '@/components/custom/Fallback';
+const Hero = lazy(() => import('@/components/hero/Hero'));
+const Features = lazy(() => import('@/components/features/Features'));
+const Testimonial = lazy(() => import('@/components/testimonial/Testimonial'));
+const Demo = lazy(() => import('@/components/demo/Demo'));
+const Pricing = lazy(() => import('@/components/pricing/Pricing'));
+const Faq = lazy(() => import('@/components/faq/Faq'));
+const FooterHero = lazy(() => import('@/components/footerHero/FooterHero'));
+const Footer = lazy(() => import('@/components/footer/Footer'));
 
 export default function Homepage() {
     return (
         <div className="w-full h-auto min-h-svh flex flex-col items-center bg-zinc-50">
-            <Hero />
-            <Features />
-            <Testimonial />
-            <Demo />
-            <Pricing />
-            <Faq />
-            <FooterHero />
-            <Footer />
+            <Suspense fallback={<Fallback />}>
+                <Hero />
+                <Features />
+                <Testimonial />
+                <Demo />
+                <Pricing />
+                <Faq />
+                <FooterHero />
+                <Footer />
+            </Suspense>
         </div>
     );
 }

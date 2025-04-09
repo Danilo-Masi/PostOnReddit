@@ -1,17 +1,19 @@
-import { useState, createContext, useContext } from "react";
+import { useState, createContext, useContext, Dispatch, SetStateAction } from "react";
 
 type AppContextType = {
-
+    isCookiesBannerOpen: boolean;
+    setCookiesBannerOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
+    const [isCookiesBannerOpen, setCookiesBannerOpen] = useState(false);
 
     return (
         <AppContext.Provider
-            value={{ }}>
+            value={{ isCookiesBannerOpen, setCookiesBannerOpen }}>
             {children}
         </AppContext.Provider>
     );
