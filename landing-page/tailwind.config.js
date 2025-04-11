@@ -68,6 +68,9 @@ export default {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 			},
+			backgroundImage: {
+				'radial': 'radial-gradient(circle at 25% 25%, var(--tw-gradient-stops))',
+			},
 		}
 	},
 	plugins: [

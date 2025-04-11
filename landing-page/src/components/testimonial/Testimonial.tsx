@@ -96,7 +96,7 @@ export default function Testimonial() {
                     </Button>
                 </div>
                 <div className="w-full md:w-[60%] flex flex-wrap gap-4 relative">
-                    {!useIsMobile() && (<div className="w-full h-full absolute top-0 left-0 bg-gradient-to-b from-white via-transparent to-white" />)}
+                    {!useIsMobile() && (<div className="w-full h-full absolute top-0 left-0 bg-gradient-to-b from-zinc-100 via-transparent to-zinc-100" />)}
                     <TestimonialColumn>
                         {testimonial1.map((testimonial) => (
                             <TestimonialCard key={testimonial.name} testimonial={testimonial} />

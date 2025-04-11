@@ -219,6 +219,7 @@ function HeroContent() {
             {/* Right Column */}
             <div className="w-full md:w-1/2 h-[60svh] flex gap-4 items-start justify-center relative overflow-hidden">
                 <div className="w-full h-full absolute top-0 left-0 bg-gradient-to-b from-zinc-100 via-transparent to-zinc-100" />
+                <div className="w-full h-full absolute top-0 left-0 bg-gradient-to-r from-zinc-100 via-transparent to-zinc-100" />
                 <div className="w-1/2 md:w-1/3 h-full flex flex-wrap gap-4 overflow-hidden mt-16">
                     {blockHours1.map((block, index) => (
                         <HeroCard key={index} block={block} />

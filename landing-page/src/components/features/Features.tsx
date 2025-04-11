@@ -1,14 +1,14 @@
-import heroImage from "@/assets/images/hero.webp";
 import Headline from "../custom/Headline";
+import { FeaturesSections1, FeaturesSections2, FeaturesSections3, FeaturesSections4 } from "./FeaturesSections";
+import { ReactNode } from "react";
 
-function FeatureCard({ image, title, description, style }: { image: string, title: string, description: string, style?: string }) {
+function FeatureCard({ section, title, description, style }: { section: ReactNode, title: string, description: string, style?: string }) {
     return (
         <div className={`${style ? style : "w-full md:w-[calc(50%-0.75rem)]"} flex flex-col items-start justify-center gap-4 rounded-xl border border-zinc-200`}>
-            <div className="w-full md:h-[80%] flex items-center justify-center overflow-hidden relative">
-                <div className="w-full h-full bg-gradient-to-b from-zinc-100 via-transparent to-white rounded-t-xl absolute top-0 left-0 " />
-                <img src={image} alt={title} className="object-cover w-full h-full rounded-t-xl hover:scale-125 transition-all duration-300" />
+            <div className="w-full md:h-[70%] flex items-center justify-center overflow-hidden relative">
+                {section}
             </div>
-            <div className="w-full md:h-[20%] flex flex-col items-start justify-center gap-2 p-4">
+            <div className="w-full md:h-[30%] flex flex-col items-start justify-center gap-2 p-4">
                 <h3 className="text-xl font-semibold">{title}</h3>
                 <p className="text-zinc-600 text-sm leading-relaxed">{description}</p>
             </div>
@@ -18,28 +18,28 @@ function FeatureCard({ image, title, description, style }: { image: string, titl
 
 const features = [
     {
-        "image": heroImage,
-        "title": "Effortless Scheduling",
-        "description": "Easily schedule your posts to maximize engagement and reach your audience at the right time.",
-        style: "w-full md:w-[calc(45%-0.50rem)] h-auto md:h-[70svh]"
+        section: <FeaturesSections1 />,
+        title: "Find your subreddit soulmate",
+        description: "No more posting in random places. Choose the subreddit where your post actually belongs (and thrives).",
+        style: "w-full md:w-[calc(45%-0.50rem)] h-auto md:h-[60svh]"
     },
     {
-        "image": heroImage,
-        "title": "Automated Reminders",
-        "description": "Set up automatic reminders for your followers to keep them engaged and informed.",
-        style: "w-full md:w-[calc(55%-0.50rem)] h-auto md:h-[70svh]"
+        section: <FeaturesSections2 />,
+        title: "Post like a time wizard",
+        description: "We'll tell you exactly when to post for max visibility, today or next Thursday at 3:17 PM. Yes, really.",
+        style: "w-full md:w-[calc(55%-0.50rem)] h-[70svh] md:h-[60svh]"
     },
     {
-        "image": heroImage,
-        "title": "Analytics Dashboard",
-        "description": "Track your post performance with detailed analytics to refine your strategy.",
-        style: "w-full md:w-[calc(60%-0.50rem)] h-auto md:h-[70svh]"
+        section: <FeaturesSections3 />,
+        title: "Schedule it. Forget it. Celebrate.",
+        description: "Write your post, hit schedule, and go live your life. We'll make sure your post shows up at just the right moment.",
+        style: "w-full md:w-[calc(60%-0.50rem)] h-auto md:h-[60svh]"
     },
     {
-        "image": heroImage,
-        "title": "Customizable Templates",
-        "description": "Choose from a variety of templates to create visually appealing posts that stand out.",
-        style: "w-full md:w-[calc(40%-0.50rem)] h-auto md:h-[70svh]"
+        section: <FeaturesSections4 />,
+        title: "Make Reddit love you",
+        description: "Post smarter, not harder. Get more upvotes, followers, and karma, without living on Reddit 24/7.",
+        style: "w-full md:w-[calc(40%-0.50rem)] h-auto md:h-[60svh]"
     },
 ];
 
