@@ -8,7 +8,7 @@ import Confetti from 'react-confetti';
 export default function PaymentSuccess() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const { setIsPro } = useAppContext();
+    const { setIsPro, setUserRedirectCheckout } = useAppContext();
     const [countdown, setCountdown] = useState(5);
     const [windowSize, setWindowSize] = useState({
         width: window.innerWidth,
@@ -35,6 +35,7 @@ export default function PaymentSuccess() {
             setCountdown((prev) => {
                 if (prev <= 1) {
                     clearInterval(timer);
+                    setUserRedirectCheckout(false);
                     navigate('/');
                     return 0;
                 }
@@ -52,7 +53,7 @@ export default function PaymentSuccess() {
             clearTimeout(confettiTimer);
             window.removeEventListener('resize', handleResize);
         };
-    }, [navigate, setIsPro]);
+    }, [navigate, setIsPro, setUserRedirectCheckout]);
 
     const status = searchParams.get('status');
     const isAlreadyPro = status === 'already_pro';

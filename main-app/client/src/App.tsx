@@ -1,9 +1,7 @@
 import { Suspense, lazy, memo } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useAppContext } from "./components/context/AppContext";
-import PreviewDialog from "./components/custom/PreviewDialog";
 import Fallback from "./components/custom/Fallback";
-
+import PreviewDialog from "./components/custom/PreviewDialog";
 const HomePage = lazy(() => import("./pages/HomePage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const RegistrationPage = lazy(() => import("./pages/RegistrationPage"));
@@ -11,7 +9,6 @@ const PaymentSuccess = lazy(() => import("./pages/PaymentSuccess"));
 const PaymentError = lazy(() => import("./pages/PaymentError"));
 
 const MemoizedPreviewDialog = memo(PreviewDialog);
-
 // Funzione per proteggere le routes di pagamento
 const ProtectedPaymentRoute = ({ children }: { children: React.ReactNode }) => {
   const referrer = document.referrer;
@@ -55,12 +52,10 @@ function AppRoutes() {
 const MemoizedAppRoutes = memo(AppRoutes);
 
 export default function App() {
-  const { isPreviewDialogOpen } = useAppContext();
-
   return (
     <BrowserRouter>
       <MemoizedAppRoutes />
-      {isPreviewDialogOpen && <MemoizedPreviewDialog />}
+      <MemoizedPreviewDialog />
     </BrowserRouter>
   );
 }

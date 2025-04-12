@@ -14,7 +14,6 @@ export default function RegistrationPage() {
 
   useEffect(() => {
     let isMounted = true;
-
     const checkUser = async () => {
       try {
         const authStatus = await checkToken();
@@ -32,12 +31,8 @@ export default function RegistrationPage() {
         }
       }
     };
-
     checkUser();
-
-    return () => {
-      isMounted = false;
-    };
+    return () => { isMounted = false };
   }, [navigate]);
 
   if (isLoading) {

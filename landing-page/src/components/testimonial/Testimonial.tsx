@@ -1,63 +1,70 @@
 import { ReactNode } from "react";
 import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
-import { ArrowRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { useIsMobile } from "@/utility/useMobile";
+import ava from '../../assets/images/ava-face.jpg';
+import drew from '../../assets/images/drew-face.jpg';
+import isabelle from '../../assets/images/isabelle-face.jpg';
+import jake from '../../assets/images/jake-face.jpg';
+import lena from '../../assets/images/lena-face.jpg';
+import lucas from '../../assets/images/lucas-face.jpg';
+import maya from '../../assets/images/maya-face.jpg';
 
 const testimonial1 = [
     {
-        name: "Sarah Johnson",
-        image: "https://via.placeholder.com/150",
-        description: "PostOnReddit transformed how I manage my content. The scheduling features are intuitive, and the engagement metrics have helped me grow my community by 40% in just two months.",
-        rating: 4.5,
+        name: "Lena Moretti",
+        image: lena,
+        description: "Honestly didn't think I'd care about scheduling Reddit posts, but here I am, saving time and actually growing my following. Wild.",
+        rating: 4.6,
     },
     {
-        name: "Michael Chen",
-        image: "https://via.placeholder.com/150",
-        description: "As a small business owner, finding the right time to post was always a challenge. This tool has been a game-changer for my marketing strategy. My reach has doubled!",
-        rating: 4.5,
+        name: "Jake Tanaka",
+        image: jake,
+        description: "I run a niche SaaS and this thing helped me double my signups from Reddit. Not magic, just smart timing and solid tools.",
+        rating: 4.9,
     },
     {
-        name: "Emma Rodriguez",
-        image: "https://via.placeholder.com/150",
-        description: "The analytics dashboard is incredibly detailed. I can see exactly when my audience is most active and tailor my content accordingly. It's like having a marketing team in your pocket.",
-        rating: 4.5,
+        name: "Isabelle Costa",
+        image: isabelle,
+        description: "The analytics alone are worth it. I now post when my audience's actually awake. Who knew that mattered so much?",
+        rating: 4.4,
     },
-]
+];
 
 const testimonial2 = [
     {
-        name: "David Wilson",
-        image: "https://via.placeholder.com/150",
-        description: "I was skeptical at first, but the ROI has been incredible. My posts now consistently reach the top of relevant subreddits, and my engagement rates have never been better.",
+        name: "Drew Patterson",
+        image: drew,
+        description: "Didn't expect much, but wow Reddit actually works when you post like a human and not a bot. This app made that easy.",
         rating: 4.5,
     },
     {
-        name: "Olivia Thompson",
-        image: "https://via.placeholder.com/150",
-        description: "The automated scheduling feature saves me hours every week. I can plan my content calendar in advance and focus on creating quality posts instead of worrying about timing.",
-        rating: 4.5,
+        name: "Maya Singh",
+        image: maya,
+        description: "I used to post randomly and pray for upvotes. Now I have a strategy. Scheduling saved me from chaos.",
+        rating: 4.8,
     },
     {
-        name: "James Martinez",
-        image: "https://via.placeholder.com/150",
-        description: "The best posting time recommendations are spot-on. I've seen a 60% increase in upvotes since I started following the suggested schedule. Worth every penny!",
-        rating: 4.5,
+        name: "Lucas Ferreira",
+        image: lucas,
+        description: "Not exaggerating my engagement literally tripled. The 'best time to post' feature just works.",
+        rating: 4.7,
     },
     {
-        name: "Sophia Lee",
-        image: "https://via.placeholder.com/150",
-        description: "As a content creator, consistency is key. PostOnReddit helps me maintain a regular posting schedule without the stress. My followers have noticed the improvement!",
-        rating: 4.5,
+        name: "Ava Becker",
+        image: ava,
+        description: "Finally, a tool that doesn't feel like it's made by robots for robots. I can stay consistent without burning out.",
+        rating: 4.3,
     },
-]
+];
 
 function TestimonialColumn({ children }: { children: ReactNode }) {
     return (
         <div className="w-full md:w-[calc(50%-0.5rem)] h-auto flex flex-col items-center justify-center">
             {children}
         </div>
-    )
+    );
 }
 
 function TestimonialCard({ testimonial }: { testimonial: any }) {
@@ -71,13 +78,13 @@ function TestimonialCard({ testimonial }: { testimonial: any }) {
             <p>{testimonial.description}</p>
             <Separator className="w-full my-4" />
             <div className="flex flex-row items-center justify-start gap-2">
-                <div className="w-10 h-10 flex items-center justify-center rounded-full bg-zinc-200" >
-                    {testimonial.name.slice(0, 2)}
+                <div className="w-10 h-10 flex items-center justify-center rounded-full overflow-hidden bg-zinc-200">
+                    <img src={testimonial.image} alt={`${testimonial.name} face`} className="w-full h-full object-cover object-center" />
                 </div>
                 <p>{testimonial.name}</p>
             </div>
         </div>
-    )
+    );
 }
 
 export default function Testimonial() {
@@ -85,14 +92,18 @@ export default function Testimonial() {
         <div className="w-full h-auto md:h-svh flex flex-col items-center justify-start overflow-hidden bg-zinc-100">
             <div className="w-[90%] md:w-[80%] h-full flex flex-col md:flex-row items-center justify-center gap-20 md:gap-10 py-24 md:py-0">
                 <div className="w-full md:w-[40%] h-full flex flex-col items-start justify-center gap-3">
-                    <h3 className="text-sm font-medium text-zinc-400 mb-2">What Our Users Say</h3>
-                    <h1 className="text-4xl font-bold text-zinc-700">We go above and beyond to meet your needs!</h1>
+                    <h3 className="text-sm font-medium text-orange-600 mb-2">What our users say</h3>
+                    <h1 className="text-4xl font-bold text-zinc-700">
+                        Real People. Real Posts. Real Obsession.
+                    </h1>
                     <p className="text-base font-medium text-zinc-400">
-                        Discover how postonreddit has transformed the way our users engage with their audience. Our commitment to excellence ensures that you have the tools you need to succeed in your Reddit journey.
+                        Don't take our word for it, listen to the folks who stopped crying over Reddit karma once they met postonreddit.
                     </p>
-                    <Button variant="default" className="w-fit bg-orange-600 text-white hover:bg-orange-700">
+                    <Button
+                        onClick={() => window.location.href = "https://app.postonreddit.com/registration"}
+                        className="w-fit bg-orange-600 text-white hover:bg-orange-700">
                         Get Started
-                        <ArrowRight />
+                        <ChevronRight />
                     </Button>
                 </div>
                 <div className="w-full md:w-[60%] flex flex-wrap gap-4 relative">

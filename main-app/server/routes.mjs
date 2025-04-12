@@ -22,8 +22,8 @@ import redditBestWeekTime from './routes/reddit/reddit-bestWeekTime-routes.mjs';
 import cronCleanup from './routes/services/cleanup-post-route.mjs';
 import cronSchedule from './routes/services/reddit-scheduler-route.mjs';
 // Payment
-//import checkoutRoutes from "./routes/payment/creem-checkout-route.mjs";
-//import successRoutes from "./routes/payment/creem-success-route.mjs";
+import checkoutRoutes from "./routes/payment/creem-checkout-route.mjs";
+import successRoutes from "./routes/payment/creem-success-route.mjs";
 
 export const applyRoutes = (app) => {
     // Auth
@@ -50,6 +50,6 @@ export const applyRoutes = (app) => {
     app.use('/services', cronCleanup);
     app.use('/services', cronSchedule);
     // Payment
-    //app.use("/payment", checkoutRoutes);
-    //app.use("/payment", successRoutes);
+    app.use("/payment", checkoutRoutes);
+    app.use("/payment", successRoutes);
 }

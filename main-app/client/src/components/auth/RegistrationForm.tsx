@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, NavigateFunction, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { UserPlus, Mail, Lock, User, Loader2, Eye, EyeOff } from 'lucide-react';
+import { useAppContext } from "../context/AppContext";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 
@@ -17,6 +18,15 @@ export default function RegistrationForm() {
     const [password, setPassword] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [showPassword, setShowPassword] = useState<boolean>(false);
+    const { setUserRedirectCheckout } = useAppContext();
+
+    useEffect(() => {
+        const queryString = window.location.search;
+        const params = new URLSearchParams(queryString);
+        if (params.size >= 1) {
+            setUserRedirectCheckout(true);
+        }
+    }, []);
 
     // Funzione per permettere ad un utente di registrarsi alla piattaforma
     const handleRegistration = async () => {

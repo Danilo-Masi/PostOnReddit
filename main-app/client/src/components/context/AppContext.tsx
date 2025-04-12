@@ -37,6 +37,8 @@ type AppContextType = {
     setDateTime: Dispatch<SetStateAction<Date>>;
     isPro: boolean;
     setIsPro: Dispatch<SetStateAction<boolean>>;
+    userRedirectCheckout: boolean;
+    setUserRedirectCheckout: Dispatch<SetStateAction<boolean>>;
 };
 
 // Funzione per ottenere la data UTC
@@ -71,11 +73,12 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [flairValue, setFlairValue] = useState("");
     const [dateTime, setDateTime] = useState(getUTCDate);
     const [isPro, setIsPro] = useState<boolean>(false);
+    const [userRedirectCheckout, setUserRedirectCheckout] = useState<boolean>(false);
 
     return (
         <AppContext.Provider
             value={{
-                selectedSection,
+                selectedSection,    
                 setSelectedSection,
                 isExitDialogOpen,
                 setExitDialogOpen,
@@ -101,6 +104,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
                 setDateTime,
                 isPro,
                 setIsPro,
+                userRedirectCheckout,
+                setUserRedirectCheckout,
             }}>
             {children}
         </AppContext.Provider>

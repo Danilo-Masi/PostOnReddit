@@ -13,6 +13,15 @@ interface PriceCardProps {
 }
 
 export default function PriceCard({ planTitle, planDescription, price, priceDescription, goodFeatures, badFeatures, isCardPro }: PriceCardProps) {
+
+    const handleRedirect = () => {
+        if (isCardPro) {
+            window.location.href = "https://app.postonreddit.com/registration?redirect";
+        } else {
+            window.location.href = "https://app.postonreddit.com/registration";
+        }
+    }
+
     return (
         <div className={`w-full md:w-1/3 h-auto flex flex-col items-start justify-start py-8 px-6 rounded-xl bg-white border border-zinc-200 ${isCardPro && "border-orange-500 shadow-lg transition-transform transform hover:scale-105"}`}>
             <h3 className="text-2xl font-bold text-zinc-800">{planTitle}</h3>
@@ -31,6 +40,7 @@ export default function PriceCard({ planTitle, planDescription, price, priceDesc
                 ))}
             </ul>
             <Button
+                onClick={handleRedirect}
                 variant="default"
                 className={`w-full mt-6 text-white ${isCardPro && "bg-orange-500 hover:bg-orange-600"}`}>
                 {isCardPro ? "Get Lifetime Access" : "Get Started"}

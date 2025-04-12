@@ -7,21 +7,25 @@ const faqItems = [
         answer: "postonreddit is a powerful tool designed to help you schedule and manage your posts on Reddit efficiently. It allows you to plan your content ahead of time, ensuring you reach your audience at the best moments."
     },
     {
-        question: "How does postonreddit work?",
-        answer: "postonreddit simplifies the posting process by allowing you to schedule your content for specific times. You can create your posts, set the desired posting time, and the tool will automatically publish them for you, saving you time and effort."
+        question: "Can I schedule posts in multiple subreddits at once?",
+        answer: "Yes! With the Pro plan, you can schedule a single post to go live in multiple subreddits with just one click, perfect for cross-posting and reaching different communities."
     },
     {
-        question: "What is the pricing for postonreddit?",
-        answer: "postonreddit offers a free plan for basic scheduling features. For advanced features and increased capabilities, you can upgrade to one of our paid plans, which provide enhanced analytics and scheduling options."
+        question: "How does postonreddit choose the best time to post?",
+        answer: "We analyze subreddit activity patterns and user engagement data to suggest the best moments to post. This helps maximize visibility and interaction on your posts."
     },
     {
-        question: "What is the pricing for PostOnReddit?",
-        answer: "PostOnReddit offers a free plan for basic scheduling features. For advanced features and increased capabilities, you can upgrade to one of our paid plans, which provide enhanced analytics and scheduling options."
+        question: "Do I need to keep my browser open for scheduled posts to work?",
+        answer: "No, once your post is scheduled, we handle everything on our servers. You can close your browser and we'll make sure your post goes live at the right time."
     },
     {
-        question: "What is the click for PostOnReddit?",
-        answer: "The click for PostOnReddit refers to the action of selecting a specific time to post your content. This feature allows you to optimize your posting schedule for maximum engagement and reach."
+        question: "Is postonreddit safe to use with my Reddit account?",
+        answer: "Yes. We use Reddit’s official OAuth system, which means you log in securely via Reddit and can revoke access at any time from your Reddit account settings."
     },
+    {
+        question: "What happens if a post fails to publish?",
+        answer: "In case of an error, you'll get an email notification with the reason for the failure and suggestions to fix it. You can also reschedule the post manually."
+    }
 ];
 
 function FaqItem({ question, answer }: { question: string, answer: string }) {
@@ -47,10 +51,12 @@ export default function Faq() {
         <div className="w-full h-auto flex flex-col items-center justify-start overflow-hidden bg-white" id="faq">
             <div className="w-[90%] md:w-[80%] h-full flex flex-col md:flex-row items-center justify-center gap-20 md:gap-10 py-24 md:py-32">
                 <div className="w-full md:w-[40%] h-full flex flex-col items-start justify-center gap-3">
-                    <h3 className="text-sm font-medium text-zinc-400 mb-2">Frequently Asked Questions</h3>
-                    <h1 className="text-4xl font-bold text-zinc-700">Got Questions? We've Got Answers!</h1>
+                    <h3 className="text-sm font-medium text-orange-600 mb-2">Frequently asked questions</h3>
+                    <h1 className="text-4xl font-bold text-zinc-700">
+                        Got Questions? Totally fair.
+                    </h1>
                     <p className="text-base font-medium text-zinc-400">
-                        Find quick answers to common questions about our features, pricing, and how to get started. If you can't find what you're looking for, feel free to reach out to our support team.
+                        We get it, things can be confusing at first. Here are some quick answers to help you out (so you don’t have to pretend you already know).
                     </p>
                 </div>
                 <div className="w-full md:w-[60%] flex flex-wrap gap-4">

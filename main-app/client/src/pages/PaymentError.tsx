@@ -1,6 +1,7 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { XCircle, ArrowRight, Clock } from 'lucide-react';
 import { Button } from '../components/ui/button';
+import { useAppContext } from '@/components/context/AppContext';
 
 const ERROR_MESSAGES: { [key: string]: string } = {
     missing_request_id: 'Missing request ID. Please try again.',
@@ -13,8 +14,14 @@ const ERROR_MESSAGES: { [key: string]: string } = {
 export default function PaymentError() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
+    const { setUserRedirectCheckout } = useAppContext();
     const errorCode = searchParams.get('error');
     const errorMessage = errorCode ? ERROR_MESSAGES[errorCode] : 'An unexpected error occurred.';
+
+    const handleRedirect = () => {
+        setUserRedirectCheckout(false);
+        navigate('/');
+    }
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -44,7 +51,7 @@ export default function PaymentError() {
 
                 <div className="space-y-4">
                     <Button
-                        onClick={() => navigate('/')}
+                        onClick={handleRedirect}
                         className="w-full bg-orange-600 hover:bg-orange-700 text-white">
                         Return to Dashboard
                         <ArrowRight className="ml-2 h-4 w-4" />

@@ -116,10 +116,15 @@ function HeroNav() {
             </div>
             {/* Desktop Buttons */}
             <div className="hidden md:flex items-center gap-2">
-                <Button variant="outline" className="items-center gap-2">
+                <Button
+                    onClick={() => window.location.href = "https://app.postonreddit.com/login"}
+                    variant="outline"
+                    className="items-center gap-2">
                     Sign In
                 </Button>
-                <Button className="flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white">
+                <Button
+                    onClick={() => window.location.href = "https://app.postonreddit.com/registration"}
+                    className="flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white">
                     Get Started <ChevronRight className="h-4 w-4" />
                 </Button>
             </div>
@@ -133,10 +138,15 @@ function HeroNav() {
                         <Link to="/" onClick={() => handleMobileMenu("#faq")} className="hover:text-orange-600 transition-colors">Faq</Link>
                     </div>
                     <div className="flex flex-col gap-4 w-[80%] max-w-xs">
-                        <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white">
+                        <Button
+                            onClick={() => window.location.href = "https://app.postonreddit.com/registration"}
+                            className="w-full bg-orange-600 hover:bg-orange-700 text-white">
                             Get Started
                         </Button>
-                        <Button variant="outline" className="w-full">
+                        <Button
+                            onClick={() => window.location.href = "https://app.postonreddit.com/login"}
+                            variant="outline"
+                            className="w-full">
                             Sign In
                         </Button>
                     </div>
@@ -172,20 +182,23 @@ function HeroContent() {
                         <p className="flex items-center justify-center md:justify-start text-sm font-medium text-zinc-700"><Gift className="h-4 w-4 animate-bounce text-orange-600 mr-2" />Join now and get the <span className="font-bold text-orange-600 ml-1"> 5€ discount!</span></p>
                     </motion.div>
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.5 }}>
-                        <h1 className="text-4xl sm:text-5xl md:text-6xl font-medium tracking-tight">
-                            Make your first $$ online, with <span className="text-orange-600 italic">Reddit</span>
+                        <h1 className="text-4xl sm:text-5xl md:text-6xl font-medium tracking-tight text-zinc-800">
+                            Make your first <span className="font-extrabold text-zinc-900">$$</span> online, with <span className="text-orange-600 italic">Reddit</span>
                         </h1>
                     </motion.div>
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.7 }}>
                         <p className="text-base sm:text-lg text-zinc-600 max-w-lg mx-auto md:mx-0">
-                            Build an audience, get feedback on your SaaS, and land your first paying users — all through Reddit.
+                            Grow your audience, get honest feedback, and find your first paying users, all without leaving Reddit.
                         </p>
                     </motion.div>
                 </div>
                 {/* Buttons and user avatars */}
                 <div className="flex flex-col items-center md:items-start gap-6">
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.9 }}>
-                        <Button size="lg" className="w-full sm:w-fit bg-orange-600 hover:bg-orange-700 text-white">
+                        <Button
+                            onClick={() => window.location.href = "https://app.postonreddit.com/registration"}
+                            size="lg"
+                            className="w-full sm:w-fit bg-orange-600 hover:bg-orange-700 text-white">
                             Start growing <TrendingUp className="ml-2 h-4 w-4" />
                         </Button>
                     </motion.div>

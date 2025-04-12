@@ -10,6 +10,7 @@ import ExitDialog from "@/components/sidebar/ExitDialog";
 import SupportDialog from "@/components/sidebar/SupportDialog";
 import DeleteDialog from "@/components/scheduled/DeleteDialog";
 import { Loader2 } from "lucide-react";
+import { getCheckout } from "@/hooks/use-payment";
 
 const MemoizedDashboard = memo(Dashboard);
 const MemoizedScheduled = memo(Scheduled);
@@ -17,13 +18,12 @@ const MemoizedSettings = memo(Settings);
 
 export default function HomePage() {
     const navigate: NavigateFunction = useNavigate();
-    const { selectedSection, isExitDialogOpen, isSupportDialogOpen, isDeleteDialogOpen } = useAppContext();
+    const { selectedSection, isExitDialogOpen, isSupportDialogOpen, isDeleteDialogOpen, userRedirectCheckout } = useAppContext();
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
     useEffect(() => {
         let isMounted = true;
-
         const checkUser = async () => {
             try {
                 const authStatus = await checkToken();
@@ -44,13 +44,15 @@ export default function HomePage() {
                 }
             }
         };
-
         checkUser();
-
-        return () => {
-            isMounted = false;
-        };
+        return () => { isMounted = false };
     }, [navigate]);
+
+    useEffect(() => {
+        if (userRedirectCheckout) {
+            getCheckout();
+        }
+    }, [userRedirectCheckout]);
 
     const content = useMemo(() => {
         switch (selectedSection) {

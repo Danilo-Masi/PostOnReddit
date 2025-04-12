@@ -49,8 +49,8 @@ export default function Features() {
             <div className="w-[90%] md:w-[80%] flex flex-wrap items-center justify-center gap-4 py-24 md:py-32">
                 <Headline
                     section="Features"
-                    title="Discover the Power of postonreddit"
-                    description="Explore our innovative features designed to streamline your Reddit experience. From scheduling posts to analyzing engagement, postonreddit provides everything you need to grow your community and boost your reach." />
+                    title="Meet the Tools You Didn't Know You Needed"
+                    description="Manual posting? That's adorable. postonreddit lets you automate, analyze, and win, without breaking a sweat." />
                 {features.map((feature, index) => (
                     <FeatureCard key={`${feature.title}-${index}`} {...feature} />
                 ))}
