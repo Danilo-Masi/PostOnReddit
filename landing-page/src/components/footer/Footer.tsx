@@ -32,11 +32,12 @@ export default function Footer() {
                 Pricing
               </Link>
             </li>
-            <li>
+            {/*<li>
               <Link to="/" onClick={() => scrollToElement("#demo")} className="hover:text-white transition-colors">
                 Demo
               </Link>
             </li>
+            */}
             <li>
               <Link to="/" onClick={() => scrollToElement("#faq")} className="hover:text-white transition-colors">
                 FAQ

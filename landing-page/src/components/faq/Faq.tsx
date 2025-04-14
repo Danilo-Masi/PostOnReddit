@@ -8,7 +8,7 @@ const faqItems = [
     },
     {
         question: "Can I schedule posts in multiple subreddits at once?",
-        answer: "Yes! With the Pro plan, you can schedule a single post to go live in multiple subreddits with just one click, perfect for cross-posting and reaching different communities."
+        answer: "You can do it soon, it is a feature that will soon be available on the paid plan. You can schedule a single post to go live in multiple subreddits with just one click, perfect for cross-posting and reaching different communities."
     },
     {
         question: "How does postonreddit choose the best time to post?",
@@ -48,7 +48,7 @@ function FaqItem({ question, answer }: { question: string, answer: string }) {
 
 export default function Faq() {
     return (
-        <div className="w-full h-auto flex flex-col items-center justify-start overflow-hidden bg-white" id="faq">
+        <div className="w-full h-auto flex flex-col items-center justify-start overflow-hidden bg-zinc-100" id="faq">
             <div className="w-[90%] md:w-[80%] h-full flex flex-col md:flex-row items-center justify-center gap-20 md:gap-10 py-24 md:py-32">
                 <div className="w-full md:w-[40%] h-full flex flex-col items-start justify-center gap-3">
                     <h3 className="text-sm font-medium text-orange-600 mb-2">Frequently asked questions</h3>
