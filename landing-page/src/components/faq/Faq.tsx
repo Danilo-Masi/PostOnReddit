@@ -31,15 +31,15 @@ const faqItems = [
 function FaqItem({ question, answer }: { question: string, answer: string }) {
     const [isOpen, setIsOpen] = useState(false);
     return (
-        <div className="w-full h-auto p-4 rounded-lg bg-zinc-50 border border-zinc-200">
-            <h3 className="text-zinc-700 flex flex-row items-center justify-between">{question}
+        <div className="w-full h-auto p-4 rounded-lg bg-background border border-border">
+            <h3 className="text-foreground flex flex-row items-center justify-between">{question}
                 <span onClick={() => setIsOpen(!isOpen)}>
-                    {isOpen ? <Minus className="w-4 h-4 text-zinc-500 cursor-pointer" /> : <Plus className="w-4 h-4 text-zinc-500 cursor-pointer" />}
+                    {isOpen ? <Minus className="w-4 h-4 text-muted-foreground cursor-pointer" /> : <Plus className="w-4 h-4 text-muted-foreground cursor-pointer" />}
                 </span>
             </h3>
             {isOpen && (
                 <div className="mt-4">
-                    <p className="text-sm text-zinc-500">{answer}</p>
+                    <p className="text-sm text-muted-foreground">{answer}</p>
                 </div>
             )}
         </div>
@@ -48,14 +48,14 @@ function FaqItem({ question, answer }: { question: string, answer: string }) {
 
 export default function Faq() {
     return (
-        <div className="w-full h-auto flex flex-col items-center justify-start overflow-hidden bg-zinc-100" id="faq">
+        <div className="w-full h-auto flex flex-col items-center justify-start overflow-hidden bg-accent" id="faq">
             <div className="w-[90%] md:w-[80%] h-full flex flex-col md:flex-row items-center justify-center gap-20 md:gap-10 py-24 md:py-32">
                 <div className="w-full md:w-[40%] h-full flex flex-col items-start justify-center gap-3">
-                    <h3 className="text-sm font-medium text-orange-600 mb-2">Frequently asked questions</h3>
-                    <h1 className="text-4xl font-bold text-zinc-700">
+                    <h3 className="text-sm font-medium text-primary mb-2">Frequently asked questions</h3>
+                    <h1 className="text-4xl text-balance font-bold text-foreground">
                         Got Questions? Totally fair.
                     </h1>
-                    <p className="text-base font-medium text-zinc-400">
+                    <p className="text-base text-balance font-medium text-muted-foreground">
                         We get it, things can be confusing at first. Here are some quick answers to help you out (so you don’t have to pretend you already know).
                     </p>
                 </div>

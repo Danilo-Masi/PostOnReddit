@@ -8,7 +8,7 @@ export default function Errorpage() {
       <h1 className="text-4xl font-bold text-red-600">404</h1>
       <p className="text-lg text-gray-700">Oops! The page you are looking for does not exist.</p>
       <p className="text-sm text-gray-500">You might want to check the URL or return to the homepage.</p>
-      <Button asChild className="bg-blue-600 hover:bg-blue-700 text-white rounded-md p-2">
+      <Button aria-label="Go back to the homepage" asChild className="bg-blue-600 hover:bg-blue-700 text-white rounded-md p-2">
         <Link to={"/"}><ArrowLeft /> Go back to the homepage</Link>
       </Button>
     </div>

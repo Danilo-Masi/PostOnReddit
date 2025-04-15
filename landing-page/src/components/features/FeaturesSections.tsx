@@ -2,11 +2,11 @@ import { useEffect, useState } from "react"
 import Confetti from 'react-confetti';
 import { Progress } from "../ui/progress"
 import { Blackheartsuit } from "../custom/Blackheartsuit";
-import Starticon from "../custom/Starticon";
+import StarIcon from "../custom/StarIcon";
 
 function SubredditCard({ subreddit, isSelected, style }: { subreddit: string, isSelected: boolean, style?: string }) {
     return (
-        <div className={`w-fit h-fit flex items-center justify-between px-4 py-2 bg-zinc-100 rounded-xl text-sm ${style && style}`}>
+        <div className={`w-fit h-fit flex items-center justify-between px-4 py-2 bg-accent rounded-xl text-sm ${style && style}`}>
             <div className={`flex items-center gap-3 ${isSelected && "cursor-pointer hover:scale-105 transition-all duration-300"}`}>
                 {isSelected && <Blackheartsuit />}
                 <p>{subreddit}</p>
@@ -17,7 +17,7 @@ function SubredditCard({ subreddit, isSelected, style }: { subreddit: string, is
 
 export function FeaturesSections1() {
     return (
-        <div className="w-full h-[50svh] md:h-[60svh] rounded-t-xl flex items-center justify-center relative">
+        <div className="w-full h-[50svh] rounded-t-xl flex items-center justify-center relative">
             <div className="w-full h-full absolute top-0 left-0 rounded-xl bg-gradient-to-b from-zinc-50 via-transparent to-white blur-2xl z-20" />
             <div className="w-full h-full absolute top-0 left-0 rounded-xl bg-gradient-to-r from-zinc-50 via-transparent to-white blur-2xl z-20" />
             <SubredditCard subreddit="r/SaaS" isSelected={false} style="absolute top-10 left-10" />
@@ -39,54 +39,63 @@ export function FeaturesSections1() {
 
 function TimeCard({ time, score }: { time: string, score: number }) {
     return (
-        <div className="w-fit min-w-[200px] h-fit p-4 rounded-lg bg-zinc-100 border border-zinc-300">
-            <h1 className="text-md font-bold text-zinc-700">{new Date().toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })}</h1>
-            <h3 className="text-sm font-medium text-zinc-500">{time}</h3>
+        <div className="w-fit min-w-[200px] h-fit p-4 rounded-lg bg-accent border border-border">
+            <h1 className="text-md font-bold text-foreground">{new Date().toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric" })}</h1>
+            <h3 className="text-sm font-medium text-muted-foreground">{time}</h3>
             <p className="flex flex-row items-center gap-1 text-sm font-semibold text-blue-500">
-                <Starticon />
+                <StarIcon />
                 {score}
             </p>
         </div>
-    )
+    );
 }
 
 export function FeaturesSections2() {
+
+    const randomTime = () => {
+        return Math.floor(Math.random() * 12);
+    }
+
+    const randomScore = () => {
+        return Math.floor(Math.random() * 1111);
+    }
+
     return (
-        <div className="w-full h-[50svh] md:h-[60svh] rounded-t-xl flex flex-col items-center justify-start gap-6 relative">
-            <div className="w-full h-full absolute top-0 left-0 rounded-t-xl bg-gradient-to-b from-zinc-50 via-transparent to-white" />
-            <div className="w-full h-full absolute top-0 left-0 rounded-x-xl bg-gradient-to-r from-white via-transparent to-white" />
-            <div className="w-full h-1/3 flex items-center justify-start p-2 gap-3">
+        <div className="h-[50svh] rounded-t-xl flex flex-col items-center justify-start overflow-hidden gap-6 relative">
+            <div className="w-full h-full absolute top-0 left-0 rounded-t-xl bg-gradient-to-b from-zinc-50/90 via-transparent to-white" />
+            <div className="w-full h-full absolute top-0 left-0 rounded-x-xl bg-gradient-to-r from-zinc-50/90 via-transparent to-zinc-50/90" />
+            <div className="h-1/3 flex items-center justify-start py-2 ml-12 gap-3">
                 {Array.from({ length: 10 }).map((_, index) => (
-                    <TimeCard key={index} time="10:00 AM" score={451} />
+                    <TimeCard key={index} time={`${randomTime()}:00 PM`} score={randomScore()} />
                 ))}
             </div>
-            <div className="w-full h-1/3 flex items-center justify-center p-2 gap-3">
+            <div className="h-1/3 flex items-center justify-center py-2 gap-3">
                 {Array.from({ length: 10 }).map((_, index) => (
-                    <TimeCard key={index} time="10:00 AM" score={1002} />
+                    <TimeCard key={index} time={`${randomTime()}:00 PM`} score={randomScore()} />
                 ))}
             </div>
-            <div className="w-full h-1/3 flex items-center justify-center p-2 gap-3">
+            <div className="h-1/3 flex items-center justify-center py-2 ml-24 gap-3">
                 {Array.from({ length: 10 }).map((_, index) => (
-                    <TimeCard key={index} time="10:00 AM" score={1002} />
+                    <TimeCard key={index} time={`${randomTime()}:00 PM`} score={randomScore()} />
                 ))}
             </div>
         </div>
-    )
+    );
 }
 
 function PostCard({ title, content, style }: { title: string, content: string, style?: string }) {
     return (
-        <div className={`w-2/3 flex flex-col items-start justify-start gap-2 p-5 rounded-xl bg-white border border-zinc-200 ${style && style}`}>
-            <h1 className="text-lg font-bold text-zinc-700">{title}</h1>
-            <p className="text-sm text-zinc-400">Scheduled for 18 Feb. 2025 at 03:17 AM</p>
-            <p className="text-sm text-zinc-500">{content}</p>
+        <div className={`w-2/3 flex flex-col items-start justify-start gap-2 p-5 rounded-xl bg-background border border-border ${style && style}`}>
+            <h1 className="text-lg font-bold text-foreground">{title}</h1>
+            <p className="text-sm text-muted-foreground">Scheduled for 18 Feb. 2025 at 03:17 AM</p>
+            <p className="text-sm text-muted-foreground">{content}</p>
         </div>
     );
 }
 
 export function FeaturesSections3() {
     return (
-        <div className="w-full h-[50svh] md:h-[60svh] rounded-t-xl flex items-center justify-center py-5 gap-3 relative overflow-hidden">
+        <div className="w-full h-[50svh] rounded-t-xl flex items-center justify-center py-5 gap-3 relative overflow-hidden">
             <div className="w-full h-full absolute top-0 left-0 rounded-t-xl bg-gradient-to-b from-zinc-50/50 via-transparent to-whitez-10" />
             <div className="w-full h-full absolute top-0 left-0 rounded-x-xl bg-gradient-to-r from-zinc-50/50 via-transparent to-zinc-50/50 z-10" />
             <PostCard
@@ -117,9 +126,9 @@ function GrowthCard() {
     }, [progress]);
 
     return (
-        <div className={`w-2/3 h-fit flex flex-col items-start justify-start gap-2 p-5 rounded-xl bg-white border border-zinc-200`}>
-            <h3 className="text-sm font-medium text-zinc-500">Users growth<span className="text-xs text-green-600 ml-2">+42%</span></h3>
-            <h1 className="text-2xl font-bold text-zinc-700">+{progress} <span className="text-lg text-zinc-500">new users</span></h1>
+        <div className={`w-2/3 h-fit flex flex-col items-start justify-start gap-2 p-5 rounded-xl bg-background border border-border`}>
+            <h3 className="text-sm font-medium text-muted-foreground">Users growth<span className="text-xs text-green-600 ml-2">+42%</span></h3>
+            <h1 className="text-2xl font-bold text-foreground">+{progress} <span className="text-lg font-medium text-muted-foreground">new users</span></h1>
             <Progress value={progress} about="new users" />
         </div>
     );
@@ -127,7 +136,7 @@ function GrowthCard() {
 
 export function FeaturesSections4() {
     return (
-        <div className="w-full h-[50svh] md:h-[60svh] rounded-t-xl flex items-center justify-center relative">
+        <div className="w-full h-[50svh] rounded-t-xl flex items-center justify-center relative">
             <div className="w-full h-full absolute top-0 left-0 rounded-t-xl bg-gradient-to-b from-zinc-50 via-transparent to-white z-10" />
             <Confetti
                 width={window.innerWidth}
@@ -142,5 +151,5 @@ export function FeaturesSections4() {
             />
             <GrowthCard />
         </div>
-    )
+    );
 }

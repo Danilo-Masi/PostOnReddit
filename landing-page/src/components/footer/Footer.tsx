@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { scrollToElement } from "@/utility/use-animation";
+import { scrollToElement } from "@/utility/useAnimation";
 import logo from "../../assets/images/icon.png";
 
 export default function Footer() {
@@ -88,7 +88,7 @@ export default function Footer() {
             © {new Date().getFullYear()} postonreddit. All rights reserved.
           </p>
           <div className="flex gap-6 text-sm text-zinc-500">
-            <a href="/sitemap.xml" className="hover:text-white transition-colors">
+            <a href="/sitemap.xml" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
               Sitemap
             </a>
           </div>

@@ -22,7 +22,7 @@ function AppRoutes() {
 }
 
 export default function App() {
-  const { isCookiesBannerOpen, setCookiesBannerOpen } = useAppContext();
+  const { setCookiesBannerOpen } = useAppContext();
   const cookiesBanner = localStorage.getItem('cookieBanner');
 
   const handleCookiesBanner = () => {
@@ -43,10 +43,9 @@ export default function App() {
     script.defer = true;
     script.setAttribute('data-hostname', 'www.postonreddit.com');
     script.onerror = (error: any) => {
-      console.error("CLIENT: Error loading Simple Analytics script", error.message);
+      console.error("Error loading Simple Analytics script", error.message);
     };
     document.head.appendChild(script);
-    // Cleanup function to remove the script
     return () => { document.head.removeChild(script) };
   };
 
@@ -59,7 +58,7 @@ export default function App() {
       <BrowserRouter>
         <AppRoutes />
       </BrowserRouter>
-      {isCookiesBannerOpen && <CookiesDialog />}
+      <CookiesDialog />
     </>
   );
 }

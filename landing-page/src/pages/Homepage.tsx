@@ -10,7 +10,7 @@ const Footer = lazy(() => import('@/components/footer/Footer'));
 
 export default function Homepage() {
     return (
-        <div className="w-full h-auto min-h-svh flex flex-col items-center bg-zinc-50">
+        <div className="w-full h-auto min-h-svh flex flex-col items-center">
             <Suspense fallback={<Fallback />}>
                 <Hero />
                 <Features />

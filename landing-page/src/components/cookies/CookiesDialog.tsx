@@ -26,7 +26,7 @@ export default function CookiesDialog() {
                 <AlertDialogFooter className="flex flex-col md:flex-row gap-2">
                     <AlertDialogAction
                         onClick={() => handleAcceptCookies()}
-                        className="bg-orange-600 hover:bg-orange-700 text-white">
+                        className="bg-primary hover:bg-primary/85 text-primary-foreground">
                         Accept
                     </AlertDialogAction>
                     <AlertDialogCancel
@@ -36,5 +36,5 @@ export default function CookiesDialog() {
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
-    )
+    );
 }
