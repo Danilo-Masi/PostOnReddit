@@ -1,7 +1,7 @@
 import { Suspense, lazy, memo } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Fallback from "./components/custom/Fallback";
-import PreviewDialog from "./components/custom/PreviewDialog";
+import PreviewDialog from "./components/dashboard/PreviewDialog";
 const HomePage = lazy(() => import("./pages/HomePage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const RegistrationPage = lazy(() => import("./pages/RegistrationPage"));

@@ -122,8 +122,7 @@ export default function LoginForm() {
                             value={email}
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                             onKeyDown={handleKeyDown}
-                            className="pl-10 bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 focus:border-orange-500 dark:focus:border-orange-500"
-                        />
+                            className="pl-10 bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 focus:border-orange-500 dark:focus:border-orange-500" />
                     </div>
                 </div>
 
@@ -140,13 +139,11 @@ export default function LoginForm() {
                             value={password}
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                             onKeyDown={handleKeyDown}
-                            className="pl-10 bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 focus:border-orange-500 dark:focus:border-orange-500"
-                        />
+                            className="pl-10 bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 focus:border-orange-500 dark:focus:border-orange-500" />
                         <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-500 dark:text-zinc-400 hover:text-orange-500 dark:hover:text-orange-500"
-                        >
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-500 dark:text-zinc-400 hover:text-orange-500 dark:hover:text-orange-500">
                             {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
                     </div>
@@ -158,8 +155,7 @@ export default function LoginForm() {
                     type="submit"
                     className="w-full bg-orange-500 hover:bg-orange-600 text-white"
                     onClick={handleLogin}
-                    disabled={isLoading}
-                >
+                    disabled={isLoading}>
                     {isLoading ? (
                         <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />

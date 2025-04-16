@@ -30,7 +30,6 @@ const FeatureItem = ({ icon: Icon, text }: { icon: any, text: string }) => (
 export default function AuthHero() {
     return (
         <div className="w-1/2 h-svh hidden md:flex flex-col items-center justify-center px-8 bg-gradient-to-br from-orange-600 via-orange-500 to-orange-400 dark:from-orange-700 dark:via-orange-600 dark:to-orange-500 relative overflow-hidden">
-            {/* Background pattern */}
             <div className="absolute inset-0 opacity-10">
                 <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0wIDBoNjB2NjBIMHoiLz48cGF0aCBkPSJNMzAgMzBoMXYxaC0xeiIgZmlsbD0iI2ZmZiIvPjwvZz48L3N2Zz4=')] bg-repeat"></div>
             </div>
@@ -67,7 +66,6 @@ export default function AuthHero() {
                 </div>
             </div>
 
-            {/* Decorative elements */}
             <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-black/10 to-transparent"></div>
             <div className="absolute top-0 right-0 w-64 h-64 bg-orange-300/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-orange-400/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>

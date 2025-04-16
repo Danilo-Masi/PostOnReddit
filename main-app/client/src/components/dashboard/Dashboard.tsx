@@ -7,7 +7,6 @@ import { checkRedditAuthorization } from '@/hooks/use-retrieve-data';
 import { checkPlan } from '@/hooks/use-verify';
 import { useAppContext } from '../context/AppContext';
 import { cn } from '@/lib/utils';
-
 import DescriptionEditor from './DescriptionEditor';
 import SelectFlair from './SelectFlair';
 import TitleEditor from './TitleEditor';
@@ -265,8 +264,8 @@ export default function Dashboard() {
             aria-label="Schedule your post"
             className={cn(
               "w-full md:w-2/3 py-5",
-              "bg-orange-500 dark:bg-orange-500",
-              "hover:bg-orange-600 dark:hover:bg-orange-600",
+              "bg-orange-600 dark:bg-orange-500",
+              "hover:bg-orange-700 dark:hover:bg-orange-600",
               "text-zinc-50 dark:text-zinc-50"
             )}
             onClick={handlePostCreation}

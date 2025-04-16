@@ -1,16 +1,10 @@
-// React
 import { useEffect, useState } from "react"
-// Shadcnui
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Button } from "../ui/button"
-// Icons
 import { Command, CalendarCheck2, Settings, ChevronUp, CircleHelp, LogOut, MessageSquareText } from "lucide-react"
-// Context
 import { useAppContext } from "../context/AppContext"
-// Components
 import Logo from "../custom/Logo"
-// Hook
 import { checkData } from "@/hooks/use-retrieve-data"
 
 const links = [
@@ -18,10 +12,9 @@ const links = [
     { title: "Scheduled post", key: "scheduled-post", icon: CalendarCheck2 },
     { title: "Feature request", key: "feedback", icon: MessageSquareText },
     { title: "Settings", key: "settings", icon: Settings }
-]
+];
 
 export function AppSidebar() {
-
     const { selectedSection, setSelectedSection, setExitDialogOpen, setSupportDialogOpen } = useAppContext();
     const [userEmail, setUserEmail] = useState<string>("");
 
@@ -34,7 +27,6 @@ export function AppSidebar() {
                 setUserEmail(email);
             }
         };
-
         fetchInfo();
     }, []);
 
@@ -47,17 +39,13 @@ export function AppSidebar() {
     }
 
     return (
-
-        <Sidebar
-            className={`md:py-2 bg-zinc-100 dark:bg-zinc-800 border-zinc-100 dark:border-zinc-800 z-50`}>
-            {/* HEADER */}
+        <Sidebar className={`md:py-2 bg-zinc-100 dark:bg-zinc-800 border-zinc-100 dark:border-zinc-800 z-50`}>
             <SidebarHeader>
                 <Logo />
             </SidebarHeader>
-            {/* SIDEBAR CONTENT */}
             <SidebarContent className="flex flex-col justify-between">
                 <SidebarGroup>
-                    <SidebarGroupLabel className="text-sm text-textSecondary">
+                    <SidebarGroupLabel className="text-sm text-zinc-400 dark:text-zinc-500">
                         Platform
                     </SidebarGroupLabel>
                     <SidebarGroupContent>
@@ -66,9 +54,8 @@ export function AppSidebar() {
                                 <SidebarMenuItem key={link.title}>
                                     <SidebarMenuButton asChild isActive={selectedSection === link.key} className={`hover:bg-zinc-200 dark:hover:bg-zinc-700 ${selectedSection === link.key && 'bg-zinc-200 dark:bg-zinc-700'}`}>
                                         <Button
-                                            className={`flex items-center justify-start text-zinc-700 dark:text-zinc-50`}
                                             variant="ghost"
-                                            //onClick={() => setSelectedSection(link.key)}
+                                            className="flex items-center justify-start text-zinc-700 dark:text-zinc-50"
                                             onClick={() => handleSelection(link.key)}>
                                             <link.icon />
                                             <span>{link.title}</span>
@@ -80,7 +67,6 @@ export function AppSidebar() {
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
-            {/* SIDEBAR FOOTER */}
             <SidebarFooter>
                 <SidebarMenu>
                     <SidebarMenuItem>

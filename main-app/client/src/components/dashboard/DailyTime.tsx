@@ -9,6 +9,7 @@ import { format, toZonedTime } from "date-fns-tz";
 import { isToday } from "date-fns";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
+
 // Cache validity duration in milliseconds (1 hour)
 const CACHE_VALIDITY_DURATION = 60 * 60 * 1000;
 

@@ -1,10 +1,7 @@
-// Context
 import { useAppContext } from "../context/AppContext";
-// Shadcnui
 import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
 
 export default function SupportDialog() {
-
     const { isSupportDialogOpen, setSupportDialogOpen } = useAppContext();
 
     return (
@@ -17,7 +14,7 @@ export default function SupportDialog() {
                     <AlertDialogTitle id="alert-dialog-title" className="text-balance">How can we help?</AlertDialogTitle>
                     <AlertDialogDescription id="alert-dialog-description" className="text-balance">
                         If you need any assistance or have suggestions, don't hesitate to contact us by emailing
-                        <span className="text-orange-500 hover:underline"> support@postonreddit.com</span>
+                        <span className="text-orange-600 hover:underline"> support@postonreddit.com</span>
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

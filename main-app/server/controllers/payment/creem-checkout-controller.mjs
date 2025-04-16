@@ -2,11 +2,11 @@ import axios from "axios";
 import logger from "../../config/logger.mjs";
 import { supabaseAdmin } from '../../config/supabase.mjs';
 import { validateToken } from "../services/validateToken.mjs";
+import { sendEmail } from "../services/sendEmail.mjs";
 
 export const createCheckoutSession = async (req, res) => {
     try {
         const { customerEmail } = req.body;
-
         if (!customerEmail) {
             return res.status(400).json({ error: "Email cliente mancante." });
         }
@@ -19,7 +19,7 @@ export const createCheckoutSession = async (req, res) => {
             {
                 product_id: process.env.CREEM_PRODUCT_ID,
                 request_id: user_id,
-                success_url: `${process.env.SUCCESS_URL_TEST}`,
+                success_url: `${process.env.SUCCESS_URL}`,
                 customer: { email: customerEmail },
             },
             {
@@ -38,7 +38,6 @@ export const createCheckoutSession = async (req, res) => {
 export const handleSuccessCallback = async (req, res) => {
     try {
         const { request_id } = req.query;
-
         if (!request_id) {
             logger.error("Request ID mancante nella callback di successo");
             return res.redirect(`${process.env.FRONTEND_URL}/payment-error?error=missing_request_id`);
@@ -53,17 +52,20 @@ export const handleSuccessCallback = async (req, res) => {
 
         if (userError) {
             logger.error(`Errore nel recupero dei dati utente: ${userError.message}`);
+            sendEmail("danilomasi999@gmail.com", `Errore nel recupero dei dati utente con id: ${request_id} - creem-checkout-controller.mjs`, userError.message);
             return res.redirect(`${process.env.FRONTEND_URL}/payment-error?error=user_not_found`);
         }
 
         if (!userData) {
             logger.error(`Utente non trovato con ID: ${request_id}`);
+            sendEmail("danilomasi999@gmail.com", `Errore nel recupero dei dati utente con id: ${request_id} - creem-checkout-controller.mjs`, userError.message);
             return res.redirect(`${process.env.FRONTEND_URL}/payment-error?error=user_not_found`);
         }
 
         // Check if user is already pro to prevent duplicate charges
         if (userData.ispro) {
             logger.info(`Utente ${request_id} è già pro, reindirizzamento alla pagina di successo`);
+            sendEmail("danilomasi999@gmail.com", `Errore nel recupero dei dati utente con id: ${request_id} - creem-checkout-controller.mjs`, userError.message);
             return res.redirect(`${process.env.FRONTEND_URL}/payment-success?status=already_pro`);
         }
 
@@ -79,11 +81,13 @@ export const handleSuccessCallback = async (req, res) => {
 
         if (error) {
             logger.error(`Errore nell'aggiornamento dei dati utente: ${error.message}`);
+            sendEmail("danilomasi999@gmail.com", `Errore nell'aggiornamento dei dati utente con id: ${request_id} - creem-checkout-controller.mjs`, error.message);
             return res.redirect(`${process.env.FRONTEND_URL}/payment-error?error=update_failed`);
         }
 
         if (!data || data.length === 0) {
             logger.error(`Aggiornamento fallito per l'utente con ID: ${request_id}`);
+            sendEmail("danilomasi999@gmail.com", `Errore nell'aggiornamento dei dati utente con id: ${request_id} - creem-checkout-controller.mjs`, error.message);
             return res.redirect(`${process.env.FRONTEND_URL}/payment-error?error=update_failed`);
         }
 
@@ -96,11 +100,13 @@ export const handleSuccessCallback = async (req, res) => {
 
         if (verifyError || !verifyData || !verifyData.ispro) {
             logger.error(`Verifica fallita per l'utente con ID: ${request_id}`);
+            sendEmail("danilomasi999@gmail.com", `Errore nella verifica dell'aggiornamento dei dati utente con id: ${request_id} - creem-checkout-controller.mjs`, error.message);
             return res.redirect(`${process.env.FRONTEND_URL}/payment-error?error=verification_failed`);
         }
 
         // Log successful payment
         logger.info(`Pagamento completato con successo per l'utente: ${request_id}`);
+        sendEmail("danilomasi999@gmail.com", `Pagamento completato con successo per l'utente con id: ${request_id} - creem-checkout-controller.mjs`, `Pagamento completato con successo per l'utente: ${request_id}`);
 
         // Redirect to success page with transaction ID
         return res.redirect(`${process.env.FRONTEND_URL}/payment-success`);

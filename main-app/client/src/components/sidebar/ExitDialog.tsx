@@ -1,20 +1,13 @@
-// React-router
 import { NavigateFunction, useNavigate } from "react-router-dom";
-// Context
 import { useAppContext } from "../context/AppContext";
-// Axios
 import axios from 'axios';
-// Shadcnui
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
 import { toast } from "sonner";
-// Icons
 import { LogOut } from "lucide-react";
 
-// Url del server
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 
 export default function ExitDialog() {
-
     const navigate: NavigateFunction = useNavigate();
     const { isExitDialogOpen, setExitDialogOpen } = useAppContext();
 
@@ -22,11 +15,10 @@ export default function ExitDialog() {
     const handleLogout = async () => {
         const authToken = localStorage.getItem('authToken');
         if (!authToken) {
-            toast.info("You're alredy logged out");
+            toast.info("You're already logged out");
             navigate('/login');
             return;
         }
-
         try {
             const response = await axios.post(`${SERVER_URL}/auth/logout`, null, {
                 headers: {
@@ -44,13 +36,13 @@ export default function ExitDialog() {
 
         } catch (error: any) {
             if (error.response) {
-                console.error("CLIENT: Server error:", error.stack);
+                console.error("Server error:", error.stack);
                 toast.error("Server error. Please try again later");
             } else if (error.request) {
-                console.error("CLIENT: Network error: ", error.message);
+                console.error("Network error: ", error.message);
                 toast.error("Network error. Check your connection");
             } else {
-                console.error("CLIENT: Generic error: ", error.message);
+                console.error("Generic error: ", error.message);
                 toast.error("An unexpected error occurred. Please try again later");
             }
         }

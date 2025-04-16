@@ -6,7 +6,6 @@ const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 export const checkToken = async () => {
     const token = localStorage.getItem('authToken');
     if (!token) {
-        console.error('Token mancante');
         localStorage.removeItem('authToken');
         return false;
     }
@@ -24,11 +23,10 @@ export const checkToken = async () => {
     }
 }
 
-// Funzione che verifica se l'utente è in versione pro
+// Funzione che verifica se l'utente è pro
 export const checkPlan = async () => {
     const token = localStorage.getItem('authToken');
     if (!token) {
-        console.error('CLIENT: Token mancante');
         localStorage.removeItem('authToken');
         return false;
     }

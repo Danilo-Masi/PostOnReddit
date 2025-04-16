@@ -25,6 +25,7 @@
     "moment-timezone": "^0.5.47",
     "node-cache": "^5.1.2",
     "querystring": "^0.2.1",
+    "resend": "^4.3.0",
     "supabase": "^1.223.10",
     "turndown": "^7.2.0",
     "winston": "^3.17.0"

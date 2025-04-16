@@ -14,7 +14,6 @@ export default function PreviewDialog() {
             return descriptionValue || "<p>No content...</p>";
         }
         try {
-            // Converte JSONContent in HTML
             return generateHTML(descriptionValue as JSONContent, [StarterKit]);
         } catch (error) {
             console.error("Errore nella conversione TipTap -> HTML:", error);

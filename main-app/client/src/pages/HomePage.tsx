@@ -18,7 +18,7 @@ const MemoizedSettings = memo(Settings);
 
 export default function HomePage() {
     const navigate: NavigateFunction = useNavigate();
-    const { selectedSection, isExitDialogOpen, isSupportDialogOpen, isDeleteDialogOpen, userRedirectCheckout } = useAppContext();
+    const { selectedSection, userRedirectCheckout } = useAppContext();
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
@@ -81,9 +81,9 @@ export default function HomePage() {
     return (
         <Layout>
             {content}
-            {isExitDialogOpen && <ExitDialog />}
-            {isSupportDialogOpen && <SupportDialog />}
-            {isDeleteDialogOpen && <DeleteDialog />}
+            <ExitDialog />
+            <SupportDialog />
+            <DeleteDialog />
         </Layout>
     );
 }

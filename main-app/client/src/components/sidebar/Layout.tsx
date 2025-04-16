@@ -1,7 +1,5 @@
-// Shadcnui
 import { SidebarProvider, SidebarTrigger } from "../ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
-// Components
 import MainContainer from "../custom/MainContainer";
 
 export default function Layout({ children }: { children: React.ReactNode }) {

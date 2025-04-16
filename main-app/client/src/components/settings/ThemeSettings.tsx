@@ -1,11 +1,7 @@
-// React
 import { useEffect, useState } from "react";
-// Shadcnui
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-// Components
 import CardBase from "../custom/CardBase";
-// theme
 import { useTheme } from "../theme/ThemeProvider";
 
 type Theme = "dark" | "light"
