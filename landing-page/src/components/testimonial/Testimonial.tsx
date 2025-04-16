@@ -91,6 +91,12 @@ function TestimonialCard({ testimonial }: { testimonial: any }) {
 }
 
 export default function Testimonial() {
+
+    const handleGetStarted = () => {
+        window.sa_event?.("testimonial_get_started");
+        window.location.href = "https://app.postonreddit.com/registration";
+    }
+
     return (
         <div className="w-full h-auto md:h-svh flex flex-col items-center justify-start overflow-hidden bg-accent">
             <div className="w-[90%] md:w-[80%] h-full flex flex-col md:flex-row items-center justify-center gap-20 md:gap-10 py-24 md:py-0">
@@ -106,7 +112,7 @@ export default function Testimonial() {
                     </p>
                     <Button
                         aria-label="Get Started"
-                        onClick={() => window.location.href = "https://app.postonreddit.com/registration"}
+                        onClick={handleGetStarted}
                         className="w-fit text-primary-foreground bg-primary hover:bg-primary/85">
                         Get Started
                         <ChevronRight />

@@ -35,7 +35,7 @@ export default function Pricing() {
           description="Get powerful tools without selling a kidney. Just one plan, everything included. Easy." />
         <div className="w-full h-auto flex flex-wrap items-center justify-center gap-8">
           <PriceCard key="free-trial" planTitle="Free Trial" planDescription="To get started" price="€0" priceDescription="no credit card required" goodFeatures={goodFeaturesFreeTrial} badFeatures={badFeaturesFreeTrial} isCardPro={false} />
-          <PriceCard key="lifetime-access" planTitle="Lifetime Access" planDescription="Pay once, use forever" price="€27" priceDescription="just one time" goodFeatures={goodFeaturesPro} futureFeatures={futureFeaturesPro} isCardPro={true} />
+          <PriceCard key="lifetime-access" planTitle="Lifetime Access" planDescription="Pay once, use forever" price="€32" priceDescription="just one time" goodFeatures={goodFeaturesPro} futureFeatures={futureFeaturesPro} isCardPro={true} />
         </div>
       </div>
     </div>

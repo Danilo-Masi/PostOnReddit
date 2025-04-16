@@ -23,6 +23,17 @@ function Logo() {
 }
 
 function HeroNav() {
+
+    const handleSignIn = () => {
+        window.sa_event?.("navbar_sign_in");
+        window.location.href = "https://app.postonreddit.com/login";
+    };
+
+    const handleGetStarted = () => {
+        window.sa_event?.("navbar_get_started");
+        window.location.href = "https://app.postonreddit.com/registration";
+    }
+
     return (
         <nav className=" w-[90%] md:w-[80%] flex py-4 items-center justify-between relative">
             <Logo />
@@ -38,13 +49,13 @@ function HeroNav() {
                     aria-label="Sign In"
                     variant="outline"
                     className="hidden md:flex"
-                    onClick={() => window.location.href = "https://app.postonreddit.com/login"}>
+                    onClick={handleSignIn}>
                     Sign In
                 </Button>
                 <Button
                     aria-label="Get Started"
                     className="bg-primary hover:bg-primary/85 text-primary-foreground"
-                    onClick={() => window.location.href = "https://app.postonreddit.com/registration"}>
+                    onClick={handleGetStarted}>
                     Get Started <ChevronRight className="h-4 w-4" />
                 </Button>
             </div>
@@ -81,6 +92,12 @@ function HeroCard() {
 }
 
 function HeroContent() {
+
+    const handleGetStarted = () => {
+        window.sa_event?.("hero_get_started");
+        window.location.href = "https://app.postonreddit.com/registration";
+    }
+
     return (
         <div className="w-[90%] md:w-[80%] h-full flex flex-col md:flex-row gap-x-8 gap-y-24 items-center justify-center py-24 md:py-32">
             {/* Left Column */}
@@ -106,7 +123,7 @@ function HeroContent() {
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.9 }}>
                         <Button
                             aria-label="Start growing"
-                            onClick={() => window.location.href = "https://app.postonreddit.com/registration"}
+                            onClick={handleGetStarted}
                             size="lg"
                             className="w-full sm:w-fit bg-primary hover:bg-primary/85 text-primary-foreground">
                             Start growing <TrendingUp className="ml-2 h-4 w-4" />

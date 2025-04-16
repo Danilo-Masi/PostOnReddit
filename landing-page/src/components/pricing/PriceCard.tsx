@@ -28,7 +28,7 @@ export default function PriceCard({ planTitle, planDescription, price, priceDesc
             <h3 className="text-2xl font-bold text-foreground">{planTitle}</h3>
             <p className="text-sm text-muted-foreground mb-4">{planDescription}</p>
             <p className="text-3xl font-extrabold text-foreground">
-                <span className="text-xl text-muted-foreground font-semibold line-through mr-2">€32</span>
+                <span className="text-xl text-muted-foreground font-semibold line-through mr-2">€37</span>
                 {price}</p>
             <p className="text-sm text-muted-foreground">{priceDescription}</p>
             <Separator className="w-full my-6" />

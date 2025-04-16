@@ -4,6 +4,17 @@ import { ArrowRight } from "lucide-react";
 import { scrollToElement } from "@/utility/useAnimation";
 
 export default function FooterHero() {
+
+    const handleGetStarted = () => {
+        window.sa_event?.("footer_hero_get_started");
+        window.location.href = "https://app.postonreddit.com/registration";
+    }
+
+    const handleViewPricing = () => {
+        window.sa_event?.("footer_hero_view_pricing");
+        scrollToElement("#pricing");
+    }
+
     return (
         <section className="w-full py-24 md:py-32 bg-background">
             <div className="w-[90%] md:w-[80%] mx-auto">
@@ -20,7 +31,7 @@ export default function FooterHero() {
                                 <Button
                                     variant="default"
                                     aria-label="Get Started Free"
-                                    onClick={() => window.location.href = "https://app.postonreddit.com/registration"}
+                                    onClick={handleGetStarted}
                                     size="lg"
                                     className="bg-black text-background hover:bg-black/80">
                                     Get Started Free
@@ -32,7 +43,7 @@ export default function FooterHero() {
                                     variant="outline"
                                     size="lg"
                                     className="text-foreground hover:bg-background/90">
-                                    <Link to="/" onClick={() => scrollToElement("#pricing")}>
+                                    <Link to="/" onClick={handleViewPricing}>
                                         View Pricing
                                     </Link>
                                 </Button>
