@@ -106,7 +106,6 @@ export const handleSuccessCallback = async (req, res) => {
 
         // Log successful payment
         logger.info(`Pagamento completato con successo per l'utente: ${request_id}`);
-        sendEmail("danilomasi999@gmail.com", `Pagamento completato con successo per l'utente con id: ${request_id} - creem-checkout-controller.mjs`, `Pagamento completato con successo per l'utente: ${request_id}`);
 
         // Redirect to success page with transaction ID
         return res.redirect(`${process.env.FRONTEND_URL}/payment-success`);

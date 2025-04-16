@@ -7,7 +7,6 @@ import { Loader2, TrendingUp } from "lucide-react";
 import { useAppContext } from "../context/AppContext";
 import { format, toZonedTime } from "date-fns-tz";
 import { Button } from "../ui/button";
-import { getCheckout } from "@/hooks/use-payment";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 
@@ -212,7 +211,7 @@ export default function WeekTime({ subreddit }: { subreddit: string }) {
   // Funzione per gestire il checkout
   const redirectCheckout = useCallback(async () => {
     toast.info("Pro membership will be available soon! 😉");
-    getCheckout();
+    //getCheckout();
   }, []);
 
   // Funzione per caricare i dati dai server
