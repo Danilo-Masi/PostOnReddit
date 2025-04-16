@@ -1,12 +1,13 @@
-import { useEffect, useReducer, useCallback, useMemo } from "react";
+import { useEffect, useReducer, useCallback, useMemo, useState } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
 import { WeekTimeCard } from "../custom/TimeCard";
-import { Loader2, TrendingUp } from "lucide-react";
+import { ArrowUpRight, Loader2, TrendingUp } from "lucide-react";
 import { useAppContext } from "../context/AppContext";
 import { format, toZonedTime } from "date-fns-tz";
 import { Button } from "../ui/button";
+import { getCheckout } from "@/hooks/use-payment";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 
@@ -75,6 +76,7 @@ export default function WeekTime({ subreddit }: { subreddit: string }) {
   const navigate: NavigateFunction = useNavigate();
   const [state, dispatch] = useReducer(reducer, initialState);
   const { setDateTime, isPro, setIsPro } = useAppContext();
+  const [isFunctionLoading, setIsFunctionLoading] = useState(false);
 
   // Funzione per verificare se il cache è valido
   const isCacheValid = useCallback((timestamp: number) => {
@@ -210,8 +212,9 @@ export default function WeekTime({ subreddit }: { subreddit: string }) {
 
   // Funzione per gestire il checkout
   const redirectCheckout = useCallback(async () => {
-    toast.info("Pro membership will be available soon! 😉");
-    //getCheckout();
+    setIsFunctionLoading(true);
+    getCheckout();
+    setIsFunctionLoading(false);
   }, []);
 
   // Funzione per caricare i dati dai server
@@ -247,16 +250,26 @@ export default function WeekTime({ subreddit }: { subreddit: string }) {
     if (!isPro) {
       return (
         <div className="w-full flex flex-col items-center justify-center p-8 bg-zinc-200 rounded-lg shadow-md">
-          <p className="text-gray-600 mb-6 text-center">
-            Upgrade to Pro to see the best posting times for each day of the week.
+          <p className="text-gray-600 text-base text-balance text-center  mb-6">
+            Upgrade to Pro to see the best posting times for each day of the week
           </p>
           <Button
             onClick={redirectCheckout}
-            className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2">
-            <TrendingUp className="mr-2 h-4 w-4" />
-            Upgrade to Pro
+            className="bg-orange-600 hover:bg-orange-700 text-white">
+            {isFunctionLoading ? (
+              <>
+                <Loader2 className="animate-spin" />
+                Loading
+              </>
+            ) : (
+              <>
+                Upgrade to Pro
+                <ArrowUpRight />
+              </>
+            )}
+
           </Button>
-        </div>
+        </div >
       );
     }
 

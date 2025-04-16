@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback, useMemo } from 'react';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
-import { Check, Loader2, ScanEye, Settings } from 'lucide-react';
+import { CalendarCheck2, Loader2, ScanEye, Settings } from 'lucide-react';
 import { checkRedditAuthorization } from '@/hooks/use-retrieve-data';
 import { checkPlan } from '@/hooks/use-verify';
 import { useAppContext } from '../context/AppContext';
@@ -167,27 +167,27 @@ export default function Dashboard() {
       </>
     ) : (
       <>
-        <Check className="mr-2" />
         Schedule your post
+        <CalendarCheck2 />
       </>
     )
   ), [isLoading]);
 
   if (!isAccessToken) {
     return (
-      <div className="w-full h-full flex flex-col justify-center items-center text-center gap-y-3">
-        <h1 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50">
-          Grant Reddit permissions to start creating your post
+      <div className="w-full h-full flex flex-col justify-center items-center text-center bg-zinc-200 dark:bg-zinc-700 rounded-lg">
+        <h1 className="text-xl text-balance font-semibold text-zinc-700 dark:text-zinc-50">
+          Connect your Reddit account to get started
         </h1>
-        <p className="text-sm font-medium text-zinc-500 dark:text-zinc-300">
-          You need to authorize access before you can schedule posts
+        <p className="text-sm font-medium text-balance text-zinc-500 dark:text-zinc-300 mb-6">
+          You need to connect your Reddit account to schedule posts
         </p>
         <Button
           aria-label="Go to settings"
-          className="bg-orange-500 dark:bg-orange-500 hover:bg-orange-600 dark:hover:bg-orange-600 dark:text-zinc-50"
+          className="bg-orange-600 dark:bg-orange-600 hover:bg-orange-600/85 dark:hover:bg-orange-600/85 text-white dark:text-white"
           onClick={() => setSelectedSection('settings')}>
-          <Settings className="mr-2" />
-          Go to Settings
+          Go to settings
+          <Settings />
         </Button>
       </div>
     );
@@ -255,10 +255,9 @@ export default function Dashboard() {
           <Button
             aria-label="Preview your post"
             className="w-full md:w-1/3 py-5"
-            onClick={() => setPreviewDialogOpen(true)}
-          >
-            <ScanEye className="mr-2" />
+            onClick={() => setPreviewDialogOpen(true)}>
             Preview
+            <ScanEye className="mr-2" />
           </Button>
           <Button
             aria-label="Schedule your post"
@@ -269,8 +268,7 @@ export default function Dashboard() {
               "text-zinc-50 dark:text-zinc-50"
             )}
             onClick={handlePostCreation}
-            disabled={isLoading}
-          >
+            disabled={isLoading}>
             {scheduleButtonContent}
           </Button>
         </div>

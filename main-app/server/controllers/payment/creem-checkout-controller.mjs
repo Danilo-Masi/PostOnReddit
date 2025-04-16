@@ -15,7 +15,7 @@ export const createCheckoutSession = async (req, res) => {
         const user_id = await validateToken(authHeader);
 
         const response = await axios.post(
-            "https://test-api.creem.io/v1/checkouts",
+            `https://api.creem.io/v1/checkouts`,
             {
                 product_id: process.env.CREEM_PRODUCT_ID,
                 request_id: user_id,
@@ -40,7 +40,7 @@ export const handleSuccessCallback = async (req, res) => {
         const { request_id } = req.query;
         if (!request_id) {
             logger.error("Request ID mancante nella callback di successo");
-            return res.redirect(`${process.env.FRONTEND_URL}/payment-error?error=missing_request_id`);
+            return res.redirect(`${process.env.CLIENT_URL}/payment-error?error=missing_request_id`);
         }
 
         // Verify the user exists before updating
@@ -53,20 +53,20 @@ export const handleSuccessCallback = async (req, res) => {
         if (userError) {
             logger.error(`Errore nel recupero dei dati utente: ${userError.message}`);
             sendEmail("danilomasi999@gmail.com", `Errore nel recupero dei dati utente con id: ${request_id} - creem-checkout-controller.mjs`, userError.message);
-            return res.redirect(`${process.env.FRONTEND_URL}/payment-error?error=user_not_found`);
+            return res.redirect(`${process.env.CLIENT_URL}/payment-error?error=user_not_found`);
         }
 
         if (!userData) {
             logger.error(`Utente non trovato con ID: ${request_id}`);
             sendEmail("danilomasi999@gmail.com", `Errore nel recupero dei dati utente con id: ${request_id} - creem-checkout-controller.mjs`, userError.message);
-            return res.redirect(`${process.env.FRONTEND_URL}/payment-error?error=user_not_found`);
+            return res.redirect(`${process.env.CLIENT_URL}/payment-error?error=user_not_found`);
         }
 
         // Check if user is already pro to prevent duplicate charges
         if (userData.ispro) {
             logger.info(`Utente ${request_id} è già pro, reindirizzamento alla pagina di successo`);
             sendEmail("danilomasi999@gmail.com", `Errore nel recupero dei dati utente con id: ${request_id} - creem-checkout-controller.mjs`, userError.message);
-            return res.redirect(`${process.env.FRONTEND_URL}/payment-success?status=already_pro`);
+            return res.redirect(`${process.env.CLIENT_URL}/payment-success?status=already_pro`);
         }
 
         // Update user to pro status
@@ -82,13 +82,13 @@ export const handleSuccessCallback = async (req, res) => {
         if (error) {
             logger.error(`Errore nell'aggiornamento dei dati utente: ${error.message}`);
             sendEmail("danilomasi999@gmail.com", `Errore nell'aggiornamento dei dati utente con id: ${request_id} - creem-checkout-controller.mjs`, error.message);
-            return res.redirect(`${process.env.FRONTEND_URL}/payment-error?error=update_failed`);
+            return res.redirect(`${process.env.CLIENT_URL}/payment-error?error=update_failed`);
         }
 
         if (!data || data.length === 0) {
             logger.error(`Aggiornamento fallito per l'utente con ID: ${request_id}`);
             sendEmail("danilomasi999@gmail.com", `Errore nell'aggiornamento dei dati utente con id: ${request_id} - creem-checkout-controller.mjs`, error.message);
-            return res.redirect(`${process.env.FRONTEND_URL}/payment-error?error=update_failed`);
+            return res.redirect(`${process.env.CLIENT_URL}/payment-error?error=update_failed`);
         }
 
         // Verify the update was successful
@@ -101,17 +101,17 @@ export const handleSuccessCallback = async (req, res) => {
         if (verifyError || !verifyData || !verifyData.ispro) {
             logger.error(`Verifica fallita per l'utente con ID: ${request_id}`);
             sendEmail("danilomasi999@gmail.com", `Errore nella verifica dell'aggiornamento dei dati utente con id: ${request_id} - creem-checkout-controller.mjs`, error.message);
-            return res.redirect(`${process.env.FRONTEND_URL}/payment-error?error=verification_failed`);
+            return res.redirect(`${process.env.CLIENT_URL}/payment-error?error=verification_failed`);
         }
 
         // Log successful payment
         logger.info(`Pagamento completato con successo per l'utente: ${request_id}`);
 
         // Redirect to success page with transaction ID
-        return res.redirect(`${process.env.FRONTEND_URL}/payment-success`);
+        return res.redirect(`${process.env.CLIENT_URL}/payment-success`);
 
     } catch (error) {
         logger.error(`Errore nella gestione della callback di successo: ${error.message}`);
-        return res.redirect(`${process.env.FRONTEND_URL}/payment-error?error=server_error`);
+        return res.redirect(`${process.env.CLIENT_URL}/payment-error?error=server_error`);
     }
 };

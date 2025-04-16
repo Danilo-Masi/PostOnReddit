@@ -1,16 +1,11 @@
 import { useEffect, useState, useMemo } from "react";
-// Context
 import { useAppContext } from "../context/AppContext";
-// Axios
 import axios from "axios";
-// Components
 import Post from "./Post";
 import SelectDate from "./SelectDate";
-// Shadcnui
 import { Button } from "../ui/button";
 import { toast } from "sonner";
-// Icons
-import { Loader2, Pencil } from "lucide-react";
+import { Loader2, PenLine } from "lucide-react";
 import { format, toZonedTime } from "date-fns-tz";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
@@ -102,19 +97,19 @@ export default function Scheduled() {
           <Loader2 className="w-8 h-8 text-zinc-500 animate-spin" />
         </div>
       ) : filteredPosts.length === 0 ? (
-        <div className="w-full h-full flex flex-col justify-center items-center text-center p-6">
-          <h2 className="text-lg font-semibold text-zinc-700 dark:text-zinc-300">
+        <div className="w-full h-full flex flex-col justify-center items-center text-center">
+          <h2 className="text-lg font-semibold text-balance text-zinc-600 dark:text-zinc-300">
             No scheduled posts
           </h2>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">
+          <p className="text-sm font-medium text-balance text-zinc-400 dark:text-zinc-400 mb-6">
             Schedule a post now and keep your audience engaged
           </p>
           <Button
             type="button"
-            className="flex items-center gap-2 px-4 py-2 bg-orange-500 dark:bg-orange-600 hover:bg-orange-600 dark:hover:bg-orange-700 text-white rounded-md transition-all"
+            className="bg-orange-600 dark:bg-orange-600 hover:bg-orange-600/85 dark:hover:bg-orange-600/85 text-white dark:text-white"
             onClick={() => setSelectedSection("dashboard")}>
-            <Pencil className="w-4 h-4" />
             Schedule a post
+            <PenLine />
           </Button>
         </div>
       ) : (

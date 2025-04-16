@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Button } from "../ui/button"
-import { Command, CalendarCheck2, Settings, ChevronUp, CircleHelp, LogOut, MessageSquareText } from "lucide-react"
+import { Command, CalendarCheck2, Settings, ChevronUp, CircleHelp, LogOut, MessageSquareText, Loader2, ArrowUpRight } from "lucide-react"
 import { useAppContext } from "../context/AppContext"
 import Logo from "../custom/Logo"
 import { checkData } from "@/hooks/use-retrieve-data"
+import { getCheckout } from "@/hooks/use-payment"
 
 const links = [
     { title: "Dashboard", key: "dashboard", icon: Command },
@@ -14,8 +15,32 @@ const links = [
     { title: "Settings", key: "settings", icon: Settings }
 ];
 
+const Banner = () => {
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleClick = () => {
+        setIsLoading(true);
+        getCheckout();
+        setIsLoading(false);
+    };
+
+    const memoizedBanner = useMemo(() => (
+        <div className="w-full rounded-lg p-6 flex flex-col justify-center gap-4 items-center relative bg-gradient-to-tr from-orange-400 via-orange-600 to-orange-400">
+            <h1 className="text-white text-3xl text-center font-bold">Discover the Full Potential</h1>
+            <p className="text-zinc-100 text-lg text-center">Upgrade to Pro to unlock all features and get priority support.</p>
+            <Button
+                onClick={handleClick}
+                className="w-full py-3 transition duration-300">
+                {isLoading ? <Loader2 className="animate-spin" /> : <>Upgrade to Pro<ArrowUpRight /></>}
+            </Button>
+        </div>
+    ), [isLoading]);
+
+    return memoizedBanner;
+}
+
 export function AppSidebar() {
-    const { selectedSection, setSelectedSection, setExitDialogOpen, setSupportDialogOpen } = useAppContext();
+    const { selectedSection, setSelectedSection, setExitDialogOpen, setSupportDialogOpen, isPro } = useAppContext();
     const [userEmail, setUserEmail] = useState<string>("");
 
     useEffect(() => {
@@ -68,6 +93,7 @@ export function AppSidebar() {
                 </SidebarGroup>
             </SidebarContent>
             <SidebarFooter>
+                {!isPro && <Banner />}
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <DropdownMenu>

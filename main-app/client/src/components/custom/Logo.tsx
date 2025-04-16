@@ -1,9 +1,10 @@
 import logo from "@/assets/icon.png";
+import { memo } from "react";
 
-export default function Logo() {
+const Logo = memo(() => {
   return (
     <div className="w-full flex items-center gap-2">
-      <div className="w-12 h-12">
+      <div className="w-10 h-10">
         <img src={logo} alt="postonreddit logo" className="object-cover" />
       </div>
       <h1
@@ -13,4 +14,6 @@ export default function Logo() {
       </h1>
     </div>
   );
-}
+});
+
+export default Logo;
