@@ -8,6 +8,7 @@ import { useAppContext } from "../context/AppContext";
 import { format, toZonedTime } from "date-fns-tz";
 import { Button } from "../ui/button";
 import { getCheckout } from "@/hooks/use-payment";
+import TimeCardSkeleton from "../custom/TimeCardSkeleton";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 
@@ -229,7 +230,7 @@ export default function WeekTime({ subreddit }: { subreddit: string }) {
   // Funzione per generare i componenti WeekTimeCard
   const weekCards = useMemo(() => {
     if (state.loading) {
-      return <Loader2 className="animate-spin" />;
+      return <TimeCardSkeleton numSkeleton={7} />;
     }
 
     if (state.error) {

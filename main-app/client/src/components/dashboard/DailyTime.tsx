@@ -3,10 +3,10 @@ import { NavigateFunction, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
 import { DailyTimeCard } from "../custom/TimeCard";
-import { Loader2 } from "lucide-react";
 import { useAppContext } from "../context/AppContext";
 import { format, toZonedTime } from "date-fns-tz";
 import { isToday } from "date-fns";
+import TimeCardSkeleton from "../custom/TimeCardSkeleton";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 
@@ -256,7 +256,7 @@ export default function DailyTime({ subreddit }: DailyTimeProps) {
   // Funzione per generare i componenti DailyTimeCard
   const timeCards = useMemo(() => {
     if (state.loading) {
-      return <Loader2 className="animate-spin" />;
+      return <TimeCardSkeleton numSkeleton={4} />;
     }
 
     if (state.error || !Array.isArray(state.bestTimes) || state.bestTimes.length === 0) {
@@ -284,7 +284,7 @@ export default function DailyTime({ subreddit }: DailyTimeProps) {
       } else if (time.giorno) {
         dateObj = new Date(time.giorno);
       }
-      
+
       return (
         <DailyTimeCard
           key={`${time.hour}-${index}`}
