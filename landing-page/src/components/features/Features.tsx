@@ -49,8 +49,8 @@ export default function Features() {
             <div className="w-[90%] md:w-[80%] flex flex-wrap items-center justify-center gap-4 py-24 md:py-32">
                 <Headline
                     section="Features"
-                    title="Meet the tools you didn't know you needed"
-                    description="Manual posting? That's adorable. postonreddit lets you automate, analyze, and win, without breaking a sweat." />
+                    title="Tools built for traction, not upvotes"
+                    description="You've got a product worth sharing. We make sure it gets seen" />
                 {features.map((feature) => (
                     <FeatureCard key={feature.title} {...feature} />
                 ))}

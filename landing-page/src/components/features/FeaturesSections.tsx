@@ -37,9 +37,9 @@ export function FeaturesSections1() {
     );
 }
 
-function TimeCard({ time, score }: { time: string, score: number }) {
+function TimeCard({ time, score, leftPosition }: { time: string, score: number, leftPosition: string }) {
     return (
-        <div className="w-fit min-w-[200px] h-fit p-4 rounded-lg bg-accent border border-border">
+        <div className="w-fit min-w-[200px] h-fit p-4 rounded-lg bg-accent border border-border absolute top-0" style={{ left: leftPosition }}>
             <h1 className="text-md font-bold text-foreground">{new Date().toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric" })}</h1>
             <h3 className="text-sm font-medium text-muted-foreground">{time}</h3>
             <p className="flex flex-row items-center gap-1 text-sm font-semibold text-blue-500">
@@ -51,6 +51,8 @@ function TimeCard({ time, score }: { time: string, score: number }) {
 }
 
 export function FeaturesSections2() {
+    const leftPositions = ["0px", "220px", "440px", "660px", "880px", "1100px", "1320px", "1540px", "1760px", "1980px"];
+    const leftPositions2 = ["20px", "240px", "460px", "680px", "900px", "1120px", "1340px", "1560px", "1780px", "2000px"];
 
     const randomTime = () => {
         return Math.floor(Math.random() * 12);
@@ -61,22 +63,22 @@ export function FeaturesSections2() {
     }
 
     return (
-        <div className="h-[50svh] rounded-t-xl flex flex-col items-center justify-start overflow-hidden gap-6 relative">
-            <div className="w-full h-full absolute top-0 left-0 rounded-t-xl bg-gradient-to-b from-zinc-50/90 via-transparent to-white" />
-            <div className="w-full h-full absolute top-0 left-0 rounded-x-xl bg-gradient-to-r from-zinc-50/90 via-transparent to-zinc-50/90" />
-            <div className="h-1/3 flex items-center justify-start py-2 ml-12 gap-3">
+        <div className="w-full h-[50svh] rounded-t-xl flex flex-col items-center justify-start overflow-hidden gap-6 relative">
+            <div className="w-full h-full absolute top-0 left-0 rounded-t-xl bg-gradient-to-b from-zinc-50/90 via-transparent to-white z-10" />
+            <div className="w-full h-full absolute top-0 left-0 rounded-x-xl bg-gradient-to-r from-zinc-50/90 via-transparent to-zinc-50/90 z-10" />
+            <div className="w-full h-1/3 flex items-center justify-start overflow-x-hidden relative py-2 gap-3">
                 {Array.from({ length: 10 }).map((_, index) => (
-                    <TimeCard key={index} time={`${randomTime()}:00 PM`} score={randomScore()} />
+                    <TimeCard key={index} time={`${randomTime()}:00 PM`} score={randomScore()} leftPosition={leftPositions2[index]} />
                 ))}
             </div>
-            <div className="h-1/3 flex items-center justify-center py-2 gap-3">
+            <div className="w-full h-1/3 flex items-center justify-start py-2 gap-3 relative">
                 {Array.from({ length: 10 }).map((_, index) => (
-                    <TimeCard key={index} time={`${randomTime()}:00 PM`} score={randomScore()} />
+                    <TimeCard key={index} time={`${randomTime()}:00 PM`} score={randomScore()} leftPosition={leftPositions[index]} />
                 ))}
             </div>
-            <div className="h-1/3 flex items-center justify-center py-2 ml-24 gap-3">
+            <div className="w-full h-1/3 flex items-center justify-start py-2 gap-3 relative">
                 {Array.from({ length: 10 }).map((_, index) => (
-                    <TimeCard key={index} time={`${randomTime()}:00 PM`} score={randomScore()} />
+                    <TimeCard key={index} time={`${randomTime()}:00 PM`} score={randomScore()} leftPosition={leftPositions2[index]} />
                 ))}
             </div>
         </div>
@@ -99,16 +101,16 @@ export function FeaturesSections3() {
             <div className="w-full h-full absolute top-0 left-0 rounded-t-xl bg-gradient-to-b from-zinc-50/50 via-transparent to-whitez-10" />
             <div className="w-full h-full absolute top-0 left-0 rounded-x-xl bg-gradient-to-r from-zinc-50/50 via-transparent to-zinc-50/50 z-10" />
             <PostCard
-                title="I’m 500 users away from either changing my life"
-                content="It’s been six years since I started messing around, thinking I’d stumble onto my path like in a movie. Spoiler: nothing fucking happened..."
+                title="I'm 500 users away from either changing my life"
+                content="It's been six years since I started messing around, thinking I'd stumble onto my path like in a movie. Spoiler: nothing fucking happened..."
                 style="absolute -right-96 z-0" />
             <PostCard
                 title="Stay up all fuc**ng night"
-                content="I’m 25. Still young, still figuring stuff out, but I know one thing for sure: I’m not about to live a life someone else designed for me..."
+                content="I'm 25. Still young, still figuring stuff out, but I know one thing for sure: I'm not about to live a life someone else designed for me..."
                 style="absolute -right-50 z-10 border hover:border-orange-600 cursor-pointer hover:scale-110 transition-all duration-500" />
             <PostCard
-                title="I’m 500 users away from either changing my life or"
-                content="It’s been six years since I started messing around, thinking I’d stumble onto my path like in a movie. Spoiler: nothing fucking happened..."
+                title="I'm 500 users away from either changing my life or"
+                content="It's been six years since I started messing around, thinking I'd stumble onto my path like in a movie. Spoiler: nothing fucking happened..."
                 style="absolute -left-96 z-0" />
         </div>
     );

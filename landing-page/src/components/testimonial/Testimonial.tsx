@@ -47,9 +47,9 @@ const testimonial2 = [
         rating: 4.8,
     },
     {
-        name: "Lucas Ferreira",
+        name: "Luca F.",
         image: lucas,
-        description: "Not exaggerating my engagement literally tripled. The 'best time to post' feature just works.",
+        description: "I got 112 upvotes and 6 trial signups from a single post, all scheduled with postonreddit",
         rating: 4.7,
     },
     {

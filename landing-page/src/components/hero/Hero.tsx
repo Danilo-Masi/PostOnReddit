@@ -109,12 +109,12 @@ function HeroContent() {
                     </motion.div>
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.5 }}>
                         <h1 className="text-4xl sm:text-5xl md:text-6xl font-medium tracking-tight text-foreground">
-                            Make your first <span className="font-extrabold text-foreground">$$</span> online, with <span className="text-primary italic">Reddit</span>
+                            Grow your SaaS with <span className="text-primary italic">Reddit</span>
                         </h1>
                     </motion.div>
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.7 }}>
                         <p className="text-base sm:text-lg text-muted-foreground max-w-lg mx-auto md:mx-0">
-                            Grow your audience, get honest feedback, and find your first paying users, all without leaving Reddit.
+                            postonreddit helps SaaS founders drive traffic and signups by posting at the best time, in the right subreddits, with zero guesswork.
                         </p>
                     </motion.div>
                 </div>
@@ -148,7 +148,7 @@ function HeroContent() {
                                         <Starticon key={star} />
                                     ))}
                                 </div>
-                                <p className="text-sm font-bold text-foreground">200+<span className="text-foreground font-normal"> founders already joined</span></p>
+                                <p className="text-sm font-bold text-foreground">170+<span className="text-foreground font-normal"> founders already joined</span></p>
                             </motion.div>
                         </div>
                     </div>
