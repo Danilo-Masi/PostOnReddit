@@ -56,7 +56,7 @@ export default function Faq() {
                         Got Questions? Totally fair.
                     </h1>
                     <p className="text-base text-balance font-medium text-muted-foreground">
-                        We get it, things can be confusing at first. Here are some quick answers to help you out (so you don’t have to pretend you already know).
+                        We get it, things can be confusing at first. Here are some quick answers to help you out.
                     </p>
                 </div>
                 <div className="w-full md:w-[60%] flex flex-wrap gap-4">

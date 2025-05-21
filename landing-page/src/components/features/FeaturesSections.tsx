@@ -17,7 +17,7 @@ function SubredditCard({ subreddit, isSelected, style }: { subreddit: string, is
 
 export function FeaturesSections1() {
     return (
-        <div className="w-full h-[50svh] rounded-t-xl flex items-center justify-center relative">
+        <div className="w-full h-[55svh] rounded-t-xl flex items-center justify-center relative">
             <div className="w-full h-full absolute top-0 left-0 rounded-xl bg-gradient-to-b from-zinc-50 via-transparent to-white blur-2xl z-20" />
             <div className="w-full h-full absolute top-0 left-0 rounded-xl bg-gradient-to-r from-zinc-50 via-transparent to-white blur-2xl z-20" />
             <SubredditCard subreddit="r/SaaS" isSelected={false} style="absolute top-10 left-10" />
@@ -63,7 +63,7 @@ export function FeaturesSections2() {
     }
 
     return (
-        <div className="w-full h-[50svh] rounded-t-xl flex flex-col items-center justify-start overflow-hidden gap-6 relative">
+        <div className="w-full h-[55svh] rounded-t-xl flex flex-col items-center justify-start overflow-hidden gap-6 relative">
             <div className="w-full h-full absolute top-0 left-0 rounded-t-xl bg-gradient-to-b from-zinc-50/90 via-transparent to-white z-10" />
             <div className="w-full h-full absolute top-0 left-0 rounded-x-xl bg-gradient-to-r from-zinc-50/90 via-transparent to-zinc-50/90 z-10" />
             <div className="w-full h-1/3 flex items-center justify-start overflow-x-hidden relative py-2 gap-3">
@@ -97,7 +97,7 @@ function PostCard({ title, content, style }: { title: string, content: string, s
 
 export function FeaturesSections3() {
     return (
-        <div className="w-full h-[50svh] rounded-t-xl flex items-center justify-center py-5 gap-3 relative overflow-hidden">
+        <div className="w-full h-[55svh] rounded-t-xl flex items-center justify-center py-5 gap-3 relative overflow-hidden">
             <div className="w-full h-full absolute top-0 left-0 rounded-t-xl bg-gradient-to-b from-zinc-50/50 via-transparent to-whitez-10" />
             <div className="w-full h-full absolute top-0 left-0 rounded-x-xl bg-gradient-to-r from-zinc-50/50 via-transparent to-zinc-50/50 z-10" />
             <PostCard

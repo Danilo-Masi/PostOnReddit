@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { scrollToElement } from "@/utility/useAnimation";
 import { Button } from "../ui/button";
-import { ChevronRight, Gift, TrendingUp } from "lucide-react";
+import { ArrowRight, ChevronRight, Gift } from "lucide-react";
 import face1 from "../../assets/images/face1.webp";
 import face2 from "../../assets/images/face2.webp";
 import face3 from "../../assets/images/face3.webp";
@@ -105,16 +105,16 @@ function HeroContent() {
                 {/* Title and subtitle */}
                 <div className="space-y-6">
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }}>
-                        <p className="flex items-center justify-center md:justify-start text-sm font-medium text-foreground"><Gift className="h-4 w-4 animate-bounce text-primary mr-2" />Join now and get the <span className="font-bold text-primary ml-1"> 5€ discount!</span></p>
+                        <p className="flex items-center justify-center md:justify-start text-sm font-medium text-foreground"><Gift className="h-4 w-4 animate-bounce text-primary mr-2" />Join now and get <span className="font-bold text-primary ml-1"> 5€ off</span></p>
                     </motion.div>
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.5 }}>
-                        <h1 className="text-4xl sm:text-5xl md:text-6xl font-medium tracking-tight text-foreground">
-                            Grow your SaaS with <span className="text-primary italic">Reddit</span>
+                        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-foreground">
+                            Get real users from <span className="text-primary italic">Reddit</span>
                         </h1>
                     </motion.div>
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.7 }}>
                         <p className="text-base sm:text-lg text-muted-foreground max-w-lg mx-auto md:mx-0">
-                            postonreddit helps SaaS founders drive traffic and signups by posting at the best time, in the right subreddits, with zero guesswork.
+                            postonreddit helps SaaS founders post at the right time, in the right subreddits, so your content gets seen, clicked, and drives growth
                         </p>
                     </motion.div>
                 </div>
@@ -126,7 +126,7 @@ function HeroContent() {
                             onClick={handleGetStarted}
                             size="lg"
                             className="w-full sm:w-fit bg-primary hover:bg-primary/85 text-primary-foreground">
-                            Start growing <TrendingUp className="ml-2 h-4 w-4" />
+                            Start growing now <ArrowRight className="ml-2 h-4 w-4" />
                         </Button>
                     </motion.div>
                     <div className="flex flex-col sm:flex-row items-center gap-4">

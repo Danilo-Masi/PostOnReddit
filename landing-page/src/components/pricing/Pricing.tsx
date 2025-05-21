@@ -31,8 +31,8 @@ export default function Pricing() {
       <div className="w-[90%] md:w-[80%] h-auto flex flex-col items-center justify-center py-24 md:py-32">
         <Headline
           section="Pricing"
-          title="Let’s talk money (Don’t worry, it’s cheap)"
-          description="Get powerful tools without selling a kidney. Just one plan, everything included. Easy." />
+          title="Built for indie founders. Priced like it too."
+          description="One plan. All features. No fluff. Just the tools you need to grow, without breaking the bank." />
         <div className="w-full h-auto flex flex-wrap items-center justify-center gap-8">
           <PriceCard key="free-trial" planTitle="Free Trial" planDescription="To get started" price="€0" priceDescription="no credit card required" goodFeatures={goodFeaturesFreeTrial} badFeatures={badFeaturesFreeTrial} isCardPro={false} />
           <PriceCard key="lifetime-access" planTitle="Lifetime Access" planDescription="Pay once, use forever" price="€32" priceDescription="just one time" goodFeatures={goodFeaturesPro} futureFeatures={futureFeaturesPro} isCardPro={true} />

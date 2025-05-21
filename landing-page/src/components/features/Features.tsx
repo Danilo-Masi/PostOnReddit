@@ -5,27 +5,27 @@ import { FeaturesSections1, FeaturesSections2, FeaturesSections3, FeaturesSectio
 const features = [
     {
         section: <FeaturesSections1 />,
-        title: "Find your subreddit soulmate",
-        description: "No more posting in random places. Choose the subreddit where your post actually belongs (and thrives).",
-        style: "md:w-[calc(45%-0.50rem)]"
+        title: "Stop wasting posts, find the perfect subreddit and get real traction",
+        description: "We tell you exactly where your content will shine, so you don’t get buried again.",
+        style: "md:w-[calc(50%-0.50rem)]"
     },
     {
         section: <FeaturesSections2 />,
-        title: "Post like a time wizard",
-        description: "We'll tell you exactly when to post for max visibility, today or next Thursday at 3:17 PM. Yes, really.",
-        style: "md:w-[calc(55%-0.50rem)]"
+        title: "Get 3x more views by posting at the exact right time (without guessing)",
+        description: "We analyze data to tell you when your post will blow up, down to the minute.",
+        style: "md:w-[calc(50%-0.50rem)]"
     },
     {
         section: <FeaturesSections3 />,
-        title: "Schedule it. Forget it. Celebrate.",
-        description: "Write your post, hit schedule, and go live your life. We'll make sure your post shows up at just the right moment.",
-        style: "md:w-[calc(60%-0.50rem)]"
+        title: "Schedule your Reddit post once, watch it work while you sleep",
+        description: "No alarms, no stress. We’ll post for you at the optimal time, automatically.",
+        style: "md:w-[calc(55%-0.50rem)]"
     },
     {
         section: <FeaturesSections4 />,
-        title: "Make Reddit love you",
-        description: "Post smarter, not harder. Get more upvotes, followers, and karma, without living on Reddit 24/7.",
-        style: "md:w-[calc(40%-0.50rem)]"
+        title: "Turn Reddit into your growth engine, without living on it",
+        description: "More upvotes, followers, and karma by posting smarter not longer.",
+        style: "md:w-[calc(45%-0.50rem)]"
     },
 ];
 

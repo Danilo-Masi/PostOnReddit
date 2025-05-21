@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
-import { ChevronRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useIsMobile } from "@/utility/useMobile";
 import ava from '../../assets/images/ava-face.webp';
 import drew from '../../assets/images/drew-face.webp';
@@ -16,19 +16,19 @@ const testimonial1 = [
     {
         name: "Lena Moretti",
         image: lena,
-        description: "Honestly didn't think I'd care about scheduling Reddit posts, but here I am, saving time and actually growing my following. Wild.",
+        description: "I wasn’t even looking for something like this, but I gave it a shot. Turns out, scheduling posts actually helped me stay consistent without feeling like I was trying too hard. It’s just… less chaotic now.",
         rating: 4.6,
     },
     {
         name: "Jake Tanaka",
         image: jake,
-        description: "I run a niche SaaS and this thing helped me double my signups from Reddit. Not magic, just smart timing and solid tools.",
+        description: "I have a small SaaS with a weird niche. I used to post manually, whenever I had time. This just made everything easier. Same effort, but now people actually see my posts.",
         rating: 4.9,
     },
     {
         name: "Isabelle Costa",
         image: isabelle,
-        description: "The analytics alone are worth it. I now post when my audience's actually awake. Who knew that mattered so much?",
+        description: "Honestly, I didn’t realize how much timing mattered. I used to post when I was free, now I schedule when my audience is online. Small change, but it made a difference.",
         rating: 4.4,
     },
 ];
@@ -37,25 +37,25 @@ const testimonial2 = [
     {
         name: "Drew Patterson",
         image: drew,
-        description: "Didn't expect much, but wow Reddit actually works when you post like a human and not a bot. This app made that easy.",
+        description: "Reddit felt like a mystery to me for a long time. I tried tools before, but they felt clunky. This one’s simple and doesn’t try to do too much. It just works and feels normal to use.",
         rating: 4.5,
     },
     {
         name: "Maya Singh",
         image: maya,
-        description: "I used to post randomly and pray for upvotes. Now I have a strategy. Scheduling saved me from chaos.",
+        description: "Before this, I’d post and then forget about it… or overthink it for days. Now I write when I feel like it and schedule it out. Way less mental clutter.",
         rating: 4.8,
     },
     {
         name: "Luca F.",
         image: lucas,
-        description: "I got 112 upvotes and 6 trial signups from a single post, all scheduled with postonreddit",
+        description: "I got a few signups and more visibility just by being consistent. Nothing fancy. Just helped me show up regularly without thinking about it every day.",
         rating: 4.7,
     },
     {
         name: "Ava Becker",
         image: ava,
-        description: "Finally, a tool that doesn't feel like it's made by robots for robots. I can stay consistent without burning out.",
+        description: "What I like is that it doesn’t feel like I’m using a growth hack tool. It just helps me post without burning out. I don’t dread it anymore.",
         rating: 4.3,
     },
 ];
@@ -108,14 +108,14 @@ export default function Testimonial() {
                         Real People. Real Posts. Real Obsession.
                     </h1>
                     <p className="text-base text-balance font-medium text-muted-foreground mb-2">
-                        Don't take our word for it, listen to the folks who stopped crying over Reddit karma once they met postonreddit.
+                        postonreddit helped these makers go from 0 to real conversations, real traction, and real users,without feeling spammy or salesy.
                     </p>
                     <Button
                         aria-label="Get Started"
                         onClick={handleGetStarted}
                         className="w-fit text-primary-foreground bg-primary hover:bg-primary/85">
-                        Get Started
-                        <ChevronRight />
+                        Get Started now 
+                        <ArrowRight />
                     </Button>
                 </div>
                 <div className="w-full md:w-[60%] flex flex-wrap gap-4 relative">

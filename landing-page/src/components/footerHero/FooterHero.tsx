@@ -22,10 +22,10 @@ export default function FooterHero() {
                     <div className="relative px-6 py-16 md:px-12 md:py-24">
                         <div className="mx-auto max-w-3xl text-center">
                             <h2 className="text-3xl font-bold text-balance tracking-tight text-background sm:text-4xl md:text-5xl">
-                                Ready to stop posting like a caveman?
+                                Start posting smarter. Your future self will thank you.
                             </h2>
                             <p className="mt-6 text-lg leading-8 text-background/80 text-balance">
-                                Thousands of smart (and slightly lazy) Reddit users are already using postonreddit to save time and grow faster. You in?
+                                Thousands of founders and makers are already using postonreddit to save hours, stay consistent, and actually grow. Wanna join them?
                             </p>
                             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
                                 <Button
