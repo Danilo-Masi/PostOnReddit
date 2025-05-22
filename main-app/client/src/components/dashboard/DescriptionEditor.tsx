@@ -99,7 +99,7 @@ export default function DescriptionEditor({
                     onFocus={handleFocus}
                     onBlur={handleBlur}
                     className={editorClassName}
-                    editorContentClassName="p-5 text-sm text-zinc-500 dark:text-zinc-200"
+                    editorContentClassName="max-h-[50svh] p-5 text-sm text-zinc-500 dark:text-zinc-200"
                     output="html"
                     placeholder={placeholder}
                     autofocus={false}
